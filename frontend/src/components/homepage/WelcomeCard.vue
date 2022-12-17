@@ -1,9 +1,12 @@
 <template>
   <v-container fluid>
     <v-card color="primary" dark>
-      <v-card-title>There is data about</v-card-title>
+      <v-card-title dark>Welcome to my app!</v-card-title>
       <v-card-text>
-        157034 trips done by Helsinki city bikes, and 156 bike stations.
+        This app has information about 157034 journeys done by Helsinki city
+        bikes, and 156 bike stations. The data used in this application is
+        gathered from Helsingin Seudun Liikenne, which is a public
+        transportation organization working in Helsinki.
       </v-card-text>
     </v-card>
   </v-container>
@@ -14,7 +17,7 @@ import Vue from "vue";
 import { useStore } from "../../store/index";
 
 export default Vue.extend({
-  name: "StatBar",
+  name: "WelcomeCard",
   data: () => ({
     store: useStore(),
   }),
