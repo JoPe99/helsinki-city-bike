@@ -1,12 +1,16 @@
 <template>
-  <v-container fluid> Stations </v-container>
+  <v-container fluid>
+    <map-component style="height: 500px" />
+    <v-data-table></v-data-table>
+  </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import MapComponent from "../components/MapComponent.vue";
 
 export default Vue.extend({
   name: "StationListView",
-  components: {},
+  components: { MapComponent },
 });
 </script>

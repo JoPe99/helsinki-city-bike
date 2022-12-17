@@ -21,11 +21,11 @@ If your project has tests, include instructions on how to run them.
 # Technology choices: 
 
 ## Frontend
-Frontend is created with VueJS accompanied by Vuetify component library. I chose Vue as I have prior experience with it, and it has been a blast to use. Electron is used for packaging the app, allowing stand-alone desktop apps. 
+Frontend is created with Typescript/VueJS accompanied by Vuetify component library. I chose Vue as I have prior experience with it, and it has been a blast to use. Electron is used for packaging the app, making it possible to distribute the frontend app as a single .exe-file.
 
 ## Backend
-Backend is Kotlin with Spring Boot, along with PostGreSQL. I chose Kotlin as I had some experience with Android Development with it before, and wanted to get more experience on Kotlin. PostGreSQL is something I have used before and felt it would work fine here too.
+Backend is Kotlin with Spring Boot, along with PostGreSQL. I chose Kotlin as I had some experience with Android Development with it before, and wanted to get backend experience on Kotlin. PostGreSQL is something I have used before and felt it would work fine here too.
 
 ## Testing
-Frontend testing is done with Mocha/Chai, Cypress, and coverage by Coveralls. 
+Frontend unit testing is done with Mocha/Chai, E2E-testing with Cypress, and coverage is provided by Coveralls. 
 
