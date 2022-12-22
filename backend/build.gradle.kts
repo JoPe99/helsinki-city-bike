@@ -21,6 +21,11 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("com.google.code.gson:gson:2.10")
+	implementation("org.jetbrains.exposed:exposed-core:0.40.1")
+	implementation("org.jetbrains.exposed:exposed-dao:0.40.1")
+	implementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
+	implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.7.0")
 }
 
 tasks.withType<KotlinCompile> {

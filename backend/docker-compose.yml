@@ -1,0 +1,27 @@
+version: '3.1'
+services:
+  API:
+    image: 'app.jar'
+    ports:
+      - "8081:8081"
+    depends_on:
+      PostgreSQL:
+        condition: service_healthy
+    environment:
+      - db_url=jdbc:postgresql://PostgreSQL:5432/postgres
+      - db_username=postgres
+      - db_password=password
+
+  PostgreSQL:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
