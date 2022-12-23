@@ -1,6 +1,11 @@
 package com.jp.backend
 
-class CSVParser {
+/**  
+This file includes helper functions for parsing the CSV files,
+and populating the database with the functions
+*/
+
+object CSVParser {
     fun test() {
         println("test")
     }

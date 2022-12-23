@@ -8,9 +8,9 @@ services:
       PostgreSQL:
         condition: service_healthy
     environment:
-      - db_url=jdbc:postgresql://PostgreSQL:5432/postgres
-      - db_username=postgres
-      - db_password=password
+      - DB_URL=jdbc:postgresql://PostgreSQL:5432/postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
 
   PostgreSQL:
     image: postgres
