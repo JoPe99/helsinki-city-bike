@@ -8,14 +8,5 @@ import com.jp.backend.DatabaseConn
 class BackendApplication
 
 fun main(args: Array<String>) {
-
-	DatabaseConn.testFunc();
-	// Check if the tables are already created
-
-	// If not, create them and parse CSVs to database, else continue
-	
-	// Start RESTController
-	
-
 	runApplication<BackendApplication>(*args)
 }

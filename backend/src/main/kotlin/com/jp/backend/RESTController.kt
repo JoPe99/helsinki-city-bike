@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import com.jp.backend.DatabaseConn
+import com.jp.backend.*
+import com.jp.backend.CSVParser
 
 @CrossOrigin(maxAge = 3600)
 @RestController
@@ -17,9 +18,33 @@ class RESTController(
         return ResponseEntity("Hello World", HttpStatus.OK)
     }
 
-    @GetMapping("/testi")
+    @GetMapping("/stations")
     @ResponseBody
-    fun helloWorldTesti(): ResponseEntity<Any?> {
-        return ResponseEntity(DatabaseConn.getData(), HttpStatus.OK)
+    fun getStations(): ResponseEntity<Any?> {
+        return ResponseEntity(JsonCreator.stationsToJSON(), HttpStatus.OK)
+    }
+
+    @GetMapping("/trips")
+    @ResponseBody
+    fun getTrips(): ResponseEntity<Any?> {
+        return ResponseEntity(JsonCreator.tripsToJSON(), HttpStatus.OK)
+    }
+
+    @PostMapping("/parse/stations")
+    fun parseStations(): ResponseEntity<String> {
+        CSVParser.parseStationData()
+        return ResponseEntity("Stations parsed", HttpStatus.OK)
+    }
+
+    @PostMapping("/parse/trips")
+    fun parseTrips(): ResponseEntity<String> {
+        CSVParser.parseTripData()
+        return ResponseEntity("Trips parsed", HttpStatus.OK)
+    }
+
+    @DeleteMapping("/delete")
+    fun deleteAll(): ResponseEntity<Any?> {
+        DatabaseConn.deleteData()
+        return ResponseEntity("Tables emptied", HttpStatus.OK)
     }
 }
