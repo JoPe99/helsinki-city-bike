@@ -5,8 +5,14 @@
 
 package com.jp.backend
 
+import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.kotlin.*
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
+
 
 object DatabaseConn {
 	private val db: Database;
@@ -30,7 +36,7 @@ object DatabaseConn {
 
 		// Check if the tables are already created
 		// If not, create them and parse CSVs to database, else continue
-		// TODO: Make work
+		// TODO: Make work correctly
 		if (tablesExist()) {
 			transaction(db) {
 				SchemaUtils.drop(TripsTable)
@@ -43,32 +49,8 @@ object DatabaseConn {
 		}
 	}
 
-	// Test function for development
-	fun testFunc() {
-		transaction(db) {
-			//addLogger(StdOutSqlLogger)
-
-			SchemaUtils.create(testi)
-			if (testi.selectAll().count() > 0) {testi.deleteAll()}
-
-			var x = 1
-			while (x < 10) {
-				testi.insert {
-					it[name] = "Jarkko"
-					it[age] = x
-				}
-				x++
-			}
-
-			println("All users: ")
-
-			for (user in testi.selectAll()) {
-				println("${user[testi.name]}: ${user[testi.age]}")
-			}
-		}
-	}
-
 	// Function for returning data from tables
+	// TODO: Add pagination and searching
 	fun getStationsData(): ArrayList<StationModel> {
 		var ret: ArrayList<StationModel> = arrayListOf()
 		transaction(db) {
@@ -93,13 +75,16 @@ object DatabaseConn {
 		return ret
 	}
 
+	// Function gets all trips from database.
+	// TODO: Add pagination and searching
 	fun getTripsData(): ArrayList<TripModel> {
 		var ret: ArrayList<TripModel> = arrayListOf()
 		transaction(db) {
 			for (trip in TripsTable.selectAll()) {
+
 				ret.add(TripModel(
-						trip[TripsTable.departure_time],
-						trip[TripsTable.return_time],
+						trip[TripsTable.departure_time].toString(),
+						trip[TripsTable.return_time].toString(),
 						trip[TripsTable.departure_station_id],
 						trip[TripsTable.departure_station_name],
 						trip[TripsTable.return_station_id],
@@ -142,10 +127,18 @@ object DatabaseConn {
 	}
 
 	fun insertIntoTrips(trip: TripModel) {
+		/**
+		 *  As documented in the DataModels.kt TripModel declaration,
+		 *  datetime-strings are converted to LocalDateTimes before
+		 *  insertion into database
+		 */
+		val depTime = trip.departureTime.toLocalDateTime()
+		val retTime = trip.returnTime.toLocalDateTime()
+
 		transaction(db) {
 			TripsTable.insert {
-				it[departure_time] = trip.departureTime
-				it[return_time] = trip.returnTime
+				it[departure_time] = depTime
+				it[return_time] = retTime
 				it[departure_station_id] = trip.departureStationId
 				it[departure_station_name] = trip.departureStationName
 				it[return_station_id] = trip.returnStationId
@@ -154,10 +147,6 @@ object DatabaseConn {
 				it[duration] = trip.durationSeconds
 			}
 		}
-	}
-
-	fun insertIntoTrips() {
-
 	}
 
 	// Function for deleting all data
@@ -192,18 +181,12 @@ object StationsTable : Table() {
 }
 
 object TripsTable : Table() {
-	val departure_time: Column<String> = varchar("departure_time", 50)
-	val return_time: Column<String> = varchar("return_time", 50)
-	val departure_station_id: Column<Int> = integer("departure_station_id")
-	val departure_station_name: Column<String> = varchar("departure_station_name", 50)
-	val return_station_id: Column<Int> = integer("return_station_id")
-	val return_station_name: Column<String> = varchar("return_station_name", 50)
-	val distance: Column<Int> = integer("distance")
-	val duration: Column<Int> = integer("duration")
-
-}
-
-object testi : Table() {
-	val name: Column<String> = varchar("name", 40)
-	val age: Column<Int> = integer("age")
+	val departure_time = datetime("departure_time")
+	val return_time = datetime("return_time")
+	val departure_station_id = integer("departure_station_id")
+	val departure_station_name = varchar("departure_station_name", 50)
+	val return_station_id = integer("return_station_id")
+	val return_station_name = varchar("return_station_name", 50)
+	val distance = integer("distance")
+	val duration = integer("duration")
 }

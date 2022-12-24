@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
 import com.jp.backend.CSVParser
 
+// TODO: Correct responses to queries
 @CrossOrigin(maxAge = 3600)
 @RestController
 class RESTController(
