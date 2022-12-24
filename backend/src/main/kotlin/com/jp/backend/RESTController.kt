@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
 import com.jp.backend.CSVParser
 
-// TODO: Correct responses to queries
+// TODO: Add correct responses to queries, e.g errors etc
 @CrossOrigin(maxAge = 3600)
 @RestController
-class RESTController(
-) {
+class RESTController() {
     @GetMapping("/", produces = [MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun helloWorld(): ResponseEntity<Any?> {
@@ -22,13 +21,27 @@ class RESTController(
     @GetMapping("/stations")
     @ResponseBody
     fun getStations(): ResponseEntity<Any?> {
-        return ResponseEntity(JsonCreator.stationsToJSON(), HttpStatus.OK)
+        return ResponseEntity(JsonCreator.stationsToJSON(DatabaseConn.getStationsData()), HttpStatus.OK)
+    }
+
+    @GetMapping("/stations/pagination")
+    @ResponseBody
+    fun getPaginatedStations(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
+        val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset)
+        return ResponseEntity(JsonCreator.stationsToJSON(stationData), HttpStatus.OK)
     }
 
     @GetMapping("/trips")
     @ResponseBody
     fun getTrips(): ResponseEntity<Any?> {
-        return ResponseEntity(JsonCreator.tripsToJSON(), HttpStatus.OK)
+        return ResponseEntity(JsonCreator.tripsToJSON(DatabaseConn.getTripsData()), HttpStatus.OK)
+    }
+
+    @GetMapping("/trips/pagination")
+    @ResponseBody
+    fun getPaginatedTrips(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
+        val tripData = DatabaseConn.getPaginationTripsData(pageSize, offset)
+        return ResponseEntity(JsonCreator.tripsToJSON(tripData), HttpStatus.OK)
     }
 
     @PostMapping("/parse/stations")

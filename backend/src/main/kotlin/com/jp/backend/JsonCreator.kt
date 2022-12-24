@@ -7,12 +7,12 @@ object JsonCreator {
     private val gson = Gson()
 
     //TODO: Tests
-    fun tripsToJSON(): String {
-        return gson.toJson(DatabaseConn.getTripsData())
+    fun tripsToJSON(trips: ArrayList<TripModel>): String {
+        return gson.toJson(trips)
     }
 
     // TODO: Tests
-    fun stationsToJSON(): String {
-        return gson.toJson(DatabaseConn.getStationsData())
+    fun stationsToJSON(stations: ArrayList<StationModel>): String {
+        return gson.toJson(stations)
     }
 }

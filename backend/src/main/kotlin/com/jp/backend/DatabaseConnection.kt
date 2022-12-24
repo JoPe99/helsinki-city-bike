@@ -75,6 +75,30 @@ object DatabaseConn {
 		return ret
 	}
 
+	fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = ""): ArrayList<StationModel> {
+		var ret: ArrayList<StationModel> = arrayListOf()
+		transaction(db) {
+			for (station in StationsTable.selectAll().limit(pageSize, offset)) {
+				ret.add(StationModel(
+					station[StationsTable.fid],
+					station[StationsTable.id],
+					station[StationsTable.name_fi],
+					station[StationsTable.name_se],
+					station[StationsTable.name_en],
+					station[StationsTable.address_fi],
+					station[StationsTable.address_se],
+					station[StationsTable.city_fi],
+					station[StationsTable.city_se],
+					station[StationsTable.operator],
+					station[StationsTable.capacity],
+					station[StationsTable.longitude],
+					station[StationsTable.latitude]
+				))
+			}
+		}
+		return ret
+	}
+
 	// Function gets all trips from database.
 	// TODO: Add pagination and searching
 	fun getTripsData(): ArrayList<TripModel> {
@@ -91,6 +115,26 @@ object DatabaseConn {
 						trip[TripsTable.return_station_name],
 						trip[TripsTable.distance],
 						trip[TripsTable.duration]
+				))
+			}
+		}
+		return ret
+	}
+
+	fun getPaginationTripsData(pageSize: Int, offset: Long): ArrayList<TripModel> {
+		var ret: ArrayList<TripModel> = arrayListOf()
+
+		transaction(db) {
+			for (trip in TripsTable.selectAll().limit(pageSize, offset)) {
+				ret.add(TripModel(
+					trip[TripsTable.departure_time].toString(),
+					trip[TripsTable.return_time].toString(),
+					trip[TripsTable.departure_station_id],
+					trip[TripsTable.departure_station_name],
+					trip[TripsTable.return_station_id],
+					trip[TripsTable.return_station_name],
+					trip[TripsTable.distance],
+					trip[TripsTable.duration]
 				))
 			}
 		}
