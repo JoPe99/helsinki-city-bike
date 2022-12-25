@@ -8,5 +8,6 @@ import com.jp.backend.DatabaseConn
 class BackendApplication
 
 fun main(args: Array<String>) {
+	DatabaseConn
 	runApplication<BackendApplication>(*args)
 }

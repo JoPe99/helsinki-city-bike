@@ -6,7 +6,6 @@ import kotlinx.datetime.LocalDateTime
 import org.jetbrains.exposed.sql.kotlin.datetime.*
 
 data class StationModel(
-        val fid: Int,
         val id: Int,
         val nameFi: String,
         val nameSe: String,

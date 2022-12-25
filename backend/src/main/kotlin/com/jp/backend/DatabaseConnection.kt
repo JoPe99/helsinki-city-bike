@@ -11,8 +11,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.kotlin.*
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
-
 
 object DatabaseConn {
 	private val db: Database;
@@ -36,13 +34,13 @@ object DatabaseConn {
 
 		// Check if the tables are already created
 		// If not, create them and parse CSVs to database, else continue
-		// TODO: Make work correctly
-		if (tablesExist()) {
+		// TODO: Make work correctly, think about this
+		/* if (tablesExist()) {
 			transaction(db) {
 				SchemaUtils.drop(TripsTable)
 				SchemaUtils.drop(StationsTable)
 			}
-		}
+		}*/
 		transaction(db) {
 			SchemaUtils.create(TripsTable)
 			SchemaUtils.create(StationsTable)
@@ -56,8 +54,7 @@ object DatabaseConn {
 		transaction(db) {
 			for (station in StationsTable.selectAll()) {
 				ret.add(StationModel(
-					station[StationsTable.fid],
-					station[StationsTable.id],
+					station[StationsTable.station_id],
 					station[StationsTable.name_fi],
 					station[StationsTable.name_se],
 					station[StationsTable.name_en],
@@ -80,8 +77,7 @@ object DatabaseConn {
 		transaction(db) {
 			for (station in StationsTable.selectAll().limit(pageSize, offset)) {
 				ret.add(StationModel(
-					station[StationsTable.fid],
-					station[StationsTable.id],
+					station[StationsTable.station_id],
 					station[StationsTable.name_fi],
 					station[StationsTable.name_se],
 					station[StationsTable.name_en],
@@ -141,54 +137,56 @@ object DatabaseConn {
 		return ret
 	}
 	// Function for checking if tables already exist.
-	fun tablesExist(): Boolean {
+	private fun tablesExist(): Boolean {
 		var ret = true
 		transaction(db) {
-			if (TripsTable.selectAll().count() > 0) {ret = false}
+			try {TripsTable.selectAll()} catch (e: Exception) {ret = false}
+			try {StationsTable.selectAll()} catch (e: Exception) {ret = false}
 		}
 		return ret
 	}
 
 	// Functions for inserting data into database
-	fun insertIntoStations(station: StationModel) {
+	fun insertIntoStations(stations: ArrayList<StationModel>) {
 		transaction(db) {
-			StationsTable.insert {
-				it[fid] = station.fid
-				it[id] = station.id
-				it[name_fi] = station.nameFi
-				it[name_se] = station.nameSe
-				it[name_en] = station.nameEn
-				it[address_fi] = station.addressFi
-				it[address_se] = station.addressSe
-				it[city_fi] = station.cityFi
-				it[city_se] = station.citySe
-				it[operator] = station.operator
-				it[capacity] = station.capacity
-				it[longitude] = station.longitude
-				it[latitude] = station.latitude
+			for (station in stations) {
+				StationsTable.insert {
+					it[station_id] = station.id
+					it[name_fi] = station.nameFi
+					it[name_se] = station.nameSe
+					it[name_en] = station.nameEn
+					it[address_fi] = station.addressFi
+					it[address_se] = station.addressSe
+					it[city_fi] = station.cityFi
+					it[city_se] = station.citySe
+					it[operator] = station.operator
+					it[capacity] = station.capacity
+					it[longitude] = station.longitude
+					it[latitude] = station.latitude
+				}
 			}
 		}
 	}
 
-	fun insertIntoTrips(trip: TripModel) {
-		/**
-		 *  As documented in the DataModels.kt TripModel declaration,
-		 *  datetime-strings are converted to LocalDateTimes before
-		 *  insertion into database
-		 */
-		val depTime = trip.departureTime.toLocalDateTime()
-		val retTime = trip.returnTime.toLocalDateTime()
+
+	fun insertIntoTrips(trips: ArrayList<TripModel>) {
 
 		transaction(db) {
-			TripsTable.insert {
-				it[departure_time] = depTime
-				it[return_time] = retTime
-				it[departure_station_id] = trip.departureStationId
-				it[departure_station_name] = trip.departureStationName
-				it[return_station_id] = trip.returnStationId
-				it[return_station_name] = trip.returnStationName
-				it[distance] = trip.distanceCovered
-				it[duration] = trip.durationSeconds
+			for (trip in trips) {
+				// Times are saved as timestamps in the database,
+				// check DataModels.kt for more information
+				val depTime = trip.departureTime.toLocalDateTime()
+				val retTime = trip.returnTime.toLocalDateTime()
+				TripsTable.insert {
+					it[departure_time] = depTime
+					it[return_time] = retTime
+					it[departure_station_id] = trip.departureStationId
+					it[departure_station_name] = trip.departureStationName
+					it[return_station_id] = trip.returnStationId
+					it[return_station_name] = trip.returnStationName
+					it[distance] = trip.distanceCovered
+					it[duration] = trip.durationSeconds
+				}
 			}
 		}
 	}
@@ -207,8 +205,7 @@ object DatabaseConn {
 }
 
 object StationsTable : Table() {
-	val fid: Column<Int> = integer("fid")
-	val id: Column<Int> = integer("id")
+	val station_id: Column<Int> = integer("station_id")
 	val name_fi: Column<String> = varchar("name_fi", 50)
 	val name_se: Column<String> = varchar("name_se", 50)
 	val name_en: Column<String> = varchar("name_en", 50)
@@ -221,10 +218,11 @@ object StationsTable : Table() {
 	val longitude: Column<String> = varchar("longitude", 50) // PostGIS?
 	val latitude: Column<String> = varchar("latitude", 50) // PostGIS?
 
-	override val primaryKey = PrimaryKey(fid, name = "STATIONS_ID")
+	override val primaryKey = PrimaryKey(station_id, name = "station_id")
 }
 
 object TripsTable : Table() {
+	private var trip_id = integer("trip_id").autoIncrement()
 	val departure_time = datetime("departure_time")
 	val return_time = datetime("return_time")
 	val departure_station_id = integer("departure_station_id")
@@ -233,4 +231,6 @@ object TripsTable : Table() {
 	val return_station_name = varchar("return_station_name", 50)
 	val distance = integer("distance")
 	val duration = integer("duration")
+
+	override val primaryKey = PrimaryKey(trip_id, name="trip_id")
 }
