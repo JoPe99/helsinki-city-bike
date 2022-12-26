@@ -18,26 +18,26 @@ class RESTController() {
         return ResponseEntity("Hello World", HttpStatus.OK)
     }
 
-    @GetMapping("/stations")
+    @GetMapping("/stations/all")
     @ResponseBody
     fun getStations(): ResponseEntity<Any?> {
         return ResponseEntity(JsonCreator.stationsToJSON(DatabaseConn.getStationsData()), HttpStatus.OK)
     }
 
-    @GetMapping("/stations/pagination")
+    @GetMapping("/stations")
     @ResponseBody
     fun getPaginatedStations(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
         val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset)
         return ResponseEntity(JsonCreator.stationsToJSON(stationData), HttpStatus.OK)
     }
 
-    @GetMapping("/trips")
+    @GetMapping("/trips/all")
     @ResponseBody
     fun getTrips(): ResponseEntity<Any?> {
         return ResponseEntity(JsonCreator.tripsToJSON(DatabaseConn.getTripsData()), HttpStatus.OK)
     }
 
-    @GetMapping("/trips/pagination")
+    @GetMapping("/trips")
     @ResponseBody
     fun getPaginatedTrips(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
         val tripData = DatabaseConn.getPaginationTripsData(pageSize, offset)
