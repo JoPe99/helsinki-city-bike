@@ -56,9 +56,15 @@ class RESTController() {
         return ResponseEntity("Trips parsed", HttpStatus.OK)
     }
 
+    @PostMapping("/create")
+    fun createTables(): ResponseEntity<Any?> {
+        DatabaseConn.createTables()
+        return ResponseEntity("Tables created", HttpStatus.OK)
+    }
+
     @DeleteMapping("/delete")
-    fun deleteAll(): ResponseEntity<Any?> {
-        DatabaseConn.deleteData()
-        return ResponseEntity("Tables emptied", HttpStatus.OK)
+    fun deleteTables(): ResponseEntity<Any?> {
+        DatabaseConn.deleteTables()
+        return ResponseEntity("Tables destroyed", HttpStatus.OK)
     }
 }

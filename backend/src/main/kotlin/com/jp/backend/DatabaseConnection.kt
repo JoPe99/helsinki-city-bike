@@ -26,7 +26,7 @@ object DatabaseConn {
 				password = System.getenv("DB_PASSWORD"))
 		} else { // If no system environment vars, for example running without docker
 				db = Database.connect(
-				"jdbc:postgresql://localhost:5432/postgres",
+				"jdbc:postgresql://localhost:5432/postgres?reWriteBatchedInserts=true",
 				driver = "org.postgresql.Driver",
 				user = "postgres",
 				password = "password")
@@ -41,10 +41,12 @@ object DatabaseConn {
 				SchemaUtils.drop(StationsTable)
 			}
 		}*/
+		/*
 		transaction(db) {
 			SchemaUtils.create(TripsTable)
 			SchemaUtils.create(StationsTable)
 		}
+		*/
 	}
 
 	// Function for returning data from tables
@@ -106,9 +108,9 @@ object DatabaseConn {
 						trip[TripsTable.departure_time].toString(),
 						trip[TripsTable.return_time].toString(),
 						trip[TripsTable.departure_station_id],
-						trip[TripsTable.departure_station_name],
+						//trip[TripsTable.departure_station_name],
 						trip[TripsTable.return_station_id],
-						trip[TripsTable.return_station_name],
+						//trip[TripsTable.return_station_name],
 						trip[TripsTable.distance],
 						trip[TripsTable.duration]
 				))
@@ -126,9 +128,9 @@ object DatabaseConn {
 					trip[TripsTable.departure_time].toString(),
 					trip[TripsTable.return_time].toString(),
 					trip[TripsTable.departure_station_id],
-					trip[TripsTable.departure_station_name],
+					//trip[TripsTable.departure_station_name],
 					trip[TripsTable.return_station_id],
-					trip[TripsTable.return_station_name],
+					//trip[TripsTable.return_station_name],
 					trip[TripsTable.distance],
 					trip[TripsTable.duration]
 				))
@@ -172,32 +174,33 @@ object DatabaseConn {
 	fun insertIntoTrips(trips: ArrayList<TripModel>) {
 
 		transaction(db) {
-			for (trip in trips) {
 				// Times are saved as timestamps in the database,
 				// check DataModels.kt for more information
-				val depTime = trip.departureTime.toLocalDateTime()
-				val retTime = trip.returnTime.toLocalDateTime()
-				TripsTable.insert {
-					it[departure_time] = depTime
-					it[return_time] = retTime
-					it[departure_station_id] = trip.departureStationId
-					it[departure_station_name] = trip.departureStationName
-					it[return_station_id] = trip.returnStationId
-					it[return_station_name] = trip.returnStationName
-					it[distance] = trip.distanceCovered
-					it[duration] = trip.durationSeconds
+				TripsTable.batchInsert(trips) {
+					this[TripsTable.departure_time] = it.departureTime.toLocalDateTime()
+					this[TripsTable.return_time] = it.returnTime.toLocalDateTime()
+					this[TripsTable.departure_station_id] = it.departureStationId
+					this[TripsTable.return_station_id] = it.returnStationId
+					this[TripsTable.distance] = it.distanceCovered
+					this[TripsTable.distance] = it.durationSeconds
 				}
-			}
 		}
 	}
 
 	// Function for deleting all data
-	fun deleteData() {
+	fun deleteTables() {
 		transaction(db) {
-			TripsTable.deleteAll()
-			StationsTable.deleteAll()
+			SchemaUtils.drop(TripsTable)
+			SchemaUtils.drop(StationsTable)
 		}
 	}
+	fun createTables() {
+		transaction(db) {
+			SchemaUtils.create(TripsTable)
+			SchemaUtils.create(StationsTable)
+		}
+	}
+
 
 	// Function for modifying data
 
@@ -222,15 +225,12 @@ object StationsTable : Table() {
 }
 
 object TripsTable : Table() {
-	private var trip_id = integer("trip_id").autoIncrement()
 	val departure_time = datetime("departure_time")
 	val return_time = datetime("return_time")
-	val departure_station_id = integer("departure_station_id")
-	val departure_station_name = varchar("departure_station_name", 50)
-	val return_station_id = integer("return_station_id")
-	val return_station_name = varchar("return_station_name", 50)
-	val distance = integer("distance")
-	val duration = integer("duration")
-
-	override val primaryKey = PrimaryKey(trip_id, name="trip_id")
+	val departure_station_id = (integer("departure_station_id") references StationsTable.station_id)
+	//val departure_station_name = varchar("departure_station_name", 50)
+	val return_station_id = (integer("return_station_id") references StationsTable.station_id)
+	//val return_station_name = varchar("return_station_name", 50)
+	val distance = integer("distance").default(0)
+	val duration = integer("duration").default(0)
 }
