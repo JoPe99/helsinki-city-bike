@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container class="pa-0" fluid>
     <map-component style="height: 500px" />
     <journey-data-table></journey-data-table>
   </v-container>

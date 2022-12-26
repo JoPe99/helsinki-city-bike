@@ -5,6 +5,7 @@
       :items="items"
       class="elevation-1"
       :footer-props="footerProps"
+      :loading="table_loading"
     ></v-data-table>
     <v-btn @click="runTest()">test</v-btn>
   </div>
@@ -52,7 +53,7 @@ export default Vue.extend({
       },
     ],
     items: [] as JourneyType[],
-    footerProps: { "items-per-page-options": [15, 30, 50, 100, -1] },
+    footerProps: { "items-per-page-options": [15, 30, 50, 100] },
     table_loading: false,
   }),
 
@@ -61,11 +62,12 @@ export default Vue.extend({
   computed: {},
 
   methods: {
-    async runTest() {
+    runTest() {
       this.table_loading = true;
-      let response = await getTrips(30, 0, "departureTime");
-      this.items = response.data;
-      this.table_loading = false;
+      getTrips(100, 160000, "departureTime").then((response) => {
+        this.items = response.data;
+        this.table_loading = false;
+      });
     },
   },
 });
