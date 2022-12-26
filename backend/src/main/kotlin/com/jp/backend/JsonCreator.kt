@@ -1,13 +1,12 @@
 package com.jp.backend
 
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 
 object JsonCreator {
     private val gson = Gson()
 
     //TODO: Tests
-    fun tripsToJSON(trips: ArrayList<TripModel>): String {
+    fun tripsToJSON(trips: ArrayList<TripModelWithStationData>): String {
         return gson.toJson(trips)
     }
 

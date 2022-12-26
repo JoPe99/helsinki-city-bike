@@ -5,10 +5,8 @@
 
 package com.jp.backend
 
-import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.kotlin.*
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
 
@@ -97,40 +95,34 @@ object DatabaseConn {
 		return ret
 	}
 
-	// Function gets all trips from database.
-	// TODO: Add pagination and searching
-	fun getTripsData(): ArrayList<TripModel> {
-		var ret: ArrayList<TripModel> = arrayListOf()
-		transaction(db) {
-			for (trip in TripsTable.selectAll()) {
-
-				ret.add(TripModel(
-						trip[TripsTable.departure_time].toString(),
-						trip[TripsTable.return_time].toString(),
-						trip[TripsTable.departure_station_id],
-						//trip[TripsTable.departure_station_name],
-						trip[TripsTable.return_station_id],
-						//trip[TripsTable.return_station_name],
-						trip[TripsTable.distance],
-						trip[TripsTable.duration]
-				))
-			}
-		}
-		return ret
-	}
-
-	fun getPaginationTripsData(pageSize: Int, offset: Long): ArrayList<TripModel> {
-		var ret: ArrayList<TripModel> = arrayListOf()
+	fun getPaginationTripsData(pageSize: Int, offset: Long): ArrayList<TripModelWithStationData> {
+		var ret: ArrayList<TripModelWithStationData> = arrayListOf()
+		val departureStationsTable = StationsTable.alias("st1")
+		val returnStationsTable = StationsTable.alias("st2")
 
 		transaction(db) {
-			for (trip in TripsTable.selectAll().limit(pageSize, offset)) {
-				ret.add(TripModel(
+			var trips = TripsTable
+				.innerJoin(departureStationsTable, { TripsTable.departure_station_id}, {departureStationsTable[StationsTable.station_id]})
+				.innerJoin(returnStationsTable, { TripsTable.return_station_id }, {returnStationsTable[StationsTable.station_id]})
+				.selectAll().limit(pageSize, offset)
+			for (trip in trips) {
+				trip[TripsTable.departure_time]
+				trip[departureStationsTable[StationsTable.latitude]]
+				ret.add(TripModelWithStationData(
+
 					trip[TripsTable.departure_time].toString(),
 					trip[TripsTable.return_time].toString(),
+
 					trip[TripsTable.departure_station_id],
-					//trip[TripsTable.departure_station_name],
+					trip[departureStationsTable[StationsTable.name_fi]],
+					trip[departureStationsTable[StationsTable.longitude]],
+					trip[departureStationsTable[StationsTable.latitude]],
+
 					trip[TripsTable.return_station_id],
-					//trip[TripsTable.return_station_name],
+					trip[returnStationsTable[StationsTable.name_fi]],
+					trip[returnStationsTable[StationsTable.longitude]],
+					trip[returnStationsTable[StationsTable.latitude]],
+
 					trip[TripsTable.distance],
 					trip[TripsTable.duration]
 				))
@@ -138,6 +130,7 @@ object DatabaseConn {
 		}
 		return ret
 	}
+
 	// Function for checking if tables already exist.
 	private fun tablesExist(): Boolean {
 		var ret = true
@@ -151,22 +144,21 @@ object DatabaseConn {
 	// Functions for inserting data into database
 	fun insertIntoStations(stations: ArrayList<StationModel>) {
 		transaction(db) {
-			for (station in stations) {
-				StationsTable.insert {
-					it[station_id] = station.id
-					it[name_fi] = station.nameFi
-					it[name_se] = station.nameSe
-					it[name_en] = station.nameEn
-					it[address_fi] = station.addressFi
-					it[address_se] = station.addressSe
-					it[city_fi] = station.cityFi
-					it[city_se] = station.citySe
-					it[operator] = station.operator
-					it[capacity] = station.capacity
-					it[longitude] = station.longitude
-					it[latitude] = station.latitude
-				}
+			StationsTable.batchInsert(stations) { it ->
+				this[StationsTable.station_id] = it.id
+				this[StationsTable.name_fi] = it.nameFi
+				this[StationsTable.name_se] = it.nameSe
+				this[StationsTable.name_en] = it.nameEn
+				this[StationsTable.address_fi] = it.addressFi
+				this[StationsTable.address_se] = it.addressSe
+				this[StationsTable.city_fi] = it.cityFi
+				this[StationsTable.city_se] = it.citySe
+				this[StationsTable.operator] = it.operator
+				this[StationsTable.capacity] = it.capacity
+				this[StationsTable.longitude] = it.longitude
+				this[StationsTable.latitude] = it.latitude
 			}
+			
 		}
 	}
 
@@ -182,7 +174,7 @@ object DatabaseConn {
 					this[TripsTable.departure_station_id] = it.departureStationId
 					this[TripsTable.return_station_id] = it.returnStationId
 					this[TripsTable.distance] = it.distanceCovered
-					this[TripsTable.distance] = it.durationSeconds
+					this[TripsTable.duration] = it.durationSeconds
 				}
 		}
 	}

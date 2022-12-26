@@ -8,7 +8,6 @@ package com.jp.backend
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.DatabaseConn.insertIntoTrips
-import kotlinx.datetime.toLocalDateTime
 
 
 object CSVParser {
@@ -39,6 +38,7 @@ object CSVParser {
         }
 
         insertIntoTrips(tripArray)
+        println(tripArray[1])
     }
 
     private fun validateStationData(row: Map<String, String>): Boolean {

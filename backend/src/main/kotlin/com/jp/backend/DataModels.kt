@@ -1,9 +1,5 @@
 package com.jp.backend
 
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import org.jetbrains.exposed.sql.kotlin.datetime.*
 
 data class StationModel(
         val id: Int,
@@ -21,18 +17,43 @@ data class StationModel(
 )
 
 /**
+ *   TripModel is used when parsing from the CSV files and inserting to the database.
+ *
  *   Timestamps are stored as strings, and converted to LocalDateTimes
  *   just before insertion into the database. Gson not easily being able
- *   to parse LocalDateTimes led into this workaround.
+ *   to parse LocalDateTimes in this format led into this workaround.
  */
 data class TripModel(
         val departureTime: String,
         val returnTime: String,
         val departureStationId: Int,
-        //val departureStationName: String,
         val returnStationId: Int,
-        //val returnStationName: String,
         val distanceCovered: Int,
         val durationSeconds: Int
+)
+
+/**
+ * Trip model comes from the database with data from the stations table,
+ * including station names and coordinates.
+ *
+ * This model is used when returning data from database to the frontend.
+ */
+data class TripModelWithStationData(
+        val departureTime: String,
+        val returnTime: String,
+
+        val departureStationId: Int,
+        val departureStationName: String,
+        val departureStationX: String,
+        val departureStationY: String,
+
+        val returnStationId: Int,
+        val returnStationName: String,
+        val returnStationX: String,
+        val returnStationY: String,
+
+        val distanceCovered: Int,
+        val durationSeconds: Int
+
 
 )

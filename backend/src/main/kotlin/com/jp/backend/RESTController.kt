@@ -31,11 +31,6 @@ class RESTController() {
         return ResponseEntity(JsonCreator.stationsToJSON(stationData), HttpStatus.OK)
     }
 
-    @GetMapping("/trips/all")
-    @ResponseBody
-    fun getTrips(): ResponseEntity<Any?> {
-        return ResponseEntity(JsonCreator.tripsToJSON(DatabaseConn.getTripsData()), HttpStatus.OK)
-    }
 
     @GetMapping("/trips")
     @ResponseBody
