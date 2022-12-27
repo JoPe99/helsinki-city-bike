@@ -11,7 +11,7 @@ object JsonCreator {
     }
 
     // TODO: Tests
-    fun stationsToJSON(stations: ArrayList<StationModel>): String {
+    fun stationsToJSON(stations: ArrayList<StationModelWithDetails>): String {
         return gson.toJson(stations)
     }
 }

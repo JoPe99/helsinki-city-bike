@@ -30,6 +30,15 @@ object DatabaseConn {
 				password = "password")
 		}
 
+		println(getTopDepartureStationsForStation(21))
+		println(getTopReturnStationsForStation(21))
+
+		println(getAverageDepartDistanceForStation(21))
+		println(getAverageReturnDistanceForStation(21))
+
+		println(getTotalJourneysFromStation(21))
+		println(getTotalJourneysToStation(21))
+
 		// Check if the tables are already created
 		// If not, create them and parse CSVs to database, else continue
 		// TODO: Make work correctly, think about this
@@ -49,46 +58,76 @@ object DatabaseConn {
 
 	// Function for returning data from tables
 	// TODO: Add pagination and searching
-	fun getStationsData(): ArrayList<StationModel> {
-		var ret: ArrayList<StationModel> = arrayListOf()
+	fun getStationsData(): ArrayList<StationModelWithDetails> {
+		var ret: ArrayList<StationModelWithDetails> = arrayListOf()
 		transaction(db) {
 			for (station in StationsTable.selectAll()) {
-				ret.add(StationModel(
-					station[StationsTable.station_id],
+				val stationId = station[StationsTable.station_id].toInt()
+				ret.add(StationModelWithDetails(
+					stationId,
+
 					station[StationsTable.name_fi],
 					station[StationsTable.name_se],
 					station[StationsTable.name_en],
+
 					station[StationsTable.address_fi],
 					station[StationsTable.address_se],
+
 					station[StationsTable.city_fi],
 					station[StationsTable.city_se],
+
 					station[StationsTable.operator],
 					station[StationsTable.capacity],
+
 					station[StationsTable.longitude],
-					station[StationsTable.latitude]
+					station[StationsTable.latitude],
+
+					getTotalJourneysFromStation(stationId),
+					getTotalJourneysToStation(stationId),
+
+					getAverageDepartDistanceForStation(stationId),
+					getAverageReturnDistanceForStation(stationId),
+
+					getTopDepartureStationsForStation(stationId),
+					getTopReturnStationsForStation(stationId)
 				))
 			}
 		}
 		return ret
 	}
 
-	fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = ""): ArrayList<StationModel> {
-		var ret: ArrayList<StationModel> = arrayListOf()
+	fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = ""): ArrayList<StationModelWithDetails> {
+		var ret: ArrayList<StationModelWithDetails> = arrayListOf()
 		transaction(db) {
 			for (station in StationsTable.selectAll().limit(pageSize, offset)) {
-				ret.add(StationModel(
-					station[StationsTable.station_id],
+				val stationId = station[StationsTable.station_id].toInt()
+				ret.add(StationModelWithDetails(
+					stationId,
+
 					station[StationsTable.name_fi],
 					station[StationsTable.name_se],
 					station[StationsTable.name_en],
+
 					station[StationsTable.address_fi],
 					station[StationsTable.address_se],
+
 					station[StationsTable.city_fi],
 					station[StationsTable.city_se],
+
 					station[StationsTable.operator],
 					station[StationsTable.capacity],
+
 					station[StationsTable.longitude],
-					station[StationsTable.latitude]
+					station[StationsTable.latitude],
+
+					getTotalJourneysFromStation(stationId),
+					getTotalJourneysToStation(stationId),
+
+					getAverageDepartDistanceForStation(stationId),
+					getAverageReturnDistanceForStation(stationId),
+
+					getTopDepartureStationsForStation(stationId),
+					getTopReturnStationsForStation(stationId)
 				))
 			}
 		}
@@ -106,8 +145,6 @@ object DatabaseConn {
 				.innerJoin(returnStationsTable, { TripsTable.return_station_id }, {returnStationsTable[StationsTable.station_id]})
 				.selectAll().limit(pageSize, offset)
 			for (trip in trips) {
-				trip[TripsTable.departure_time]
-				trip[departureStationsTable[StationsTable.latitude]]
 				ret.add(TripModelWithStationData(
 
 					trip[TripsTable.departure_time].toString(),
@@ -141,6 +178,8 @@ object DatabaseConn {
 		return ret
 	}
 
+
+
 	// Functions for inserting data into database
 	fun insertIntoStations(stations: ArrayList<StationModel>) {
 		transaction(db) {
@@ -164,7 +203,6 @@ object DatabaseConn {
 
 
 	fun insertIntoTrips(trips: ArrayList<TripModel>) {
-
 		transaction(db) {
 				// Times are saved as timestamps in the database,
 				// check DataModels.kt for more information
@@ -193,12 +231,87 @@ object DatabaseConn {
 		}
 	}
 
+	fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, Int>> {
+		var ret: ArrayList<Map<String, Int>> = arrayListOf()
+		val departureStationsTable = StationsTable.alias("departure")
+		transaction(db) {
+			departureStationsTable
+				.join(TripsTable, JoinType.INNER, additionalConstraint = {(departureStationsTable[StationsTable.station_id] eq TripsTable.departure_station_id) and (TripsTable.departure_station_id eq id)})
+				.join(StationsTable, JoinType.INNER, additionalConstraint = {StationsTable.station_id eq TripsTable.return_station_id})
+				.slice(departureStationsTable[StationsTable.station_id], StationsTable.name_fi, StationsTable.station_id.count())
+				.selectAll().groupBy(departureStationsTable[StationsTable.station_id], StationsTable.station_id)
+				.orderBy(StationsTable.station_id.count(), SortOrder.DESC).limit(5)
+				.forEach {
+					ret.add(mapOf(Pair(it[StationsTable.name_fi], it[StationsTable.station_id.count()].toInt())))
+				}
 
-	// Function for modifying data
+		}
+		return ret
+	}
 
+	fun getTopReturnStationsForStation(id: Int): ArrayList<Map<String, Int>> {
+		var ret: ArrayList<Map<String, Int>> = arrayListOf()
+		val returnStationsTable = StationsTable.alias("return")
+		transaction(db) {
+			returnStationsTable
+				.join(TripsTable, JoinType.INNER, additionalConstraint = {(returnStationsTable[StationsTable.station_id] eq TripsTable.return_station_id) and (TripsTable.return_station_id eq id)})
+				.join(StationsTable, JoinType.INNER, additionalConstraint = {StationsTable.station_id eq TripsTable.departure_station_id})
+				.slice(returnStationsTable[StationsTable.station_id], StationsTable.name_fi, StationsTable.station_id.count())
+				.selectAll().groupBy(returnStationsTable[StationsTable.station_id], StationsTable.station_id)
+				.orderBy(StationsTable.station_id.count(), SortOrder.DESC).limit(5)
+				.forEach {
+					ret.add(mapOf(Pair(it[StationsTable.name_fi], it[StationsTable.station_id.count()].toInt())))
+				}
+
+		}
+		return ret
+	}
+
+	fun getTotalJourneysFromStation(id: Int): Int {
+		var ret = 0
+		transaction(db) {
+			ret = TripsTable.select {TripsTable.departure_station_id eq id}.count().toInt()
+		}
+		return ret
+	}
+
+	fun getTotalJourneysToStation(id: Int): Int {
+		var ret = 0
+		transaction(db) {
+			ret = TripsTable.select {TripsTable.return_station_id eq id}.count().toInt()
+		}
+		return ret
+	}
+
+	fun getAverageDepartDistanceForStation(id: Int): Float {
+		var ret: Float = 0.0F
+		transaction(db) {
+			TripsTable
+				.slice(TripsTable.distance.avg(1))
+				.select {TripsTable.departure_station_id eq id}
+				.map {
+					ret = it[TripsTable.distance.avg(1)]?.toFloat() ?: 0.0F
+				}
+		}
+		return ret
+	}
+
+	fun getAverageReturnDistanceForStation(id: Int): Float {
+		var ret: Float = 0.0F
+		transaction(db) {
+			TripsTable
+				.slice(TripsTable.distance.avg(1))
+				.select {TripsTable.return_station_id eq id}
+				.map {
+					ret = it[TripsTable.distance.avg(1)]?.toFloat() ?: 0.0F
+				}
+		}
+		return ret
+	}
 
 }
 
+//TODO: Refactor table names StationsTable -> Stations
 object StationsTable : Table() {
 	val station_id: Column<Int> = integer("station_id")
 	val name_fi: Column<String> = varchar("name_fi", 50)
@@ -220,9 +333,7 @@ object TripsTable : Table() {
 	val departure_time = datetime("departure_time")
 	val return_time = datetime("return_time")
 	val departure_station_id = (integer("departure_station_id") references StationsTable.station_id)
-	//val departure_station_name = varchar("departure_station_name", 50)
 	val return_station_id = (integer("return_station_id") references StationsTable.station_id)
-	//val return_station_name = varchar("return_station_name", 50)
 	val distance = integer("distance").default(0)
 	val duration = integer("duration").default(0)
 }
