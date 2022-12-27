@@ -28,29 +28,46 @@ object CSVParser {
         insertIntoStations(stationArray)
     }
 
+    // TODO: Parse all files concurrently
     fun parseTripData() {
         var tripArray: ArrayList<TripModel> = arrayListOf()
+        var firstRow: Map<String, String> = mapOf()
+        var rowCounter: Long = 0
 
         csvReader().open("src/main/resources/data/05_2021.csv") {
-            readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
-                if (validateTripData(row)) { tripArray.add(tripRowToModel(row))}
+            run parsing@ {
+                readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
+                  /* Seems like the files from May, June & July have duplicate data.
+                   * The data begins repeating from start halfway of the file.
+                   * To not parse the duplicates, we stop the parsing when the loop
+                   * hits the first duplicate row. To make sure we don't stop parsing
+                   * in the extremely unlikely event that the first rows happen to be
+                   * exactly the same, checks are started doing after 5 rows.
+                   */
+                    rowCounter++
+                    if (firstRow.isEmpty()) {firstRow = row}
+                    else if (row == firstRow && rowCounter > 5) return@parsing
+
+                    // If journey data is valid, format to TripModel and add to array to be returned
+                    if (validateTripData(row)) { tripArray.add(tripRowToModel(row))}
+                }
             }
         }
 
         insertIntoTrips(tripArray)
-        println(tripArray[1])
     }
 
+    // TODO: Tests
     private fun validateStationData(row: Map<String, String>): Boolean {
         // Add station id to allowed ids
         allowedStationIDs.add(row.getValue("ID").toInt())
         return true
     }
 
-    fun validateTripData(row: Map<String, String>): Boolean {
+    // TODO: Tests
+    private fun validateTripData(row: Map<String, String>): Boolean {
         // Simplify testing by grouping values by test types
         val timestampTests: Array<String> = arrayOf("Departure", "Return")
-        val stringTests: Array<String> = arrayOf("Departure station name", "Return station name") // TODO: Poista?
         val intTests = arrayOf("Departure station id", "Return station id", "Covered distance (m)", "Duration (sec.)")
 
         // Timestamp should be "YYYY-MM-DD'T'HH:MM:SS" e.g. "2021-05-31T23:50:19"
@@ -60,12 +77,6 @@ object CSVParser {
             val regex = Regex(pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?")
             if (!regex.matches(timestamp)) { return false }
         }
-
-        // Database can store strings up the length of 50, don't allow higher
-        // TODO: Poista?
-        /*for (key in stringTests) {
-            if (row.getValue(key).length > 50) { return false }
-        } */
 
         for (key in intTests) {
             var value = row.getValue(key)
@@ -117,9 +128,7 @@ object CSVParser {
                 row.getValue("Departure"),
                 row.getValue("Return"),
                 row.getValue("Departure station id").toInt(),
-                //row.getValue("Departure station name"),
                 row.getValue("Return station id").toInt(),
-                //row.getValue("Return station name"),
                 row.getValue("Covered distance (m)").toInt(),
                 row.getValue("Duration (sec.)").toInt()
         )
