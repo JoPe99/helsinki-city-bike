@@ -11,33 +11,24 @@ import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
 
 object DatabaseConn {
-	private val db: Database;
-
-	// Initialize database connection. 
-	init {
-		// If Docker
-		if (System.getenv("DB_URL") == "null") {
-			db = Database.connect(
+	private val db: Database = if (System.getenv("DB_URL") == "null") {
+			Database.connect(
 				System.getenv("DB_URL"),
 				driver = "org.postgresql.Driver",
 				user = System.getenv("DB_USERNAME"),
 				password = System.getenv("DB_PASSWORD"))
 		} else { // If no system environment vars, for example running without docker
-				db = Database.connect(
+			Database.connect(
 				"jdbc:postgresql://localhost:5432/postgres?reWriteBatchedInserts=true",
 				driver = "org.postgresql.Driver",
 				user = "postgres",
 				password = "password")
-		}
+		};
 
-		println(getTopDepartureStationsForStation(21))
-		println(getTopReturnStationsForStation(21))
-
-		println(getAverageDepartDistanceForStation(21))
-		println(getAverageReturnDistanceForStation(21))
-
-		println(getTotalJourneysFromStation(21))
-		println(getTotalJourneysToStation(21))
+	// Initialize database connection. 
+	init {
+		// TODO: Clean up this, and why is DB_URL == NULL?
+		// If Docker
 
 		// Check if the tables are already created
 		// If not, create them and parse CSVs to database, else continue
@@ -58,12 +49,12 @@ object DatabaseConn {
 
 	// Function for returning data from tables
 	// TODO: Add pagination and searching
-	fun getStationsData(): ArrayList<StationModelWithDetails> {
-		var ret: ArrayList<StationModelWithDetails> = arrayListOf()
+	fun getStationsData(): ArrayList<StationModel> {
+		var ret: ArrayList<StationModel> = arrayListOf()
 		transaction(db) {
 			for (station in StationsTable.selectAll()) {
 				val stationId = station[StationsTable.station_id].toInt()
-				ret.add(StationModelWithDetails(
+				ret.add(StationModel(
 					stationId,
 
 					station[StationsTable.name_fi],
@@ -80,28 +71,20 @@ object DatabaseConn {
 					station[StationsTable.capacity],
 
 					station[StationsTable.longitude],
-					station[StationsTable.latitude],
-
-					getTotalJourneysFromStation(stationId),
-					getTotalJourneysToStation(stationId),
-
-					getAverageDepartDistanceForStation(stationId),
-					getAverageReturnDistanceForStation(stationId),
-
-					getTopDepartureStationsForStation(stationId),
-					getTopReturnStationsForStation(stationId)
+					station[StationsTable.latitude]
 				))
 			}
 		}
 		return ret
 	}
 
-	fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = ""): ArrayList<StationModelWithDetails> {
-		var ret: ArrayList<StationModelWithDetails> = arrayListOf()
+	fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = ""): ArrayList<StationModel> {
+		var ret: ArrayList<StationModel> = arrayListOf()
 		transaction(db) {
+			// TODO: Refactor to forEach loop?
 			for (station in StationsTable.selectAll().limit(pageSize, offset)) {
 				val stationId = station[StationsTable.station_id].toInt()
-				ret.add(StationModelWithDetails(
+				ret.add(StationModel(
 					stationId,
 
 					station[StationsTable.name_fi],
@@ -119,16 +102,53 @@ object DatabaseConn {
 
 					station[StationsTable.longitude],
 					station[StationsTable.latitude],
-
-					getTotalJourneysFromStation(stationId),
-					getTotalJourneysToStation(stationId),
-
-					getAverageDepartDistanceForStation(stationId),
-					getAverageReturnDistanceForStation(stationId),
-
-					getTopDepartureStationsForStation(stationId),
-					getTopReturnStationsForStation(stationId)
 				))
+			}
+		}
+		return ret
+	}
+
+	/**
+	 * Queries single station data by id given as a parameter.
+	 * Returns null if station is not found in the database.
+	 * Null should never be returned, as frontend application
+	 * shouldn't be able to ask for station details for non-existent
+	 * station.
+	 * @param id Station id
+	 * @return StationModelWithDetails || null
+	 */
+	fun getSingleStationData(id: Int): StationModelWithDetails? {
+		var ret: StationModelWithDetails? = null
+		transaction(db) {
+			StationsTable.select { StationsTable.station_id eq id }.forEach {
+				ret = StationModelWithDetails(
+					it[StationsTable.station_id],
+
+					it[StationsTable.name_fi],
+					it[StationsTable.name_se],
+					it[StationsTable.name_en],
+
+					it[StationsTable.address_fi],
+					it[StationsTable.address_se],
+
+					it[StationsTable.city_fi],
+					it[StationsTable.city_se],
+
+					it[StationsTable.operator],
+					it[StationsTable.capacity],
+
+					it[StationsTable.longitude],
+					it[StationsTable.latitude],
+
+					getTotalJourneysFromStation(id),
+					getTotalJourneysToStation(id),
+
+					getAverageDepartDistanceForStation(id),
+					getAverageReturnDistanceForStation(id),
+
+					getTopDepartureStationsForStation(id),
+					getTopReturnStationsForStation(id)
+				)
 			}
 		}
 		return ret
@@ -139,6 +159,7 @@ object DatabaseConn {
 		val departureStationsTable = StationsTable.alias("st1")
 		val returnStationsTable = StationsTable.alias("st2")
 
+		// TODO: Refactor to forEach?
 		transaction(db) {
 			var trips = TripsTable
 				.innerJoin(departureStationsTable, { TripsTable.departure_station_id}, {departureStationsTable[StationsTable.station_id]})
@@ -201,8 +222,9 @@ object DatabaseConn {
 		}
 	}
 
-
+	// TODO: For some reason inserts trip two times
 	fun insertIntoTrips(trips: ArrayList<TripModel>) {
+		println("Inserting trips")
 		transaction(db) {
 				// Times are saved as timestamps in the database,
 				// check DataModels.kt for more information

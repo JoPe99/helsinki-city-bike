@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
 import com.jp.backend.CSVParser
+import org.jetbrains.exposed.sql.idParam
 
 // TODO: Add correct responses to queries, e.g errors etc
 @CrossOrigin(maxAge = 3600)
@@ -29,6 +30,17 @@ class RESTController() {
     fun getPaginatedStations(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
         val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset)
         return ResponseEntity(JsonCreator.stationsToJSON(stationData), HttpStatus.OK)
+    }
+
+    @GetMapping("/stations/{id}")
+    @ResponseBody
+    fun getPaginatedStations(@PathVariable id: Int): ResponseEntity<Any?> {
+        val stationData = DatabaseConn.getSingleStationData(id)
+        return if (stationData == null) {
+            ResponseEntity(HttpStatus.NOT_FOUND)
+        } else {
+            ResponseEntity(JsonCreator.stationDetailsToJSON(stationData), HttpStatus.OK)
+        }
     }
 
 
