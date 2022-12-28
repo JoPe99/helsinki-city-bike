@@ -5,7 +5,7 @@
 // Axios used for API interactions
 import axios from "axios";
 
-import { JourneyType } from "./backend-data-types";
+import { JourneyType, SingleStationType } from "./backend-data-types";
 
 // If you want to use a self-hosted backend for testing,
 // you can change this to "localhost:8081"
@@ -23,9 +23,15 @@ const SERVER_IP = "http://localhost:8081";
  * @param offset
  * @param sortBy
  */
-export function getTrips(pageSize: number, offset: number, sortBy: string) {
-  // localhost:8081/trips?pageSize=200&offset=0&sortBy="departureTime"
+export function getJourneys(pageSize: number, offset: number, sortBy: string) {
   const url = `${SERVER_IP}/trips?pageSize=${pageSize}&offset=${offset}&sortBy=${sortBy}`;
-
   return axios.get<JourneyType[]>(url);
+}
+
+/**
+ * Get all stations from the backend.
+ */
+export function getAllStations() {
+  const url = `${SERVER_IP}/stations/all`;
+  return axios.get<SingleStationType[]>(url);
 }

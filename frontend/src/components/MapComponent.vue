@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="elevation-1">
     <l-map style="height: 100%" :zoom="zoom" :center="center">
       <l-tile-layer :url="url"></l-tile-layer>
       <l-marker :lat-lng="markerLatLng"></l-marker>
@@ -14,7 +14,7 @@ import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 
-// This block of code is from leaflet docs to fix a problem with Leaflet markers.
+// This block of code is from leaflet docs to fix a problem with missing Leaflet markers.
 // https://vue2-leaflet.netlify.app/quickstart/#marker-icons-are-missing
 type D = Icon.Default & {
   _getIconUrl?: string;

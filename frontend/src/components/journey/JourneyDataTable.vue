@@ -7,13 +7,13 @@
       :footer-props="footerProps"
       :loading="table_loading"
     ></v-data-table>
-    <v-btn @click="runTest()">test</v-btn>
+    <v-btn @click="getCurrentJourneys()">test</v-btn>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { getTrips } from "../../helpers/api-functions";
+import { getAllStations, getJourneys } from "../../helpers/api-functions";
 import { JourneyType } from "../../helpers/backend-data-types";
 
 export default Vue.extend({
@@ -62,9 +62,10 @@ export default Vue.extend({
   computed: {},
 
   methods: {
-    runTest() {
+    getCurrentJourneys() {
       this.table_loading = true;
-      getTrips(100, 160000, "departureTime").then((response) => {
+      getJourneys(100, 0, "departureTime").then((response) => {
+        console.log(response);
         this.items = response.data;
         this.table_loading = false;
       });

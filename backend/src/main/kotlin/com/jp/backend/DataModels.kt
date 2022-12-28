@@ -47,11 +47,11 @@ data class StationModelWithDetails(
         val totalDepartJourneys: Int,
         val totalReturnJourneys: Int,
 
-        val averageDistanceDepart: Float,
-        val averageDistanceReturn: Float,
+        val averageDepartDistance: Float,
+        val averageReturnDistance: Float,
 
-        val topStationsDepart: ArrayList<Map<String, Int>>,
-        val topStationsReturn: ArrayList<Map<String, Int>>
+        val topDepartStations: ArrayList<Map<String, Int>>,
+        val topReturnStations: ArrayList<Map<String, Int>>
 )
 
 
