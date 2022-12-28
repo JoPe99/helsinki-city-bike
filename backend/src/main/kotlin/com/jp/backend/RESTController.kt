@@ -9,15 +9,10 @@ import com.jp.backend.*
 import com.jp.backend.CSVParser
 import org.jetbrains.exposed.sql.idParam
 
-// TODO: Add correct responses to queries, e.g errors etc
+// TODO: Add correct responses to queries, errors etc
 @CrossOrigin(maxAge = 3600)
 @RestController
 class RESTController() {
-    @GetMapping("/", produces = [MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun helloWorld(): ResponseEntity<Any?> {
-        return ResponseEntity("Hello World", HttpStatus.OK)
-    }
 
     @GetMapping("/stations/all")
     @ResponseBody
@@ -27,8 +22,11 @@ class RESTController() {
 
     @GetMapping("/stations")
     @ResponseBody
-    fun getPaginatedStations(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
-        val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset)
+    fun getPaginatedStations(@RequestParam pageSize: Int,
+                             @RequestParam offset: Long,
+                             @RequestParam sortBy: String?,
+                             @RequestParam search: String?): ResponseEntity<Any?> {
+        val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset, sortBy, search)
         return ResponseEntity(JsonCreator.stationsToJSON(stationData), HttpStatus.OK)
     }
 
@@ -50,6 +48,8 @@ class RESTController() {
         val tripData = DatabaseConn.getPaginationTripsData(pageSize, offset)
         return ResponseEntity(JsonCreator.tripsToJSON(tripData), HttpStatus.OK)
     }
+
+    // TODO: Add inserts for stations and trips
 
     @PostMapping("/parse/stations")
     fun parseStations(): ResponseEntity<String> {

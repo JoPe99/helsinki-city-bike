@@ -26,6 +26,7 @@ object CSVParser {
         }
 
         insertIntoStations(stationArray)
+        println("Stations parsed into database")
     }
 
     // TODO: Parse all files concurrently
@@ -34,7 +35,10 @@ object CSVParser {
         var firstRow: Map<String, String> = mapOf()
         var rowCounter: Long = 0
 
-        csvReader().open("src/main/resources/data/05_2021.csv") {
+        // TODO: Get file location from params
+        var filename = "src/main/resources/data/05_2021.csv"
+
+        csvReader().open(filename) {
             run parsing@ {
                 readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
                   /* Seems like the files from May, June & July have duplicate data.
@@ -55,6 +59,7 @@ object CSVParser {
         }
 
         insertIntoTrips(tripArray)
+        println("CSV from $filename parsed into database")
     }
 
     // TODO: Tests
