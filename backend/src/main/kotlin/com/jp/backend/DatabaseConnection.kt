@@ -14,10 +14,10 @@ object DatabaseConn {
 	// Initialize database connection.
 	private val db: Database =
 		// If Docker
-		// TODO: Clean up this, and why is DB_URL == NULL?
-		if (System.getenv("DB_URL") == "null") {
+		// TODO: Clean up this
+		if (System.getenv("DB_URL") != "null") {
 			Database.connect(
-				System.getenv("DB_URL"),
+				System.getenv("DB_URL") + "?reWriteBatchedInserts=true",
 				driver = "org.postgresql.Driver",
 				user = System.getenv("DB_USERNAME"),
 				password = System.getenv("DB_PASSWORD"))

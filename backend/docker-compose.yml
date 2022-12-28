@@ -4,11 +4,15 @@ services:
     image: 'app.jar'
     ports:
       - "8081:8081"
+    volumes:
+      - type: bind
+        source: ./src/main/resources/
+        target: /src/main/resources/
     depends_on:
       PostgreSQL:
         condition: service_healthy
     environment:
-      - DB_URL=jdbc:postgresql://PostgreSQL:5432/postgres?reWriteBatchedInserts=true
+      - DB_URL=jdbc:postgresql://PostgreSQL:5432/postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
 
