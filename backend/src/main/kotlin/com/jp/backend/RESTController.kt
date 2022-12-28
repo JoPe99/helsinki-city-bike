@@ -1,13 +1,9 @@
 package com.jp.backend
 
-import org.springframework.hateoas.MediaTypes
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
-import com.jp.backend.CSVParser
-import org.jetbrains.exposed.sql.idParam
 
 // TODO: Add correct responses to queries, errors etc
 @CrossOrigin(maxAge = 3600)
@@ -47,6 +43,13 @@ class RESTController() {
     fun getPaginatedTrips(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
         val tripData = DatabaseConn.getPaginationTripsData(pageSize, offset)
         return ResponseEntity(JsonCreator.tripsToJSON(tripData), HttpStatus.OK)
+    }
+
+    @GetMapping("/trips/count")
+    @ResponseBody
+    fun getTripsCount(): ResponseEntity<Any?> {
+        val tripsCount = DatabaseConn.getTripsCount()
+        return ResponseEntity(tripsCount, HttpStatus.OK)
     }
 
     // TODO: Add inserts for stations and trips

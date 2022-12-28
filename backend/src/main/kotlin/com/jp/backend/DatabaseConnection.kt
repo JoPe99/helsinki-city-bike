@@ -17,7 +17,7 @@ object DatabaseConn {
 		// TODO: Clean up this
 		if (System.getenv("DB_URL") != "null") {
 			Database.connect(
-				System.getenv("DB_URL") + "?reWriteBatchedInserts=true",
+				System.getenv("DB_URL"),
 				driver = "org.postgresql.Driver",
 				user = System.getenv("DB_USERNAME"),
 				password = System.getenv("DB_PASSWORD"))
@@ -255,7 +255,17 @@ fun createTables() {
     }
 }
 
-fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, Int>> {
+fun getTripsCount(): Long {
+    var ret: Long = 0;
+    transaction(db) {
+        ret = Trips.selectAll().count()
+    }
+
+    return ret
+}
+
+
+private fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, Int>> {
     var ret: ArrayList<Map<String, Int>> = arrayListOf()
     val departureStationsTable = Stations.alias("departure")
     transaction(db) {
