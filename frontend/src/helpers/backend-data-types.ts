@@ -2,6 +2,8 @@
  *  This module includes the data types coming from the server.
  */
 
+import { formattedDateTime } from "./list-view-helpers";
+
 /**
  * Journeys come in this format from the server.
  */
@@ -21,6 +23,30 @@ export type JourneyType = {
 
   distanceCovered: number;
   durationSeconds: number;
+};
+
+/**
+ * App formats the journey types from server to this type,
+ * which includes separate dates and times, and formatted
+ * distance to kilometers and time to minutes.
+ */
+
+export type FormattedJourneyType = {
+  departureDateTime: formattedDateTime;
+  returnDateTime: formattedDateTime;
+
+  departureStationName: string;
+  departureStationId: number;
+  departureStationX: number;
+  departureStationY: number;
+
+  returnStationName: string;
+  returnStationId: number;
+  returnStationX: number;
+  returnStationY: number;
+
+  distance: string;
+  duration: string;
 };
 
 /**

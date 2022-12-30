@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.15",
+    "@types/datejs": "0.0.32",
     "@types/leaflet": "^1.9.0",
     "@types/mocha": "^8.2.1",
     "@types/node": "^18.11.17",
@@ -39,6 +40,7 @@
     "axios": "^1.2.1",
     "chai": "^4.2.0",
     "cypress": "^9.7.0",
+    "datejs": "^1.0.0-rc3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",

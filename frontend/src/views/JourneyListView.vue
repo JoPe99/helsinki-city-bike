@@ -1,6 +1,6 @@
 <template>
-  <v-container class="pa-0" fluid>
-    <map-component style="height: 500px" />
+  <v-container class="pa-0" fluid height="100%">
+    <map-component style="height: 400px" />
     <journey-data-table></journey-data-table>
   </v-container>
 </template>
