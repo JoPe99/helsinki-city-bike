@@ -8,7 +8,45 @@
       class="elevation-1"
       :footer-props="footerProps"
       :loading="table_loading"
-    ></v-data-table>
+    >
+      <!-- Datetime columns are customized to be more readable  -->
+      <template v-slot:item.departureDateTime="{ item }">
+        <v-list-item-title class="text-subtitle-1 font-weight-light">{{
+          item.departureDateTime.day +
+          "." +
+          item.departureDateTime.month +
+          "." +
+          item.departureDateTime.year
+        }}</v-list-item-title>
+        <v-list-item-subtitle class="grey--text text-subtitle-2">
+          {{
+            padTime(item.departureDateTime.hours) +
+            ":" +
+            padTime(item.departureDateTime.minutes) +
+            ":" +
+            padTime(item.departureDateTime.seconds)
+          }}
+        </v-list-item-subtitle>
+      </template>
+      <template v-slot:item.returnDateTime="{ item }">
+        <v-list-item-title class="text-subtitle-1 font-weight-light">{{
+          item.returnDateTime.day +
+          "." +
+          item.returnDateTime.month +
+          "." +
+          item.returnDateTime.year
+        }}</v-list-item-title>
+        <v-list-item-subtitle class="grey--text text-subtitle-2">
+          {{
+            padTime(item.returnDateTime.hours) +
+            ":" +
+            padTime(item.returnDateTime.minutes) +
+            ":" +
+            padTime(item.returnDateTime.seconds)
+          }}
+        </v-list-item-subtitle>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -66,7 +104,7 @@ export default Vue.extend({
       itemsPerPage: 15,
       page: 1,
       sortBy: ["departureTime"],
-      sortDesc: true,
+      sortDesc: [true],
     },
     totalJourneys: 0,
     items: [] as FormattedJourneyType[],
@@ -74,7 +112,7 @@ export default Vue.extend({
       "items-per-page-options": [15, 30, 50, 100],
       showFirstLastPage: true,
     },
-    table_loading: false,
+    table_loading: true,
   }),
 
   watch: {
@@ -108,16 +146,20 @@ export default Vue.extend({
         this.table_loading = false;
       });
     },
+
     handleResponse(data: JourneyType[], status: any) {
       // Handle status here
       if (status != 200) {
         return;
       }
+      this.items = formatJourneyTypeArray(data);
+    },
 
-      let formattedArray = formatJourneyTypeArray(data);
-
-      console.log(formattedArray);
-      this.items = formattedArray;
+    /** Pads time with zero to always be 2 digits.
+     *  Example: 6 is padded to 06, 12 stays as 12
+     */
+    padTime(time: number) {
+      return time.toString().padStart(2, "0");
     },
   },
 });

@@ -58,8 +58,8 @@ export function timestampToDate(timestamp: string) {
   const formattedDateTime = {} as formattedDateTime;
 
   formattedDateTime.year = date.getFullYear();
-  formattedDateTime.month = date.getMonth();
-  formattedDateTime.day = date.getDay();
+  formattedDateTime.month = date.getMonth() + 1;
+  formattedDateTime.day = date.getDate();
 
   formattedDateTime.hours = date.getHours();
   formattedDateTime.minutes = date.getMinutes();

@@ -67,7 +67,9 @@
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {},
+    "rules": {
+      "vue/valid-v-slot": 0
+    },
     "overrides": [
       {
         "files": [
