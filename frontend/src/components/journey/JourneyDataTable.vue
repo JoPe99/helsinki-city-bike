@@ -1,16 +1,7 @@
 <template>
   <div class="fill-height" v-resize="onResize">
     <v-card class="elevation-0">
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-date-picker single-line></v-date-picker>
-      </v-card-title>
+      <journey-filters></journey-filters>
     </v-card>
     <div class="fill-height" ref="resizableDiv">
       <v-data-table
@@ -19,7 +10,7 @@
         :items="items"
         :options.sync="options"
         :server-items-length="totalJourneys"
-        class="elevation-1 no-scroll"
+        class="elevation-0"
         :footer-props="footerProps"
         :loading="tableLoading"
         @click:row="handleRowClick"
@@ -72,18 +63,24 @@
 <script lang="ts">
 import Vue from "vue";
 import { getJourneysCount, getJourneys } from "../../helpers/api-functions";
+
 import {
   formatJourneyTypeArray,
   pageToOffset,
   sortByArrayToString,
 } from "../../helpers/list-view-helpers";
+
 import {
   FormattedJourneyType,
   JourneyType,
 } from "../../helpers/backend-data-types";
 
+import JourneyFilters from "./JourneyFilters.vue";
+
 export default Vue.extend({
   name: "JourneyDataTable",
+  components: { JourneyFilters },
+
   data: () => ({
     headers: [
       {
@@ -125,8 +122,6 @@ export default Vue.extend({
       sortDesc: [true],
       debouncedSearch: "",
     },
-    search: "",
-    timeout: {} as any,
     items: [] as FormattedJourneyType[],
     footerProps: {
       "items-per-page-options": [15, 20, 25, 30, 50, 100],
@@ -148,16 +143,6 @@ export default Vue.extend({
       },
       deep: true,
     },
-    // Debounce search so it doesn't call API instantly after every change
-    search: {
-      handler() {
-        if (this.timeout) clearTimeout(this.timeout);
-
-        this.timeout = setTimeout(() => {
-          this.options.debouncedSearch = this.search;
-        }, 500);
-      },
-    },
   },
 
   mounted() {
@@ -165,8 +150,6 @@ export default Vue.extend({
       this.totalJourneys = response.data;
     });
   },
-
-  components: {},
 
   methods: {
     // Sets the table to loading, formats parameters,
@@ -230,12 +213,9 @@ export default Vue.extend({
 });
 </script>
 
-<!-- Doesn't work while scoped -->
+<!-- Doesn't work if scoped -->
 <style>
 .selectedJourney {
   filter: brightness(50%);
-}
-.no-scroll {
-  overscroll-behavior: none;
 }
 </style>
