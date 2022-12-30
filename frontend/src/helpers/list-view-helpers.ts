@@ -115,8 +115,8 @@ export function formatSeconds(seconds: number) {
 
   if (seconds >= 3600) {
     const hours = seconds / 3600;
-    const minutes = seconds % 3600;
-    ret = `${Math.floor(hours)}h ${minutes}min`;
+    const minutes = (seconds % 3600) / 60;
+    ret = `${Math.floor(hours)}h ${minutes.toFixed(0)}min`;
   }
 
   if (seconds < 3600 && seconds >= 60) {
