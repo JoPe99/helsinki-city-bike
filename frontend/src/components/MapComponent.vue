@@ -1,18 +1,31 @@
 <template>
   <div class="elevation-1">
-    <l-map style="height: 100%" :zoom="zoom" :center="center">
+    <l-map style="height: 100%" :zoom="zoom" :center="center" :bounds="bounds">
       <l-tile-layer :url="url"></l-tile-layer>
-      <l-marker :lat-lng="markerLatLng"></l-marker>
-      <l-marker :lat-lng="markerLatLng2"></l-marker>
+      <l-layer-group :ref="markers">
+        <l-marker
+          v-for="marker in currentMarkers"
+          :key="marker.id"
+          :latLng="marker.latLong"
+        ></l-marker>
+        <l-polyline
+          v-if="polyline.active"
+          :lat-lngs="polyline.latLong"
+          :color="polyline.color"
+          :opacity="polyline.opacity"
+        >
+        </l-polyline>
+      </l-layer-group>
     </l-map>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LPolyline } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
+import { Icon, LatLng, LatLngBounds, latLngBounds } from "leaflet";
+import { StationLocation } from "@/helpers/list-view-helpers";
 
 // This block of code is from leaflet docs to fix a problem with missing Leaflet markers.
 // https://vue2-leaflet.netlify.app/quickstart/#marker-icons-are-missing
@@ -34,23 +47,91 @@ Icon.Default.mergeOptions({
 export default Vue.extend({
   name: "MapComponent",
 
+  props: ["markers"],
+
   components: {
     LMap,
     LTileLayer,
     LMarker,
+    LPolyline,
   },
 
   data: () => ({
     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     zoom: 12,
     center: [60.192059, 24.945831],
-    markerLatLng: [60.192059, 24.945831],
-    markerLatLng2: [60.142059, 24.845831],
+    currentMarkers: [] as StationLocation[],
+    mapIsReady: false,
+    bounds: latLngBounds(
+      { lat: 60.154097, lng: 25.175603 },
+      { lat: 60.253048, lng: 24.647907 }
+    ),
+    default_bounds: latLngBounds(
+      { lat: 60.154097, lng: 25.175603 },
+      { lat: 60.253048, lng: 24.647907 }
+    ),
+    polyline: {
+      active: false,
+      latLong: [] as LatLng[],
+      color: "blue",
+      opacity: 0.5,
+    },
   }),
+
+  watch: {
+    markers: {
+      handler(newVal: StationLocation[]) {
+        console.log(newVal);
+        if (newVal.length == 0) {
+          this.resetMap();
+        } else {
+          this.handleNewMarkers(newVal);
+        }
+      },
+      deep: true,
+    },
+  },
 
   computed: {},
 
-  methods: {},
+  methods: {
+    // Creates bounds for the markers, and adds markers
+    // to the map.
+    handleNewMarkers(newMarkers: StationLocation[]) {
+      let boundsMap: LatLng[] = [];
+      let polylineMap: LatLng[] = [];
+
+      for (let marker of newMarkers) {
+        let currentLatLong = new LatLng(marker.latLong[0], marker.latLong[1]);
+
+        // If only two markers (Journey markers),
+        // add coordinates to polylineMap
+        if (newMarkers.length == 2) {
+          polylineMap.push(currentLatLong);
+        }
+        // Add coordinates to bounds
+        boundsMap.push(currentLatLong);
+      }
+
+      // If polylinemap got the right amount of coordinates,
+      // add coordinates and make it active
+      if (polylineMap.length == 2) {
+        this.polyline.latLong = polylineMap;
+        this.polyline.active = true;
+      }
+
+      // Add new markers to the map, and change bounds to fit those
+      this.currentMarkers = newMarkers;
+      this.bounds = latLngBounds(boundsMap).pad(0.1);
+    },
+
+    // Reset map to default bounds, remove markers and polyline
+    resetMap() {
+      this.currentMarkers = [];
+      this.bounds = this.default_bounds;
+      this.polyline.active = false;
+    },
+  },
 });
 </script>
 

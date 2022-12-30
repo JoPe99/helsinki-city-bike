@@ -10,6 +10,7 @@
       :loading="table_loading"
       @click:row="handleRowClick"
       :item-class="isSelected"
+      dense
     >
       <!-- Datetime columns are customized to be more readable  -->
       <template v-slot:item.departureDateTime="{ item }">
@@ -180,7 +181,7 @@ export default Vue.extend({
     handleRowClick(item: FormattedJourneyType) {
       if (this.selectedJourney == item.id) {
         this.selectedJourney = 0;
-        this.$emit("journeyUnselected");
+        this.$emit("unselectedJourney");
       } else {
         this.selectedJourney = item.id;
         this.$emit("selectedJourney", item);
