@@ -11,7 +11,7 @@
     >
       <!-- Datetime columns are customized to be more readable  -->
       <template v-slot:item.departureDateTime="{ item }">
-        <v-list-item-title class="text-subtitle-1 font-weight-light">{{
+        <v-list-item-title class="text-subtitle-2">{{
           item.departureDateTime.day +
           "." +
           item.departureDateTime.month +
@@ -29,7 +29,7 @@
         </v-list-item-subtitle>
       </template>
       <template v-slot:item.returnDateTime="{ item }">
-        <v-list-item-title class="text-subtitle-1 font-weight-light">{{
+        <v-list-item-title class="text-subtitle-2">{{
           item.returnDateTime.day +
           "." +
           item.returnDateTime.month +
