@@ -22,8 +22,8 @@ export default Vue.extend({
     store: useStore(),
   }),
   computed: {
-    totalTrips() {
-      return this.store.totalTrips;
+    totalJourneys() {
+      return this.store.totalJourneys;
     },
   },
   methods: {},

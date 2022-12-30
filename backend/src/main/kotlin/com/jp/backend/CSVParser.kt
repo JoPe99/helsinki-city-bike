@@ -7,13 +7,13 @@ package com.jp.backend
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.jp.backend.DatabaseConn.insertIntoStations
-import com.jp.backend.DatabaseConn.insertIntoTrips
+import com.jp.backend.DatabaseConn.insertIntoJourneys
 
 
 object CSVParser {
 
     // Contains all station ids found in the stations CSV.
-    // Is used to reject trips with departure/return id outside
+    // Is used to reject journeys with departure/return id outside
     // declared stations.
     private var allowedStationIDs: ArrayList<Int> = arrayListOf()
 
@@ -30,8 +30,8 @@ object CSVParser {
     }
 
     // TODO: Parse all files concurrently
-    fun parseTripData() {
-        var tripArray: ArrayList<TripModel> = arrayListOf()
+    fun parseJourneyData() {
+        var journeyArray: ArrayList<JourneyModel> = arrayListOf()
         var firstRow: Map<String, String> = mapOf()
         var rowCounter: Long = 0
 
@@ -52,13 +52,13 @@ object CSVParser {
                     if (firstRow.isEmpty()) {firstRow = row}
                     else if (row == firstRow && rowCounter > 5) return@parsing
 
-                    // If journey data is valid, format to TripModel and add to array to be returned
-                    if (validateTripData(row)) { tripArray.add(tripRowToModel(row))}
+                    // If journey data is valid, format to JourneyModel and add to array to be returned
+                    if (validateJourneyData(row)) { journeyArray.add(journeyRowToModel(row))}
                 }
             }
         }
 
-        insertIntoTrips(tripArray)
+        insertIntoJourneys(journeyArray)
         println("CSV from $filename parsed into database")
     }
 
@@ -70,7 +70,7 @@ object CSVParser {
     }
 
     // TODO: Tests
-    private fun validateTripData(row: Map<String, String>): Boolean {
+    private fun validateJourneyData(row: Map<String, String>): Boolean {
         // Simplify testing by grouping values by test types
         val timestampTests: Array<String> = arrayOf("Departure", "Return")
         val intTests = arrayOf("Departure station id", "Return station id", "Covered distance (m)", "Duration (sec.)")
@@ -78,7 +78,7 @@ object CSVParser {
         // Timestamp should be "YYYY-MM-DD'T'HH:MM:SS" e.g. "2021-05-31T23:50:19"
         for (key in timestampTests) {
             var timestamp = row.getValue(key)
-            // Use RegExp to check for correct format
+            // Use RegExp to check for correct format // TODO: Make better?
             val regex = Regex(pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?")
             if (!regex.matches(timestamp)) { return false }
         }
@@ -89,13 +89,13 @@ object CSVParser {
             // Check that number can be converted to int, else return false
             try {value.toInt()} catch (e: Exception) { return false }
 
-            // If covered distance under 10 metres, trip is not included.
+            // If covered distance under 10 metres, journey is not included.
             if (key == "Covered distance (m)" && value.toInt() < 10) {
                 //println("Rejected ${value.toInt()}")
                 return false
             }
 
-            // If trip length is under 10 seconds, trip is not included.
+            // If journey length is under 10 seconds, journey is not included.
             if (key == "Duration (sec.)" && value.toInt() < 10) { return false }
 
             // Reject if departure or return station id is not in the allowed list of station ids.
@@ -128,8 +128,8 @@ object CSVParser {
     }
 
     // TODO: Tests & cleanup
-    private fun tripRowToModel(row: Map<String, String>): TripModel {
-        return TripModel(
+    private fun journeyRowToModel(row: Map<String, String>): JourneyModel {
+        return JourneyModel(
                 row.getValue("Departure"),
                 row.getValue("Return"),
                 row.getValue("Departure station id").toInt(),

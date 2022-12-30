@@ -2,14 +2,14 @@ import { defineStore } from "pinia";
 
 export const useStore = defineStore("store", {
   state: () => ({
-    totalTrips: 8,
+    totalJourneys: 8,
   }),
   getters: {
-    testGetter: (state) => state.totalTrips,
+    testGetter: (state) => state.totalJourneys,
   },
   actions: {
-    addTrip() {
-      this.totalTrips++;
+    addJourney() {
+      this.totalJourneys++;
     },
   },
 });

@@ -38,21 +38,21 @@ class RESTController() {
     }
 
 
-    @GetMapping("/trips")
+    @GetMapping("/journeys")
     @ResponseBody
-    fun getPaginatedTrips(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
-        val tripData = DatabaseConn.getPaginationTripsData(pageSize, offset)
-        return ResponseEntity(JsonCreator.tripsToJSON(tripData), HttpStatus.OK)
+    fun getPaginatedJourneys(@RequestParam pageSize: Int, @RequestParam offset: Long, @RequestParam sortBy: String?): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(pageSize, offset)
+        return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
     }
 
-    @GetMapping("/trips/count")
+    @GetMapping("/journeys/count")
     @ResponseBody
-    fun getTripsCount(): ResponseEntity<Any?> {
-        val tripsCount = DatabaseConn.getTripsCount()
-        return ResponseEntity(tripsCount, HttpStatus.OK)
+    fun getJourneysCount(): ResponseEntity<Any?> {
+        val journeyCount = DatabaseConn.getJourneyCount()
+        return ResponseEntity(journeyCount, HttpStatus.OK)
     }
 
-    // TODO: Add inserts for stations and trips
+    // TODO: Add inserts for stations and journeys
 
     @PostMapping("/parse/stations")
     fun parseStations(): ResponseEntity<String> {
@@ -60,10 +60,10 @@ class RESTController() {
         return ResponseEntity("Stations parsed", HttpStatus.OK)
     }
 
-    @PostMapping("/parse/trips")
-    fun parseTrips(): ResponseEntity<String> {
-        CSVParser.parseTripData()
-        return ResponseEntity("Trips parsed", HttpStatus.OK)
+    @PostMapping("/parse/journeys")
+    fun parseJourneys(): ResponseEntity<String> {
+        CSVParser.parseJourneyData()
+        return ResponseEntity("Journeys parsed", HttpStatus.OK)
     }
 
     @PostMapping("/create")

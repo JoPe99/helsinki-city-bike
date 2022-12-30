@@ -56,13 +56,14 @@ data class StationModelWithDetails(
 
 
 /**
- *   TripModel is used when parsing from the CSV files and inserting to the database.
+ *   JourneyModel is used when parsing from the CSV files and inserting to the database.
  *
  *   Timestamps are stored as strings, and converted to LocalDateTimes
  *   just before insertion into the database. Gson not easily being able
  *   to parse LocalDateTimes in this format led into this workaround.
+ *   TODO: Doublecheck if GSON can handle the timestamp format
  */
-data class TripModel(
+data class JourneyModel(
         val departureTime: String,
         val returnTime: String,
         val departureStationId: Int,
@@ -72,12 +73,12 @@ data class TripModel(
 )
 
 /**
- * Trip model comes from the database with data from the stations table,
+ * Journeys model comes from the database with data from the stations table,
  * including station names and coordinates.
  *
  * This model is used when returning data from database to the frontend.
  */
-data class TripModelWithStationData(
+data class JourneyModelWithStationData(
         val departureTime: String,
         val returnTime: String,
 

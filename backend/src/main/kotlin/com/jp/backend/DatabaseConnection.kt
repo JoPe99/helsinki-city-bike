@@ -1,6 +1,6 @@
 /**
  * This file includes a database connection Singleton,
- * and functions for interacting with the database.
+ * and functions for interacting with the database. TODO: Better documentation
  */
 
 package com.jp.backend
@@ -15,7 +15,7 @@ object DatabaseConn {
 	private val db: Database =
 		// If Docker
 		// TODO: Clean up this
-		if (System.getenv("DB_URL") != "null") {
+		if (System.getenv("DB_URL") != null) {
 			Database.connect(
 				System.getenv("DB_URL"),
 				driver = "org.postgresql.Driver",
@@ -30,19 +30,15 @@ object DatabaseConn {
 		}
 
 	// TODO: Make work
-	/*init {
-		 if (tablesExist()) {
+    // If tables don't exist, create them
+	init {
+		 if (!tablesExist()) {
 			transaction(db) {
-				SchemaUtils.drop(TripsTable)
-				SchemaUtils.drop(StationsTable)
+                SchemaUtils.create(Journeys)
+                SchemaUtils.create(Stations)
 			}
 		}
-		transaction(db) {
-			SchemaUtils.create(TripsTable)
-			SchemaUtils.create(StationsTable)
-		}
-
-	}*/
+	}
 
 // Function for all stations
 fun getStationsData(): ArrayList<StationModel> {
@@ -151,36 +147,36 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
     return ret
 }
 
-fun getPaginationTripsData(pageSize: Int, offset: Long, sortBy: String? = "", search: String? = ""): ArrayList<TripModelWithStationData> {
-    val ret: ArrayList<TripModelWithStationData> = arrayListOf()
+fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "", search: String? = ""): ArrayList<JourneyModelWithStationData> {
+    val ret: ArrayList<JourneyModelWithStationData> = arrayListOf()
     val orderBy = formOrderBy()
     val departureStationsTable = Stations.alias("st1")
     val returnStationsTable = Stations.alias("st2")
 
     // TODO: Refactor to forEach?
     transaction(db) {
-        var trips = Trips
-            .innerJoin(departureStationsTable, { Trips.departure_station_id}, {departureStationsTable[Stations.station_id]})
-            .innerJoin(returnStationsTable, { Trips.return_station_id }, {returnStationsTable[Stations.station_id]})
+        var journeys = Journeys
+            .innerJoin(departureStationsTable, { Journeys.departure_station_id}, {departureStationsTable[Stations.station_id]})
+            .innerJoin(returnStationsTable, { Journeys.return_station_id }, {returnStationsTable[Stations.station_id]})
             .selectAll().orderBy(orderBy).limit(pageSize, offset)
-        for (trip in trips) {
-            ret.add(TripModelWithStationData(
+        for (journey in journeys) {
+            ret.add(JourneyModelWithStationData(
 
-                trip[Trips.departure_time].toString(),
-                trip[Trips.return_time].toString(),
+                journey[Journeys.departure_time].toString(),
+                journey[Journeys.return_time].toString(),
 
-                trip[Trips.departure_station_id],
-                trip[departureStationsTable[Stations.name_fi]],
-                trip[departureStationsTable[Stations.longitude]],
-                trip[departureStationsTable[Stations.latitude]],
+                journey[Journeys.departure_station_id],
+                journey[departureStationsTable[Stations.name_fi]],
+                journey[departureStationsTable[Stations.longitude]],
+                journey[departureStationsTable[Stations.latitude]],
 
-                trip[Trips.return_station_id],
-                trip[returnStationsTable[Stations.name_fi]],
-                trip[returnStationsTable[Stations.longitude]],
-                trip[returnStationsTable[Stations.latitude]],
+                journey[Journeys.return_station_id],
+                journey[returnStationsTable[Stations.name_fi]],
+                journey[returnStationsTable[Stations.longitude]],
+                journey[returnStationsTable[Stations.latitude]],
 
-                trip[Trips.distance],
-                trip[Trips.duration]
+                journey[Journeys.distance],
+                journey[Journeys.duration]
             ))
         }
     }
@@ -188,14 +184,14 @@ fun getPaginationTripsData(pageSize: Int, offset: Long, sortBy: String? = "", se
 }
 
 private fun formOrderBy(): Pair<Column<*>, SortOrder> {
-    return Pair(Trips.departure_time, SortOrder.ASC)
+    return Pair(Journeys.departure_time, SortOrder.ASC)
 }
 
 // Function for checking if tables already exist.
 private fun tablesExist(): Boolean {
     var ret = true
     transaction(db) {
-        try {Trips.selectAll()} catch (e: Exception) {ret = false}
+        try {Journeys.selectAll()} catch (e: Exception) {ret = false}
         try {Stations.selectAll()} catch (e: Exception) {ret = false}
     }
     return ret
@@ -224,19 +220,18 @@ fun insertIntoStations(stations: ArrayList<StationModel>) {
     }
 }
 
-// TODO: For some reason inserts trip two times
-fun insertIntoTrips(trips: ArrayList<TripModel>) {
-    println("Inserting trips")
+fun insertIntoJourneys(journeys: ArrayList<JourneyModel>) {
+    println("Inserting journeys")
     transaction(db) {
             // Times are saved as timestamps in the database,
             // check DataModels.kt for more information
-            Trips.batchInsert(trips) {
-                this[Trips.departure_time] = it.departureTime.toLocalDateTime()
-                this[Trips.return_time] = it.returnTime.toLocalDateTime()
-                this[Trips.departure_station_id] = it.departureStationId
-                this[Trips.return_station_id] = it.returnStationId
-                this[Trips.distance] = it.distanceCovered
-                this[Trips.duration] = it.durationSeconds
+            Journeys.batchInsert(journeys) {
+                this[Journeys.departure_time] = it.departureTime.toLocalDateTime()
+                this[Journeys.return_time] = it.returnTime.toLocalDateTime()
+                this[Journeys.departure_station_id] = it.departureStationId
+                this[Journeys.return_station_id] = it.returnStationId
+                this[Journeys.distance] = it.distanceCovered
+                this[Journeys.duration] = it.durationSeconds
             }
     }
 }
@@ -244,21 +239,21 @@ fun insertIntoTrips(trips: ArrayList<TripModel>) {
 // Function for deleting all data
 fun deleteTables() {
     transaction(db) {
-        SchemaUtils.drop(Trips)
+        SchemaUtils.drop(Journeys)
         SchemaUtils.drop(Stations)
     }
 }
 fun createTables() {
     transaction(db) {
-        SchemaUtils.create(Trips)
+        SchemaUtils.create(Journeys)
         SchemaUtils.create(Stations)
     }
 }
 
-fun getTripsCount(): Long {
+fun getJourneyCount(): Long {
     var ret: Long = 0;
     transaction(db) {
-        ret = Trips.selectAll().count()
+        ret = Journeys.selectAll().count()
     }
 
     return ret
@@ -270,8 +265,8 @@ private fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, In
     val departureStationsTable = Stations.alias("departure")
     transaction(db) {
         departureStationsTable
-            .join(Trips, JoinType.INNER, additionalConstraint = {(departureStationsTable[Stations.station_id] eq Trips.departure_station_id) and (Trips.departure_station_id eq id)})
-            .join(Stations, JoinType.INNER, additionalConstraint = {Stations.station_id eq Trips.return_station_id})
+            .join(Journeys, JoinType.INNER, additionalConstraint = {(departureStationsTable[Stations.station_id] eq Journeys.departure_station_id) and (Journeys.departure_station_id eq id)})
+            .join(Stations, JoinType.INNER, additionalConstraint = {Stations.station_id eq Journeys.return_station_id})
             .slice(departureStationsTable[Stations.station_id], Stations.name_fi, Stations.station_id.count())
             .selectAll().groupBy(departureStationsTable[Stations.station_id], Stations.station_id)
             .orderBy(Stations.station_id.count(), SortOrder.DESC).limit(5)
@@ -288,8 +283,8 @@ private fun getTopReturnStationsForStation(id: Int): ArrayList<Map<String, Int>>
     val returnStationsTable = Stations.alias("return")
     transaction(db) {
         returnStationsTable
-            .join(Trips, JoinType.INNER, additionalConstraint = {(returnStationsTable[Stations.station_id] eq Trips.return_station_id) and (Trips.return_station_id eq id)})
-            .join(Stations, JoinType.INNER, additionalConstraint = {Stations.station_id eq Trips.departure_station_id})
+            .join(Journeys, JoinType.INNER, additionalConstraint = {(returnStationsTable[Stations.station_id] eq Journeys.return_station_id) and (Journeys.return_station_id eq id)})
+            .join(Stations, JoinType.INNER, additionalConstraint = {Stations.station_id eq Journeys.departure_station_id})
             .slice(returnStationsTable[Stations.station_id], Stations.name_fi, Stations.station_id.count())
             .selectAll().groupBy(returnStationsTable[Stations.station_id], Stations.station_id)
             .orderBy(Stations.station_id.count(), SortOrder.DESC).limit(5)
@@ -304,7 +299,7 @@ private fun getTopReturnStationsForStation(id: Int): ArrayList<Map<String, Int>>
 private fun getTotalJourneysFromStation(id: Int): Int {
     var ret = 0
     transaction(db) {
-        ret = Trips.select {Trips.departure_station_id eq id}.count().toInt()
+        ret = Journeys.select {Journeys.departure_station_id eq id}.count().toInt()
     }
     return ret
 }
@@ -312,7 +307,7 @@ private fun getTotalJourneysFromStation(id: Int): Int {
 private fun getTotalJourneysToStation(id: Int): Int {
     var ret = 0
     transaction(db) {
-        ret = Trips.select {Trips.return_station_id eq id}.count().toInt()
+        ret = Journeys.select {Journeys.return_station_id eq id}.count().toInt()
     }
     return ret
 }
@@ -320,11 +315,11 @@ private fun getTotalJourneysToStation(id: Int): Int {
 private fun getAverageDepartDistanceForStation(id: Int): Float {
     var ret: Float = 0.0F
     transaction(db) {
-        Trips
-            .slice(Trips.distance.avg(1))
-            .select {Trips.departure_station_id eq id}
+        Journeys
+            .slice(Journeys.distance.avg(1))
+            .select {Journeys.departure_station_id eq id}
             .map {
-                ret = it[Trips.distance.avg(1)]?.toFloat() ?: 0.0F
+                ret = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
             }
     }
     return ret
@@ -333,11 +328,11 @@ private fun getAverageDepartDistanceForStation(id: Int): Float {
 private fun getAverageReturnDistanceForStation(id: Int): Float {
     var ret: Float = 0.0F
     transaction(db) {
-        Trips
-            .slice(Trips.distance.avg(1))
-            .select {Trips.return_station_id eq id}
+        Journeys
+            .slice(Journeys.distance.avg(1))
+            .select {Journeys.return_station_id eq id}
             .map {
-                ret = it[Trips.distance.avg(1)]?.toFloat() ?: 0.0F
+                ret = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
             }
     }
     return ret
@@ -363,8 +358,7 @@ val latitude: Column<String> = varchar("latitude", 50) // PostGIS?
 override val primaryKey = PrimaryKey(station_id, name = "station_id")
 }
 
-// TODO: Refactor Trips -> Journeys everywhere
-object Trips: Table() {
+object Journeys: Table() {
 val departure_time = datetime("departure_time").index()
 val return_time = datetime("return_time").index()
 val departure_station_id = (integer("departure_station_id") references Stations.station_id).index()

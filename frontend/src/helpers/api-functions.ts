@@ -13,23 +13,38 @@ import { JourneyType, SingleStationType } from "./backend-data-types";
 const SERVER_IP = "http://localhost:8081";
 
 /**
- * Get trips from the backend. Takes page size, current offset, and sortBy
+ * Get journeys from the backend. Takes page size, current offset, and sortBy
  * as parameters.
  *
  * Example:
- *  localhost:8081/trips?pageSize=5&offset=0&sortBy="departureTime"
+ *  localhost:8081/journeys?pageSize=5&offset=0&sortBy="departureTime"
  *
  * @param pageSize
  * @param offset
  * @param sortBy
+ * @returns JourneyType[]
  */
 export function getJourneys(pageSize: number, offset: number, sortBy: string) {
-  const url = `${SERVER_IP}/trips?pageSize=${pageSize}&offset=${offset}&sortBy=${sortBy}`;
+  const url = `${SERVER_IP}/journeys?pageSize=${pageSize}&offset=${offset}&sortBy=${sortBy}`;
   return axios.get<JourneyType[]>(url);
 }
 
 /**
+ * Returns total number of journeys stored in the server.
+ *
+ * Example:
+ * localhost:8081/journeys/count
+ *
+ * @returns number
+ */
+export function getJourneysCount() {
+  const url = `${SERVER_IP}/journeys/count`;
+  return axios.get<number>(url);
+}
+
+/**
  * Get all stations from the backend.
+ * @returns SingleStationType[]
  */
 export function getAllStations() {
   const url = `${SERVER_IP}/stations/all`;

@@ -6,8 +6,8 @@ object JsonCreator {
     private val gson = Gson()
 
     //TODO: Tests
-    fun tripsToJSON(trips: ArrayList<TripModelWithStationData>): String {
-        return gson.toJson(trips)
+    fun journeysToJSON(journeys: ArrayList<JourneyModelWithStationData>): String {
+        return gson.toJson(journeys)
     }
 
     // TODO: Tests
