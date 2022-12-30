@@ -18,6 +18,8 @@ export function formatJourneyTypeArray(journeys: JourneyType[]) {
   let currentJourney = {} as FormattedJourneyType;
 
   for (const journey of journeys) {
+    currentJourney.id = journey.id;
+
     currentJourney.departureDateTime = timestampToDate(journey.departureTime);
     currentJourney.returnDateTime = timestampToDate(journey.returnTime);
 

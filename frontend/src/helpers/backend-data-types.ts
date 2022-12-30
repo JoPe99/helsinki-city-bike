@@ -8,6 +8,8 @@ import { formattedDateTime } from "./list-view-helpers";
  * Journeys come in this format from the server.
  */
 export type JourneyType = {
+  id: number;
+
   departureTime: string;
   returnTime: string;
 
@@ -32,6 +34,8 @@ export type JourneyType = {
  */
 
 export type FormattedJourneyType = {
+  id: number;
+
   departureDateTime: formattedDateTime;
   returnDateTime: formattedDateTime;
 

@@ -161,7 +161,7 @@ fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "",
             .selectAll().orderBy(orderBy).limit(pageSize, offset)
         for (journey in journeys) {
             ret.add(JourneyModelWithStationData(
-
+                journey[Journeys.id].toInt(),
                 journey[Journeys.departure_time].toString(),
                 journey[Journeys.return_time].toString(),
 
@@ -342,27 +342,28 @@ private fun getAverageReturnDistanceForStation(id: Int): Float {
 
 // TODO: Refactor "station_id" to "id"
 object Stations: Table() {
-val station_id: Column<Int> = integer("station_id").index()
-val name_fi: Column<String> = varchar("name_fi", 50).index()
-val name_se: Column<String> = varchar("name_se", 50)
-val name_en: Column<String> = varchar("name_en", 50)
-val address_fi: Column<String> = varchar("address_fi", 50).index()
-val address_se: Column<String> = varchar("address_se", 50)
-val city_fi: Column<String> = varchar("city_fi", 50)
-val city_se: Column<String> = varchar("city_se", 50)
-val operator: Column<String> = varchar("operator", 50)
-val capacity: Column<Int> = integer("capacity").index()
-val longitude: Column<String> = varchar("longitude", 50) // PostGIS?
-val latitude: Column<String> = varchar("latitude", 50) // PostGIS?
+    val station_id: Column<Int> = integer("station_id").index()
+    val name_fi: Column<String> = varchar("name_fi", 50).index()
+    val name_se: Column<String> = varchar("name_se", 50)
+    val name_en: Column<String> = varchar("name_en", 50)
+    val address_fi: Column<String> = varchar("address_fi", 50).index()
+    val address_se: Column<String> = varchar("address_se", 50)
+    val city_fi: Column<String> = varchar("city_fi", 50)
+    val city_se: Column<String> = varchar("city_se", 50)
+    val operator: Column<String> = varchar("operator", 50)
+    val capacity: Column<Int> = integer("capacity").index()
+    val longitude: Column<String> = varchar("longitude", 50) // PostGIS?
+    val latitude: Column<String> = varchar("latitude", 50) // PostGIS?
 
-override val primaryKey = PrimaryKey(station_id, name = "station_id")
+    override val primaryKey = PrimaryKey(station_id, name = "station_id")
 }
 
 object Journeys: Table() {
-val departure_time = datetime("departure_time").index()
-val return_time = datetime("return_time").index()
-val departure_station_id = (integer("departure_station_id") references Stations.station_id).index()
-val return_station_id = (integer("return_station_id") references Stations.station_id).index()
-val distance = integer("distance").default(0).index()
-val duration = integer("duration").default(0).index()
+    val id = integer("id").autoIncrement()
+    val departure_time = datetime("departure_time").index()
+    val return_time = datetime("return_time").index()
+    val departure_station_id = (integer("departure_station_id") references Stations.station_id).index()
+    val return_station_id = (integer("return_station_id") references Stations.station_id).index()
+    val distance = integer("distance").default(0).index()
+    val duration = integer("duration").default(0).index()
 }

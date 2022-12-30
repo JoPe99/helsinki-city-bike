@@ -61,7 +61,6 @@ data class StationModelWithDetails(
  *   Timestamps are stored as strings, and converted to LocalDateTimes
  *   just before insertion into the database. Gson not easily being able
  *   to parse LocalDateTimes in this format led into this workaround.
- *   TODO: Doublecheck if GSON can handle the timestamp format
  */
 data class JourneyModel(
         val departureTime: String,
@@ -79,6 +78,8 @@ data class JourneyModel(
  * This model is used when returning data from database to the frontend.
  */
 data class JourneyModelWithStationData(
+        val id: Int,
+
         val departureTime: String,
         val returnTime: String,
 
