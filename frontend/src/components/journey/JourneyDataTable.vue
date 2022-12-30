@@ -1,55 +1,71 @@
 <template>
-  <div>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :options.sync="options"
-      :server-items-length="totalJourneys"
-      class="elevation-1"
-      :footer-props="footerProps"
-      :loading="table_loading"
-      @click:row="handleRowClick"
-      :item-class="isSelected"
-      dense
-    >
-      <!-- Datetime columns are customized to be more readable  -->
-      <template v-slot:item.departureDateTime="{ item }">
-        <v-list-item-title class="text-subtitle-2">{{
-          item.departureDateTime.day +
-          "." +
-          item.departureDateTime.month +
-          "." +
-          item.departureDateTime.year
-        }}</v-list-item-title>
-        <v-list-item-subtitle class="grey--text text-subtitle-2">
-          {{
-            padTime(item.departureDateTime.hours) +
-            ":" +
-            padTime(item.departureDateTime.minutes) +
-            ":" +
-            padTime(item.departureDateTime.seconds)
-          }}
-        </v-list-item-subtitle>
-      </template>
-      <template v-slot:item.returnDateTime="{ item }">
-        <v-list-item-title class="text-subtitle-2">{{
-          item.returnDateTime.day +
-          "." +
-          item.returnDateTime.month +
-          "." +
-          item.returnDateTime.year
-        }}</v-list-item-title>
-        <v-list-item-subtitle class="grey--text text-subtitle-2">
-          {{
-            padTime(item.returnDateTime.hours) +
-            ":" +
-            padTime(item.returnDateTime.minutes) +
-            ":" +
-            padTime(item.returnDateTime.seconds)
-          }}
-        </v-list-item-subtitle>
-      </template>
-    </v-data-table>
+  <div class="fill-height" v-resize="onResize">
+    <v-card class="elevation-0">
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+        <v-date-picker single-line></v-date-picker>
+      </v-card-title>
+    </v-card>
+    <div class="fill-height" ref="resizableDiv">
+      <v-data-table
+        :height="tableHeight"
+        :headers="headers"
+        :items="items"
+        :options.sync="options"
+        :server-items-length="totalJourneys"
+        class="elevation-1 no-scroll"
+        :footer-props="footerProps"
+        :loading="tableLoading"
+        @click:row="handleRowClick"
+        :item-class="isSelected"
+        :mobile-breakpoint="0"
+        fixed-header
+      >
+        <!-- Datetime columns are customized to be more readable  -->
+        <template v-slot:item.departureDateTime="{ item }">
+          <v-list-item-title class="text-subtitle-2">{{
+            item.departureDateTime.day +
+            "." +
+            item.departureDateTime.month +
+            "." +
+            item.departureDateTime.year
+          }}</v-list-item-title>
+          <v-list-item-subtitle class="grey--text text-subtitle-2">
+            {{
+              padTime(item.departureDateTime.hours) +
+              ":" +
+              padTime(item.departureDateTime.minutes) +
+              ":" +
+              padTime(item.departureDateTime.seconds)
+            }}
+          </v-list-item-subtitle>
+        </template>
+        <template v-slot:item.returnDateTime="{ item }">
+          <v-list-item-title class="text-subtitle-2">{{
+            item.returnDateTime.day +
+            "." +
+            item.returnDateTime.month +
+            "." +
+            item.returnDateTime.year
+          }}</v-list-item-title>
+          <v-list-item-subtitle class="grey--text text-subtitle-2">
+            {{
+              padTime(item.returnDateTime.hours) +
+              ":" +
+              padTime(item.returnDateTime.minutes) +
+              ":" +
+              padTime(item.returnDateTime.seconds)
+            }}
+          </v-list-item-subtitle>
+        </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
@@ -60,7 +76,6 @@ import {
   formatJourneyTypeArray,
   pageToOffset,
   sortByArrayToString,
-  timestampToDate,
 } from "../../helpers/list-view-helpers";
 import {
   FormattedJourneyType,
@@ -75,6 +90,7 @@ export default Vue.extend({
         text: "Departure time",
         align: "start",
         value: "departureDateTime",
+        width: "15%",
       },
       {
         text: "Return time",
@@ -103,22 +119,27 @@ export default Vue.extend({
       },
     ],
     options: {
-      itemsPerPage: 15,
+      itemsPerPage: 25,
       page: 1,
       sortBy: ["departureTime"],
       sortDesc: [true],
+      debouncedSearch: "",
     },
-    totalJourneys: 0,
+    search: "",
+    timeout: {} as any,
     items: [] as FormattedJourneyType[],
     footerProps: {
-      "items-per-page-options": [15, 30, 50, 100],
+      "items-per-page-options": [15, 20, 25, 30, 50, 100],
       showFirstLastPage: true,
     },
+    totalJourneys: 0,
     selectedJourney: 0,
-    table_loading: true,
+    tableHeight: 0,
+    tableLoading: true,
   }),
 
   watch: {
+    // Watch options for changes, call API for new journeys if options change
     options: {
       handler() {
         // Drop selected journey, get new journeys when table options are changed
@@ -126,6 +147,16 @@ export default Vue.extend({
         this.getJourneysFromAPI();
       },
       deep: true,
+    },
+    // Debounce search so it doesn't call API instantly after every change
+    search: {
+      handler() {
+        if (this.timeout) clearTimeout(this.timeout);
+
+        this.timeout = setTimeout(() => {
+          this.options.debouncedSearch = this.search;
+        }, 500);
+      },
     },
   },
 
@@ -137,20 +168,18 @@ export default Vue.extend({
 
   components: {},
 
-  computed: {},
-
   methods: {
     // Sets the table to loading, formats parameters,
     // calls the API and handles response
     getJourneysFromAPI() {
-      this.table_loading = true;
+      this.tableLoading = true;
       let pageSize = this.options.itemsPerPage;
       let offset = pageToOffset(this.options.page, pageSize);
       let sortBy = sortByArrayToString(this.options.sortBy);
 
       getJourneys(pageSize, offset, sortBy).then((response) => {
         this.handleResponse(response.data, response.status);
-        this.table_loading = false;
+        this.tableLoading = false;
       });
     },
 
@@ -187,12 +216,26 @@ export default Vue.extend({
         this.$emit("selectedJourney", item);
       }
     },
+
+    // This makes sure that the table fits under filters and map,
+    // sizing the table exactly right. The app bar is always 56px high.
+    onResize() {
+      const resizableDiv = this.$refs.resizableDiv as HTMLElement;
+      if (resizableDiv) {
+        this.tableHeight =
+          window.innerHeight - resizableDiv.getBoundingClientRect().y - 56;
+      }
+    },
   },
 });
 </script>
 
+<!-- Doesn't work while scoped -->
 <style>
 .selectedJourney {
   filter: brightness(50%);
+}
+.no-scroll {
+  overscroll-behavior: none;
 }
 </style>

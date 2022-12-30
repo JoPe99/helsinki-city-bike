@@ -1,10 +1,25 @@
 <template>
-  <v-container class="pa-0" fluid height="100%">
-    <map-component :markers="markers" style="height: 500px" />
-    <journey-data-table
-      @unselectedJourney="journeyRemoved"
-      @selectedJourney="journeySelected"
-    ></journey-data-table>
+  <v-container fluid class="pa-0 fill-height">
+    <!-- Default layout for desktops and larger viewports -->
+    <v-row v-if="$vuetify.breakpoint.lgAndUp" class="pa-0 fill-height">
+      <v-col cols="6" lg="6" xl="5" class="pa-0 fill-height">
+        <journey-data-table
+          @unselectedJourney="journeyRemoved"
+          @selectedJourney="journeySelected"
+        ></journey-data-table>
+      </v-col>
+      <v-col cols="6" lg="6" xl="7" class="pa-0 fill-height">
+        <map-component :markers="markers" class="fill-height" />
+      </v-col>
+    </v-row>
+    <!-- Vertical layout in case of a smaller viewport -->
+    <v-col v-if="$vuetify.breakpoint.mdAndDown" class="pa-0 fill-height">
+      <map-component :markers="markers" style="height: 500px" />
+      <journey-data-table
+        @unselectedJourney="journeyRemoved"
+        @selectedJourney="journeySelected"
+      ></journey-data-table>
+    </v-col>
   </v-container>
 </template>
 

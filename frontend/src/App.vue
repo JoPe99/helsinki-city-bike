@@ -32,7 +32,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main style="overflow: auto">
+    <v-main>
       <router-view />
     </v-main>
   </v-app>
@@ -58,3 +58,14 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style>
+body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+html {
+  overscroll-behavior: none;
+}
+</style>
