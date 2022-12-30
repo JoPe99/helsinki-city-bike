@@ -8,6 +8,8 @@
       class="elevation-1"
       :footer-props="footerProps"
       :loading="table_loading"
+      @click:row="handleRowClick"
+      :item-class="isSelected"
     >
       <!-- Datetime columns are customized to be more readable  -->
       <template v-slot:item.departureDateTime="{ item }">
@@ -66,7 +68,6 @@ import {
 
 export default Vue.extend({
   name: "JourneyDataTable",
-
   data: () => ({
     headers: [
       {
@@ -112,12 +113,15 @@ export default Vue.extend({
       "items-per-page-options": [15, 30, 50, 100],
       showFirstLastPage: true,
     },
+    selectedJourney: 0,
     table_loading: true,
   }),
 
   watch: {
     options: {
       handler() {
+        // Drop selected journey, get new journeys when table options are changed
+        this.selectedJourney = 0;
         this.getJourneysFromAPI();
       },
       deep: true,
@@ -135,6 +139,8 @@ export default Vue.extend({
   computed: {},
 
   methods: {
+    // Sets the table to loading, formats parameters,
+    // calls the API and handles response
     getJourneysFromAPI() {
       this.table_loading = true;
       let pageSize = this.options.itemsPerPage;
@@ -147,6 +153,7 @@ export default Vue.extend({
       });
     },
 
+    // Handles API call status and formats the received data
     handleResponse(data: JourneyType[], status: any) {
       // Handle status here
       if (status != 200) {
@@ -161,8 +168,30 @@ export default Vue.extend({
     padTime(time: number) {
       return time.toString().padStart(2, "0");
     },
+
+    // If row is selected, apply class to it
+    isSelected(item: FormattedJourneyType) {
+      if (item.id == this.selectedJourney) {
+        return "selectedJourney";
+      }
+    },
+
+    // Clicked row is stored as selected journey
+    handleRowClick(item: FormattedJourneyType) {
+      if (this.selectedJourney == item.id) {
+        this.selectedJourney = 0;
+        this.$emit("journeyUnselected");
+      } else {
+        this.selectedJourney = item.id;
+        this.$emit("selectedJourney", item);
+      }
+    },
   },
 });
 </script>
 
-<style scoped></style>
+<style>
+.selectedJourney {
+  filter: brightness(50%);
+}
+</style>
