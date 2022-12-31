@@ -191,10 +191,12 @@ fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "",
 
 private fun formOrderBy(sortBy: String?, sortDesc: Boolean?): Pair<Column<*>, SortOrder> {
     var sort: SortOrder = SortOrder.ASC;
-    if (sortDesc == true) {sort = SortOrder.DESC}
+    if (sortDesc == true) { sort = SortOrder.DESC }
     return when (sortBy) {
         "departureDateTime" -> Pair(Journeys.departure_time, sort)
+        "departureStationName" -> Pair(Journeys.departure_station_name, sort)
         "returnDateTime" -> Pair(Journeys.return_time, sort)
+        "returnStationName" -> Pair(Journeys.return_station_name, sort)
         "distance" -> Pair(Journeys.distance, sort)
         "duration" -> Pair(Journeys.duration, sort)
         else -> Pair(Journeys.departure_time, sort)
@@ -274,6 +276,7 @@ fun getJourneyCount(): Long {
 
     return ret
 }
+
 
 
 private fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, Int>> {
