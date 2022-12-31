@@ -57,6 +57,20 @@ class RESTController() {
         return ResponseEntity(journeyCount, HttpStatus.OK)
     }
 
+    @GetMapping("/journeys/longestDistance")
+    @ResponseBody
+    fun getLongestDistanceJourney(): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(1, 0, "distance", true)
+        return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
+    }
+
+    @GetMapping("/journeys/longestDuration")
+    @ResponseBody
+    fun getLongestDurationJourney(): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(1, 0, "duration", true)
+        return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
+    }
+
     // TODO: Add inserts for stations and journeys
 
     @PostMapping("/parse/stations")

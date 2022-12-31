@@ -277,8 +277,6 @@ fun getJourneyCount(): Long {
     return ret
 }
 
-
-
 private fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, Int>> {
     var ret: ArrayList<Map<String, Int>> = arrayListOf()
     val departureStationsTable = Stations.alias("departure")
