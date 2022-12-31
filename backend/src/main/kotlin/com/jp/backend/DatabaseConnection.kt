@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Sort
 
 object DatabaseConn {
 	// Initialize database connection.
@@ -71,7 +72,7 @@ fun getStationsData(): ArrayList<StationModel> {
 }
 
 // Function for getting paginated/sorted/searched data
-fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = "", search: String? = ""): ArrayList<StationModel> {
+fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = "", sortDesc: Boolean?, search: String? = ""): ArrayList<StationModel> {
     var ret: ArrayList<StationModel> = arrayListOf()
     transaction(db) {
         // TODO: Refactor to forEach loop?
@@ -147,18 +148,23 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
     return ret
 }
 
-fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "", search: String? = ""): ArrayList<JourneyModelWithStationData> {
+fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "", sortDesc: Boolean?, search: String? = ""): ArrayList<JourneyModelWithStationData> {
     val ret: ArrayList<JourneyModelWithStationData> = arrayListOf()
-    val orderBy = formOrderBy()
+    val orderBy = formOrderBy(sortBy, sortDesc)
     val departureStationsTable = Stations.alias("st1")
     val returnStationsTable = Stations.alias("st2")
 
-    // TODO: Refactor to forEach?
     transaction(db) {
         var journeys = Journeys
             .innerJoin(departureStationsTable, { Journeys.departure_station_id}, {departureStationsTable[Stations.station_id]})
             .innerJoin(returnStationsTable, { Journeys.return_station_id }, {returnStationsTable[Stations.station_id]})
-            .selectAll().orderBy(orderBy).limit(pageSize, offset)
+            .selectAll()
+            search?.let {
+                journeys.andWhere { (Journeys.departure_station_name like("$search%")) or (Journeys.return_station_name like ("$search%")) }
+            }
+
+            journeys.orderBy(orderBy).limit(pageSize, offset)
+
         for (journey in journeys) {
             ret.add(JourneyModelWithStationData(
                 journey[Journeys.id].toInt(),
@@ -166,12 +172,12 @@ fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "",
                 journey[Journeys.return_time].toString(),
 
                 journey[Journeys.departure_station_id],
-                journey[departureStationsTable[Stations.name_fi]],
+                journey[Journeys.departure_station_name],
                 journey[departureStationsTable[Stations.longitude]],
                 journey[departureStationsTable[Stations.latitude]],
 
                 journey[Journeys.return_station_id],
-                journey[returnStationsTable[Stations.name_fi]],
+                journey[Journeys.return_station_name],
                 journey[returnStationsTable[Stations.longitude]],
                 journey[returnStationsTable[Stations.latitude]],
 
@@ -183,8 +189,16 @@ fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "",
     return ret
 }
 
-private fun formOrderBy(): Pair<Column<*>, SortOrder> {
-    return Pair(Journeys.departure_time, SortOrder.ASC)
+private fun formOrderBy(sortBy: String?, sortDesc: Boolean?): Pair<Column<*>, SortOrder> {
+    var sort: SortOrder = SortOrder.ASC;
+    if (sortDesc == true) {sort = SortOrder.DESC}
+    return when (sortBy) {
+        "departureDateTime" -> Pair(Journeys.departure_time, sort)
+        "returnDateTime" -> Pair(Journeys.return_time, sort)
+        "distance" -> Pair(Journeys.distance, sort)
+        "duration" -> Pair(Journeys.duration, sort)
+        else -> Pair(Journeys.departure_time, sort)
+    }
 }
 
 // Function for checking if tables already exist.
@@ -229,7 +243,9 @@ fun insertIntoJourneys(journeys: ArrayList<JourneyModel>) {
                 this[Journeys.departure_time] = it.departureTime.toLocalDateTime()
                 this[Journeys.return_time] = it.returnTime.toLocalDateTime()
                 this[Journeys.departure_station_id] = it.departureStationId
+                this[Journeys.departure_station_name] = it.departureStationName
                 this[Journeys.return_station_id] = it.returnStationId
+                this[Journeys.return_station_name] = it.returnStationName
                 this[Journeys.distance] = it.distanceCovered
                 this[Journeys.duration] = it.durationSeconds
             }
@@ -362,8 +378,13 @@ object Journeys: Table() {
     val id = integer("id").autoIncrement()
     val departure_time = datetime("departure_time").index()
     val return_time = datetime("return_time").index()
+
     val departure_station_id = (integer("departure_station_id") references Stations.station_id).index()
+    val departure_station_name = varchar("departure_station_name", 50).index()
+
     val return_station_id = (integer("return_station_id") references Stations.station_id).index()
+    val return_station_name = varchar("return_station_name", 50).index()
+
     val distance = integer("distance").default(0).index()
     val duration = integer("duration").default(0).index()
 }

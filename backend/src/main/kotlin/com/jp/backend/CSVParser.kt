@@ -130,12 +130,16 @@ object CSVParser {
     // TODO: Tests & cleanup
     private fun journeyRowToModel(row: Map<String, String>): JourneyModel {
         return JourneyModel(
-                row.getValue("Departure"),
-                row.getValue("Return"),
-                row.getValue("Departure station id").toInt(),
-                row.getValue("Return station id").toInt(),
-                row.getValue("Covered distance (m)").toInt(),
-                row.getValue("Duration (sec.)").toInt()
+            row.getValue("Departure"),
+            row.getValue("Return"),
+
+            row.getValue("Departure station id").toInt(),
+            row.getValue("Departure station name"),
+            row.getValue("Return station id").toInt(),
+            row.getValue("Return station name"),
+
+            row.getValue("Covered distance (m)").toInt(),
+            row.getValue("Duration (sec.)").toInt()
         )
     }
 

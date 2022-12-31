@@ -13,6 +13,10 @@ export function sortByArrayToString(sortBy: string[]) {
   return sortBy[0];
 }
 
+export function sortDescArrayToString(sortDesc: boolean[]) {
+  return sortDesc[0];
+}
+
 export function formatJourneyTypeArray(journeys: JourneyType[]) {
   const formattedJourneyArray: FormattedJourneyType[] = [];
   let currentJourney = {} as FormattedJourneyType;

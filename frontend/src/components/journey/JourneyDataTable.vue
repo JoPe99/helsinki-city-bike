@@ -68,6 +68,7 @@ import {
   formatJourneyTypeArray,
   pageToOffset,
   sortByArrayToString,
+  sortDescArrayToString,
 } from "../../helpers/list-view-helpers";
 
 import {
@@ -139,6 +140,7 @@ export default Vue.extend({
       handler() {
         // Drop selected journey, get new journeys when table options are changed
         this.selectedJourney = 0;
+        console.log(this.options);
         this.getJourneysFromAPI();
       },
       deep: true,
@@ -159,11 +161,15 @@ export default Vue.extend({
       let pageSize = this.options.itemsPerPage;
       let offset = pageToOffset(this.options.page, pageSize);
       let sortBy = sortByArrayToString(this.options.sortBy);
+      let sortDesc = sortDescArrayToString(this.options.sortDesc);
+      let search = this.options.debouncedSearch;
 
-      getJourneys(pageSize, offset, sortBy).then((response) => {
-        this.handleResponse(response.data, response.status);
-        this.tableLoading = false;
-      });
+      getJourneys(pageSize, offset, sortBy, sortDesc, search).then(
+        (response) => {
+          this.handleResponse(response.data, response.status);
+          this.tableLoading = false;
+        }
+      );
     },
 
     // Handles API call status and formats the received data

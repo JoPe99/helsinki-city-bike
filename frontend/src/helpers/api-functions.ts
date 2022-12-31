@@ -22,11 +22,28 @@ const SERVER_IP = "http://localhost:8081";
  * @param pageSize
  * @param offset
  * @param sortBy
+ * @param sortDesc
+ * @param search
  * @returns JourneyType[]
  */
-export function getJourneys(pageSize: number, offset: number, sortBy: string) {
-  const url = `${SERVER_IP}/journeys?pageSize=${pageSize}&offset=${offset}&sortBy=${sortBy}`;
-  return axios.get<JourneyType[]>(url);
+export function getJourneys(
+  pageSize: number,
+  offset: number,
+  sortBy: string,
+  sortDesc: boolean,
+  search: string
+) {
+  //const url = `${SERVER_IP}/journeys?pageSize=${pageSize}&offset=${offset}&sortBy=${sortBy}`;
+  const url = `${SERVER_IP}/journeys`;
+  return axios.get<JourneyType[]>(url, {
+    params: {
+      pageSize: pageSize,
+      offset: offset,
+      sortBy: sortBy,
+      sortDesc: sortDesc,
+      search: search,
+    },
+  });
 }
 
 /**

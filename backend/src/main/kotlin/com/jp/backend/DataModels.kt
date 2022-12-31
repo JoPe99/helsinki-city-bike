@@ -66,7 +66,9 @@ data class JourneyModel(
         val departureTime: String,
         val returnTime: String,
         val departureStationId: Int,
+        val departureStationName: String,
         val returnStationId: Int,
+        val returnStationName: String,
         val distanceCovered: Int,
         val durationSeconds: Int
 )
