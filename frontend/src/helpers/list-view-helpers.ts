@@ -107,6 +107,7 @@ export function formatDistance(meters: number) {
  * Formats seconds to more readable format.
  *
  * Examples:
+ *  86540 is formatted to 1d 2h
  *  7524 is formatted to 2h 5min
  *  948 is formatted to 15min 48s
  *  50 is formatted to 50s
@@ -117,7 +118,13 @@ export function formatDistance(meters: number) {
 export function formatSeconds(seconds: number) {
   let ret = "";
 
-  if (seconds >= 3600) {
+  if (seconds >= 86400) {
+    const days = seconds / 86400;
+    const hours = (seconds % 86400) / 3600;
+    ret = `${Math.floor(days)}d ${hours.toFixed()}h`;
+  }
+
+  if (seconds < 86400) {
     const hours = seconds / 3600;
     const minutes = (seconds % 3600) / 60;
     ret = `${Math.floor(hours)}h ${minutes.toFixed()}min`;
