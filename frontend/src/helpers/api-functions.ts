@@ -33,7 +33,6 @@ export function getJourneys(
   sortDesc: boolean,
   search: string
 ) {
-  //const url = `${SERVER_IP}/journeys?pageSize=${pageSize}&offset=${offset}&sortBy=${sortBy}`;
   const url = `${SERVER_IP}/journeys`;
   return axios.get<JourneyType[]>(url, {
     params: {
@@ -60,10 +59,29 @@ export function getJourneysCount() {
 }
 
 /**
- * Get all stations from the backend.
+ * Returns all stations from the backend.
  * @returns SingleStationType[]
  */
 export function getAllStations() {
   const url = `${SERVER_IP}/stations/all`;
   return axios.get<SingleStationType[]>(url);
 }
+
+/**
+ * Returns journey with longest duration from the backend.
+ * @returns JourneyType[]
+ */
+ export function getLongestDuration() {
+  const url = `${SERVER_IP}/journeys/longestDuration`;
+  return axios.get<JourneyType[]>(url);
+}
+
+/**
+ * Returns journey with longest distance from the backend.
+ * @returns JourneyType[]
+ */
+ export function getLongestDistance() {
+  const url = `${SERVER_IP}/journeys/longestDistance`;
+  return axios.get<JourneyType[]>(url);
+}
+
