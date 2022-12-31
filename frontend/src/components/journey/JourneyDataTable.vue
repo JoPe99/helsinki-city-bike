@@ -1,6 +1,6 @@
 <template>
   <div class="fill-height" v-resize="onResize">
-    <v-card class="elevation-0">
+    <v-card class="elevation-0" style="height: 300px">
       <journey-filters></journey-filters>
     </v-card>
     <div class="fill-height" ref="resizableDiv">
@@ -120,7 +120,7 @@ export default Vue.extend({
       itemsPerPage: 25,
       page: 1,
       sortBy: ["departureTime"],
-      sortDesc: [true],
+      sortDesc: [false],
       debouncedSearch: "",
     },
     items: [] as FormattedJourneyType[],

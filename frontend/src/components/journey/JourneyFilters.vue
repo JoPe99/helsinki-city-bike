@@ -18,6 +18,10 @@
             <date-picker></date-picker>
             <date-picker></date-picker>
           </v-row>
+          <!-- Sliders for distance & duration filtering -->
+          <v-row>
+            <filter-sliders></filter-sliders>
+          </v-row>
         </v-col>
       </v-container>
     </v-card>
@@ -28,10 +32,11 @@
 import Vue from "vue";
 
 import DatePicker from "../DatePicker.vue";
+import FilterSliders from "./FilterSliders.vue";
 
 export default Vue.extend({
   name: "JourneyFilters",
-  components: { DatePicker },
+  components: { DatePicker, FilterSliders },
 
   data: () => ({
     options: {
@@ -41,6 +46,8 @@ export default Vue.extend({
     },
     search: "",
     timeout: {} as any,
+    distanceSlider: [10, 10],
+    durationSlider: [10, 10],
   }),
 
   watch: {
@@ -65,6 +72,17 @@ export default Vue.extend({
 
   mounted() {
     this.options.startTime = Date.now();
+    this.options.endTime = Date.now();
+  },
+
+  computed: {
+    getLongestJourneyByDistance() {
+      return 45550;
+    },
+
+    getLongestJourneyByDuration() {
+      return 45550;
+    },
   },
 
   methods: {},
