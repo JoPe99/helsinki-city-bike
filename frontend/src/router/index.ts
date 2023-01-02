@@ -1,8 +1,8 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import JourneyListView from "../views/JourneyListView.vue";
-import StationListView from "../views/StationListView.vue";
+import JourneyView from "../views/JourneyView.vue";
+import StationView from "../views/StationView.vue";
 
 Vue.use(VueRouter);
 
@@ -15,12 +15,12 @@ const routes: Array<RouteConfig> = [
   {
     path: "/journeys",
     name: "journeys",
-    component: JourneyListView,
+    component: JourneyView,
   },
   {
     path: "/stations",
     name: "stations",
-    component: StationListView,
+    component: StationView,
   },
 ];
 

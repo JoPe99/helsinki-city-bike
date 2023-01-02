@@ -13,7 +13,8 @@ import { JourneyType, SingleStationType } from "./backend-data-types";
 const SERVER_IP = "http://localhost:8081";
 
 /**
- * Get journeys from the backend. Takes page size, current offset, and sortBy
+ * Get journeys from the backend. Takes page size, current offset,
+ * sortBy, SortDesc, and search as parameters.
  * as parameters.
  *
  * Example:
@@ -48,9 +49,6 @@ export function getJourneys(
 /**
  * Returns total number of journeys stored in the server.
  *
- * Example:
- * localhost:8081/journeys/count
- *
  * @returns number
  */
 export function getJourneysCount() {
@@ -71,7 +69,7 @@ export function getAllStations() {
  * Returns journey with longest duration from the backend.
  * @returns JourneyType[]
  */
- export function getLongestDuration() {
+export function getLongestDuration() {
   const url = `${SERVER_IP}/journeys/longestDuration`;
   return axios.get<JourneyType[]>(url);
 }
@@ -80,8 +78,7 @@ export function getAllStations() {
  * Returns journey with longest distance from the backend.
  * @returns JourneyType[]
  */
- export function getLongestDistance() {
+export function getLongestDistance() {
   const url = `${SERVER_IP}/journeys/longestDistance`;
   return axios.get<JourneyType[]>(url);
 }
-

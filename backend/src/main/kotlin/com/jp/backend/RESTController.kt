@@ -29,7 +29,7 @@ class RESTController() {
 
     @GetMapping("/stations/{id}")
     @ResponseBody
-    fun getPaginatedStations(@PathVariable id: Int): ResponseEntity<Any?> {
+    fun getSingleStationDetailed(@PathVariable id: Int): ResponseEntity<Any?> {
         val stationData = DatabaseConn.getSingleStationData(id)
         return if (stationData == null) {
             ResponseEntity(HttpStatus.NOT_FOUND)

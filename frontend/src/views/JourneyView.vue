@@ -2,13 +2,13 @@
   <v-container fluid class="pa-0 fill-height">
     <!-- Default layout for desktops and larger viewports -->
     <v-row v-if="$vuetify.breakpoint.lgAndUp" class="pa-0 fill-height">
-      <v-col cols="6" lg="6" xl="5" class="pa-0 fill-height">
+      <v-col cols="6" lg="7" xl="5" class="pa-0 fill-height">
         <journey-data-table
-          @unselectedJourney="journeyRemoved"
+          @unselectedJourney="journeyUnselected"
           @selectedJourney="journeySelected"
         ></journey-data-table>
       </v-col>
-      <v-col cols="6" lg="6" xl="7" class="pa-0 fill-height">
+      <v-col cols="6" lg="5" xl="7" class="pa-0 fill-height">
         <map-component :markers="markers" class="fill-height" />
       </v-col>
     </v-row>
@@ -16,7 +16,7 @@
     <v-col v-if="$vuetify.breakpoint.mdAndDown" class="pa-0 fill-height">
       <map-component :markers="markers" style="height: 500px" />
       <journey-data-table
-        @unselectedJourney="journeyRemoved"
+        @unselectedJourney="journeyUnselected"
         @selectedJourney="journeySelected"
       ></journey-data-table>
     </v-col>
@@ -33,14 +33,13 @@ import { StationLocation } from "@/helpers/list-view-helpers";
 export default Vue.extend({
   name: "JourneyListView",
   components: { MapComponent, JourneyDataTable },
-
   data: () => ({
     markers: [] as StationLocation[],
   }),
 
   methods: {
-    // Empties markers
-    journeyRemoved() {
+    // Clear markers from map when journey unselected
+    journeyUnselected() {
       console.log("Removed");
       this.markers = [];
     },

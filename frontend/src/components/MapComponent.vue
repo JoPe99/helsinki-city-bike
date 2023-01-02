@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { LMap, LTileLayer, LMarker, LPolyline } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon, LatLng, LatLngBounds, latLngBounds } from "leaflet";
@@ -44,7 +44,7 @@ Icon.Default.mergeOptions({
 });
 // Leaflet fix ends here
 
-export default Vue.extend({
+export default defineComponent({
   name: "MapComponent",
 
   props: ["markers"],
@@ -59,7 +59,7 @@ export default Vue.extend({
   data: () => ({
     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     zoom: 12,
-    center: [60.192059, 24.945831],
+    center: [60.192059, 24.945831], // Coordinates to general area of bikes
     currentMarkers: [] as StationLocation[],
     mapIsReady: false,
     bounds: latLngBounds(

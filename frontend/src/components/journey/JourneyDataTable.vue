@@ -1,7 +1,8 @@
+<!-- Component includes filters and the data table -->
 <template>
   <div class="fill-height" v-resize="onResize">
-    <v-card class="elevation-0" style="height: 300px">
-      <journey-filters></journey-filters>
+    <v-card class="elevation-0" style="height: 250px">
+      <journey-filters @newFilters="handleFilters"></journey-filters>
     </v-card>
     <div class="fill-height" ref="resizableDiv">
       <v-data-table
@@ -61,7 +62,8 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
+
 import { getJourneysCount, getJourneys } from "../../helpers/api-functions";
 
 import {
@@ -78,7 +80,7 @@ import {
 
 import JourneyFilters from "./JourneyFilters.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "JourneyDataTable",
   components: { JourneyFilters },
 
@@ -123,6 +125,7 @@ export default Vue.extend({
       sortDesc: [false],
       debouncedSearch: "",
     },
+    filters: {},
     items: [] as FormattedJourneyType[],
     footerProps: {
       "items-per-page-options": [15, 20, 25, 30, 50, 100],
@@ -166,19 +169,24 @@ export default Vue.extend({
 
       getJourneys(pageSize, offset, sortBy, sortDesc, search).then(
         (response) => {
-          this.handleResponse(response.data, response.status);
+          this.handleAPIResponse(response.data, response.status);
           this.tableLoading = false;
         }
       );
     },
 
     // Handles API call status and formats the received data
-    handleResponse(data: JourneyType[], status: any) {
+    handleAPIResponse(data: JourneyType[], status: any) {
       // Handle status here
       if (status != 200) {
         return;
       }
       this.items = formatJourneyTypeArray(data);
+    },
+
+    // Handle filter values coming from journey filters
+    handleFilters(filters: object) {
+      this.filters = filters;
     },
 
     /** Pads time with zero to always be 2 digits.

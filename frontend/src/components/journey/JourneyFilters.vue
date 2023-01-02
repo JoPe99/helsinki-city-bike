@@ -1,26 +1,44 @@
 <template>
   <div class="fill-height">
     <v-card class="elevation-0">
-      <v-container class="mx-0">
+      <v-container fluid class="mx-0 px-4">
         <v-col>
+          <!-- Row contains datepickers & search -->
           <v-row>
-            <v-card-title style="width: 100%">
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-card-title>
-          </v-row>
-          <v-row>
-            <date-picker></date-picker>
-            <date-picker></date-picker>
+            <v-col cols="3">
+              <v-card color="primary" class="elevation-4">
+                <date-picker
+                  @newData="handleNewDate"
+                  id="start_date"
+                  title="Start date"
+                ></date-picker>
+              </v-card>
+            </v-col>
+            <v-col cols="3">
+              <v-card color="primary" class="elevation-4">
+                <date-picker
+                  @newData="handleNewDate"
+                  id="end_date"
+                  title="End date"
+                ></date-picker>
+              </v-card>
+            </v-col>
+            <v-col cols="6">
+              <v-card color="primary" class="fill-height elevation-4">
+                <v-text-field
+                  class="pa-4 mt-0"
+                  v-model="search"
+                  append-icon="mdi-magnify"
+                  label="Search stations"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-card>
+            </v-col>
           </v-row>
           <!-- Sliders for distance & duration filtering -->
           <v-row>
-            <filter-sliders></filter-sliders>
+            <filter-sliders @newData="handleSliderChange"></filter-sliders>
           </v-row>
         </v-col>
       </v-container>
@@ -29,63 +47,75 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
 import DatePicker from "../DatePicker.vue";
 import FilterSliders from "./FilterSliders.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "JourneyFilters",
+
   components: { DatePicker, FilterSliders },
 
   data: () => ({
-    options: {
+    filters: {
       startTime: Date() as unknown,
       endTime: Date() as unknown,
       debouncedSearch: "",
+      distanceFilter: [10, 10] as number[],
+      durationFilter: [10, 10] as number[],
     },
     search: "",
     timeout: {} as any,
-    distanceSlider: [10, 10],
-    durationSlider: [10, 10],
   }),
 
+  mounted() {
+    this.filters.startTime = Date.now();
+    this.filters.endTime = Date.now();
+  },
+
   watch: {
-    // Watch options for changes, call API for new journeys if options change
-    options: {
+    // Watch filters for changes, emit new filters when that happens
+    filters: {
       handler() {
-        console.log(this.options);
+        this.$emit("newFilters", this.filters);
       },
       deep: true,
     },
-    // Debounce search so it doesn't call API instantly after every change
+    // Debounce search by 500ms so it
+    // doesn't call API instantly after every change
     search: {
       handler() {
         if (this.timeout) clearTimeout(this.timeout);
 
         this.timeout = setTimeout(() => {
-          this.options.debouncedSearch = this.search;
+          this.filters.debouncedSearch = this.search;
         }, 500);
       },
     },
   },
 
-  mounted() {
-    this.options.startTime = Date.now();
-    this.options.endTime = Date.now();
-  },
+  computed: {},
 
-  computed: {
-    getLongestJourneyByDistance() {
-      return 45550;
+  methods: {
+    // On new date, the date is stored as
+    // "YYYY-MM-DD" in the options
+    handleNewDate(id: string, date: string) {
+      console.log(id + date);
+      if (id == "start_date") {
+        this.filters.startTime = date;
+      } else if (id == "end_date") {
+        this.filters.endTime = date;
+      }
     },
-
-    getLongestJourneyByDuration() {
-      return 45550;
+    handleSliderChange(sliders: {
+      distanceSlider: number[];
+      durationSlider: number[];
+    }) {
+      this.filters.distanceFilter = sliders.distanceSlider;
+      this.filters.durationFilter = sliders.durationSlider;
     },
   },
-
-  methods: {},
 });
 </script>
 
