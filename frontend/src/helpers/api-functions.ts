@@ -82,3 +82,21 @@ export function getLongestDistance() {
   const url = `${SERVER_IP}/journeys/longestDistance`;
   return axios.get<JourneyType[]>(url);
 }
+
+/**
+ * Returns earliest journey by departure time
+ * @returns JourneyType[]
+ */
+export function getEarliestJourney() {
+  const url = `${SERVER_IP}/journeys/earliest`;
+  return axios.get<JourneyType[]>(url);
+}
+
+/**
+ * Returns latest journey by departure time
+ * @returns JourneyType[]
+ */
+export function getLatestJourney() {
+  const url = `${SERVER_IP}/journeys/latest`;
+  return axios.get<JourneyType[]>(url);
+}

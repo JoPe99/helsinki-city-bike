@@ -71,6 +71,20 @@ class RESTController() {
         return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
     }
 
+    @GetMapping("/journeys/earliest")
+    @ResponseBody
+    fun getEarliestJourney(): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(1, 0, "departure_time", false)
+        return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
+    }
+
+    @GetMapping("/journeys/latest")
+    @ResponseBody
+    fun getLatestJourney(): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(1, 0, "departure_time", true)
+        return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
+    }
+
     // TODO: Add inserts for stations and journeys
 
     @PostMapping("/parse/stations")
