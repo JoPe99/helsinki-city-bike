@@ -123,9 +123,14 @@ export default defineComponent({
       page: 1,
       sortBy: ["departureTime"],
       sortDesc: [false],
-      debouncedSearch: "",
     },
-    filters: {},
+    filters: {
+      debouncedSearch: "" as string,
+      distanceFilter: [] as number[],
+      durationFilter: [] as number[],
+      startTime: 0 as number,
+      endTime: 0 as number,
+    },
     items: [] as FormattedJourneyType[],
     footerProps: {
       "items-per-page-options": [15, 20, 25, 30, 50, 100],
@@ -165,7 +170,7 @@ export default defineComponent({
       let offset = pageToOffset(this.options.page, pageSize);
       let sortBy = sortByArrayToString(this.options.sortBy);
       let sortDesc = sortDescArrayToString(this.options.sortDesc);
-      let search = this.options.debouncedSearch;
+      let search = this.filters.debouncedSearch;
 
       getJourneys(pageSize, offset, sortBy, sortDesc, search).then(
         (response) => {
@@ -185,7 +190,13 @@ export default defineComponent({
     },
 
     // Handle filter values coming from journey filters
-    handleFilters(filters: object) {
+    handleFilters(filters: {
+      debouncedSearch: string;
+      distanceFilter: number[];
+      durationFilter: number[];
+      startTime: number;
+      endTime: number;
+    }) {
       this.filters = filters;
     },
 

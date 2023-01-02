@@ -11,6 +11,7 @@
                   @newData="handleNewDate"
                   id="start_date"
                   title="Start date"
+                  :default-date="getEarliestJourneyDate"
                 ></date-picker>
               </v-card>
             </v-col>
@@ -20,6 +21,7 @@
                   @newData="handleNewDate"
                   id="end_date"
                   title="End date"
+                  :default-date="getLatestJourneyDate"
                 ></date-picker>
               </v-card>
             </v-col>
@@ -49,6 +51,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
+import { useStore } from "@/store";
 import DatePicker from "../DatePicker.vue";
 import FilterSliders from "./FilterSliders.vue";
 
@@ -67,6 +70,7 @@ export default defineComponent({
     },
     search: "",
     timeout: {} as any,
+    store: useStore(),
   }),
 
   mounted() {
@@ -95,7 +99,14 @@ export default defineComponent({
     },
   },
 
-  computed: {},
+  computed: {
+    getEarliestJourneyDate(): string {
+      return this.store.earliestJourney.departureTime;
+    },
+    getLatestJourneyDate(): string {
+      return this.store.latestJourney.departureTime;
+    },
+  },
 
   methods: {
     // On new date, the date is stored as

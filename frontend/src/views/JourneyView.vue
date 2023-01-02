@@ -31,7 +31,7 @@ import { FormattedJourneyType } from "@/helpers/backend-data-types";
 import { StationLocation } from "@/helpers/list-view-helpers";
 
 export default Vue.extend({
-  name: "JourneyListView",
+  name: "JourneyView",
   components: { MapComponent, JourneyDataTable },
   data: () => ({
     markers: [] as StationLocation[],

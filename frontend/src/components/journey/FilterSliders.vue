@@ -11,7 +11,7 @@
             v-model="sliders.distanceSlider"
             :lazy="true"
             :min="10"
-            :max="getLongestJourneyByDistance"
+            :max="getLongestJourneyDistance"
           ></vue-slider>
         </v-card>
       </v-col>
@@ -27,7 +27,7 @@
             v-model="sliders.durationSlider"
             :lazy="true"
             :min="10"
-            :max="getLongestJourneyByDuration"
+            :max="getLongestJourneyDuration"
           ></vue-slider>
         </v-card>
       </v-col>
@@ -41,16 +41,24 @@ import { defineComponent } from "vue";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 
+import { useStore } from "@/store";
+
 export default defineComponent({
   name: "FilterSliders",
   components: { VueSlider },
 
   data: () => ({
     sliders: {
-      distanceSlider: [10, 45500],
-      durationSlider: [10, 45500],
+      distanceSlider: [10, 10],
+      durationSlider: [10, 10],
     },
+    store: useStore(),
   }),
+
+  mounted() {
+    this.sliders.distanceSlider = [10, this.getLongestJourneyDistance];
+    this.sliders.durationSlider = [10, this.getLongestJourneyDuration];
+  },
 
   watch: {
     sliders: {
@@ -62,12 +70,12 @@ export default defineComponent({
   },
 
   computed: {
-    getLongestJourneyByDistance() {
-      return 45550;
+    getLongestJourneyDistance(): number {
+      return this.store.longestJourneyByDistance.distanceCovered;
     },
 
-    getLongestJourneyByDuration() {
-      return 45550;
+    getLongestJourneyDuration(): number {
+      return this.store.longestJourneyByDuration.durationSeconds;
     },
   },
 

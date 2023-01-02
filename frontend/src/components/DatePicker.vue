@@ -35,12 +35,16 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "DatePicker",
 
-  props: ["id", "title"],
+  props: ["id", "title", "defaultDate"],
 
   data: () => ({
     date: new Date().toISOString().substring(0, 10),
     menu: false,
   }),
+
+  mounted() {
+    this.date = this.$props.defaultDate;
+  },
 
   watch: {},
   computed: {

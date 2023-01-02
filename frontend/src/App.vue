@@ -40,12 +40,19 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { useStore } from "@/store/index";
+import { use } from "chai";
 
 export default Vue.extend({
   name: "App",
 
   data: () => ({}),
-  computed: {},
+
+  created() {
+    const store = useStore();
+    store.setupStore();
+  },
+
   methods: {
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;

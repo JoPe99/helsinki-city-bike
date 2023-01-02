@@ -10,7 +10,7 @@ import Vue from "vue";
 import MapComponent from "../components/MapComponent.vue";
 
 export default Vue.extend({
-  name: "StationListView",
+  name: "StationView",
   components: { MapComponent },
 });
 </script>
