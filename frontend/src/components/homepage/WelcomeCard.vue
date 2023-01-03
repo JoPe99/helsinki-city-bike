@@ -7,7 +7,7 @@
         Helsinki city bikes and {{ totalStations }} bike stations. The data used
         in this application is gathered from Helsingin Seudun Liikenne, which is
         a public transportation organization working in Helsinki. The data
-        included is from a timespan of {{ getEarliestJourneyDate }} to
+        included is from a timespan from {{ getEarliestJourneyDate }} to
         {{ getLatestJourneyDate }}.
       </v-card-text>
     </v-card>
