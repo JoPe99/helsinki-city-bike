@@ -152,7 +152,7 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
     return ret
 }
 
-fun validateDate(date: String?): LocalDateTime? {
+private fun validateDate(date: String?): LocalDateTime? {
     var validatedDate: LocalDateTime?
     println(date)
     if (date.isNullOrBlank()) {

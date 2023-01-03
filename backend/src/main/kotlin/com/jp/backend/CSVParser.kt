@@ -8,6 +8,10 @@ package com.jp.backend
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.DatabaseConn.insertIntoJourneys
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 object CSVParser {
@@ -36,30 +40,46 @@ object CSVParser {
         var rowCounter: Long = 0
 
         // TODO: Get file location from params
-        var filename = "src/main/resources/data/05_2021.csv"
+        var filenames = arrayListOf(
+            "src/main/resources/data/05_2021.csv",
+            "src/main/resources/data/06_2021.csv",
+            "src/main/resources/data/07_2021.csv")
 
-        csvReader().open(filename) {
-            run parsing@ {
+        for (filename in filenames) { parseCSV(filename) }
+
+    }
+
+    private fun parseCSV(pathToFile: String) {
+        println("Starting parsing from $pathToFile")
+        var journeyArray: ArrayList<JourneyModel> = arrayListOf()
+        var firstRow: Map<String, String> = mapOf()
+        var rowCounter: Long = 0
+
+       /* Seems like the files from May, June & July have duplicate data.
+        * The data begins repeating from start halfway of the file.
+        * To not parse the duplicates, we stop the parsing when the loop
+        * hits the first duplicate row. To make sure we don't stop parsing
+        * in the extremely unlikely event that the first rows happen to be
+        * exactly the same, checks are started doing after 5 rows.
+        */
+        csvReader().open(pathToFile) {
+            run parsing@{
                 readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
-                  /* Seems like the files from May, June & July have duplicate data.
-                   * The data begins repeating from start halfway of the file.
-                   * To not parse the duplicates, we stop the parsing when the loop
-                   * hits the first duplicate row. To make sure we don't stop parsing
-                   * in the extremely unlikely event that the first rows happen to be
-                   * exactly the same, checks are started doing after 5 rows.
-                   */
+                    if (firstRow.isEmpty()) {
+                        firstRow = row
+                    } else if (row == firstRow && rowCounter > 5) return@parsing
+
                     rowCounter++
-                    if (firstRow.isEmpty()) {firstRow = row}
-                    else if (row == firstRow && rowCounter > 5) return@parsing
 
                     // If journey data is valid, format to JourneyModel and add to array to be returned
-                    if (validateJourneyData(row)) { journeyArray.add(journeyRowToModel(row))}
+                    if (validateJourneyData(row)) {
+                        journeyArray.add(journeyRowToModel(row))
+                    }
                 }
             }
         }
-
         insertIntoJourneys(journeyArray)
-        println("CSV from $filename parsed into database")
+        println("CSV from $pathToFile parsed into database")
     }
 
     // TODO: Tests
