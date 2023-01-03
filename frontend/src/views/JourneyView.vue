@@ -40,7 +40,6 @@ export default Vue.extend({
   methods: {
     // Clear markers from map when journey unselected
     journeyUnselected() {
-      console.log("Removed");
       this.markers = [];
     },
 
@@ -60,7 +59,6 @@ export default Vue.extend({
       };
 
       this.markers = [departureStation, returnStation];
-      console.log(this.markers);
     },
   },
 });

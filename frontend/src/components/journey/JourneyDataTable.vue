@@ -128,8 +128,8 @@ export default defineComponent({
       debouncedSearch: "" as string,
       distanceFilter: [] as number[],
       durationFilter: [] as number[],
-      startTime: 0 as number,
-      endTime: 0 as number,
+      startDate: "" as string,
+      endDate: "" as string,
     },
     items: [] as FormattedJourneyType[],
     footerProps: {
@@ -148,7 +148,14 @@ export default defineComponent({
       handler() {
         // Drop selected journey, get new journeys when table options are changed
         this.selectedJourney = 0;
-        console.log(this.options);
+        this.getJourneysFromAPI();
+      },
+      deep: true,
+    },
+    filters: {
+      handler() {
+        // Drop selected journey, get new journeys when table filters are changed
+        this.selectedJourney = 0;
         this.getJourneysFromAPI();
       },
       deep: true,
@@ -171,13 +178,29 @@ export default defineComponent({
       let sortBy = sortByArrayToString(this.options.sortBy);
       let sortDesc = sortDescArrayToString(this.options.sortDesc);
       let search = this.filters.debouncedSearch;
+      let startDate = this.filters.startDate;
+      let endDate = this.filters.endDate;
+      let minDistance = this.filters.distanceFilter[0];
+      let maxDistance = this.filters.distanceFilter[1];
+      let minDuration = this.filters.durationFilter[0];
+      let maxDuration = this.filters.durationFilter[1];
 
-      getJourneys(pageSize, offset, sortBy, sortDesc, search).then(
-        (response) => {
-          this.handleAPIResponse(response.data, response.status);
-          this.tableLoading = false;
-        }
-      );
+      getJourneys(
+        pageSize,
+        offset,
+        sortBy,
+        sortDesc,
+        search,
+        startDate,
+        endDate,
+        minDistance,
+        maxDistance,
+        minDuration,
+        maxDuration
+      ).then((response) => {
+        this.handleAPIResponse(response.data, response.status);
+        this.tableLoading = false;
+      });
     },
 
     // Handles API call status and formats the received data
@@ -194,8 +217,8 @@ export default defineComponent({
       debouncedSearch: string;
       distanceFilter: number[];
       durationFilter: number[];
-      startTime: number;
-      endTime: number;
+      startDate: string;
+      endDate: string;
     }) {
       this.filters = filters;
     },

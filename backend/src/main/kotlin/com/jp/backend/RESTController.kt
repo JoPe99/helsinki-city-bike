@@ -45,8 +45,14 @@ class RESTController() {
                              @RequestParam offset: Long,
                              @RequestParam sortBy: String?,
                              @RequestParam sortDesc: Boolean?,
-                             @RequestParam search: String?): ResponseEntity<Any?> {
-        val journeyData = DatabaseConn.getPaginationJourneysData(pageSize, offset, sortBy, sortDesc, search)
+                             @RequestParam search: String?,
+                             @RequestParam startDate: String?,
+                             @RequestParam endDate: String?,
+                             @RequestParam minDistance: Int?,
+                             @RequestParam maxDistance: Int?,
+                             @RequestParam minDuration: Int?,
+                             @RequestParam maxDuration: Int?): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(pageSize, offset, sortBy, sortDesc, search, startDate, endDate, minDistance, maxDistance, minDuration, maxDuration)
         return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
     }
 

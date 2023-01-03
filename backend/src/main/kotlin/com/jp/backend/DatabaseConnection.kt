@@ -5,10 +5,14 @@
 
 package com.jp.backend
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toLocalDate
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Sort
 
 object DatabaseConn {
@@ -148,11 +152,43 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
     return ret
 }
 
-fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "", sortDesc: Boolean?, search: String? = ""): ArrayList<JourneyModelWithStationData> {
+fun validateDate(date: String?): LocalDateTime? {
+    var validatedDate: LocalDateTime?
+    println(date)
+    if (date.isNullOrBlank()) {
+        println("Already null")
+        return null
+    } else {
+        try {
+            var ISODate = date + "T00:00:00"
+            validatedDate = ISODate.toLocalDateTime()
+        } catch (e: Exception) {
+            println(e)
+            return null
+        }
+    }
+    return validatedDate
+}
+
+fun getPaginationJourneysData(pageSize: Int,
+                              offset: Long,
+                              sortBy: String? = "",
+                              sortDesc: Boolean?,
+                              search: String? = null,
+                              startDate: String? = null,
+                              endDate: String? = null,
+                              minDistance: Int? = null,
+                              maxDistance: Int?  = null,
+                              minDuration: Int? = null,
+                              maxDuration: Int? = null): ArrayList<JourneyModelWithStationData> {
     val ret: ArrayList<JourneyModelWithStationData> = arrayListOf()
+    var count: Long
     val orderBy = formOrderBy(sortBy, sortDesc)
     val departureStationsTable = Stations.alias("st1")
     val returnStationsTable = Stations.alias("st2")
+    val timestampStartDate = validateDate(startDate)
+    val timestampEndDate = validateDate(endDate)
+
 
     transaction(db) {
         var journeys = Journeys
@@ -162,8 +198,27 @@ fun getPaginationJourneysData(pageSize: Int, offset: Long, sortBy: String? = "",
             search?.let {
                 journeys.andWhere { (Journeys.departure_station_name like("$search%")) or (Journeys.return_station_name like ("$search%")) }
             }
-
+            timestampStartDate?.let{
+                journeys.andWhere { Journeys.departure_time greaterEq timestampStartDate }
+            }
+            timestampEndDate?.let{
+                journeys.andWhere { Journeys.departure_time lessEq timestampEndDate }
+            }
+            minDistance?.let {
+                journeys.andWhere { Journeys.distance greaterEq minDistance }
+            }
+            maxDistance?.let {
+                journeys.andWhere { Journeys.distance lessEq maxDistance }
+            }
+            minDuration?.let {
+                journeys.andWhere { Journeys.duration greaterEq minDuration }
+            }
+            maxDuration?.let {
+                journeys.andWhere { Journeys.duration lessEq maxDuration }
+            }
             journeys.orderBy(orderBy).limit(pageSize, offset)
+
+        count = journeys.count()
 
         for (journey in journeys) {
             ret.add(JourneyModelWithStationData(

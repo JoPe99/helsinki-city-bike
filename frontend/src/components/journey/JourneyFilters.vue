@@ -62,8 +62,8 @@ export default defineComponent({
 
   data: () => ({
     filters: {
-      startTime: Date() as unknown,
-      endTime: Date() as unknown,
+      startDate: Date() as unknown,
+      endDate: Date() as unknown,
       debouncedSearch: "",
       distanceFilter: [10, 10] as number[],
       durationFilter: [10, 10] as number[],
@@ -74,8 +74,8 @@ export default defineComponent({
   }),
 
   mounted() {
-    this.filters.startTime = Date.now();
-    this.filters.endTime = Date.now();
+    this.filters.startDate = this.getEarliestJourneyDate.substring(0, 10);
+    this.filters.endDate = this.getLatestJourneyDate.substring(0, 10);
   },
 
   watch: {
@@ -112,11 +112,10 @@ export default defineComponent({
     // On new date, the date is stored as
     // "YYYY-MM-DD" in the options
     handleNewDate(id: string, date: string) {
-      console.log(id + date);
       if (id == "start_date") {
-        this.filters.startTime = date;
+        this.filters.startDate = date;
       } else if (id == "end_date") {
-        this.filters.endTime = date;
+        this.filters.endDate = date;
       }
     },
     handleSliderChange(sliders: {

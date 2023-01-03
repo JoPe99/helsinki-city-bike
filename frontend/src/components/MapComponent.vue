@@ -81,7 +81,6 @@ export default defineComponent({
   watch: {
     markers: {
       handler(newVal: StationLocation[]) {
-        console.log(newVal);
         if (newVal.length == 0) {
           this.resetMap();
         } else {

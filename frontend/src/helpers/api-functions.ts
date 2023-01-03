@@ -14,17 +14,25 @@ const SERVER_IP = "http://localhost:8081";
 
 /**
  * Get journeys from the backend. Takes page size, current offset,
- * sortBy, SortDesc, and search as parameters.
+ * sortBy, SortDesc, and search, start/end date, min/max duration/distance
  * as parameters.
  *
  * Example:
- *  localhost:8081/journeys?pageSize=5&offset=0&sortBy="departureTime"
+ *  localhost:8081/journeys?pageSize=5&offset=0&sortBy=departureTime \
+ *  &sortDesc=true&search=Arabia&minDistance=1300&maxDistance=6000 \
+ *  &minDuration=400&maxDuration=900
  *
  * @param pageSize
  * @param offset
  * @param sortBy
  * @param sortDesc
  * @param search
+ * @param startDate
+ * @param endDate
+ * @param minDistance
+ * @param maxDistance
+ * @param minDuration
+ * @param maxDuration
  * @returns JourneyType[]
  */
 export function getJourneys(
@@ -32,7 +40,13 @@ export function getJourneys(
   offset: number,
   sortBy: string,
   sortDesc: boolean,
-  search: string
+  search: string,
+  startDate: string,
+  endDate: string,
+  minDistance: number,
+  maxDistance: number,
+  minDuration: number,
+  maxDuration: number
 ) {
   const url = `${SERVER_IP}/journeys`;
   return axios.get<JourneyType[]>(url, {
@@ -42,6 +56,12 @@ export function getJourneys(
       sortBy: sortBy,
       sortDesc: sortDesc,
       search: search,
+      startDate: startDate,
+      endDate: endDate,
+      minDistance: minDistance,
+      maxDistance: maxDistance,
+      minDuration: minDuration,
+      maxDuration: maxDuration,
     },
   });
 }
