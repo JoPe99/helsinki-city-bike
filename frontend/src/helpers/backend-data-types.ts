@@ -28,7 +28,7 @@ export type JourneyType = {
 };
 
 /**
- * App formats the journey types from server to this type,
+ * This app formats the journey types from server to this type,
  * which includes separate dates and times, and formatted
  * distance to kilometers and time to minutes.
  */
