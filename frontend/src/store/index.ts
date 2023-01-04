@@ -12,6 +12,8 @@ import { defineStore } from "pinia";
 
 export const useStore = defineStore("store", {
   state: () => ({
+    storeReady: false as boolean,
+
     totalJourneys: 0 as number,
 
     earliestJourney: {} as JourneyType,
@@ -25,32 +27,35 @@ export const useStore = defineStore("store", {
   }),
   getters: {},
   actions: {
-    setupStore() {
-      getJourneysCount().then((response) => {
+    async setupStore() {
+      await getJourneysCount().then((response) => {
         this.totalJourneys = response.data;
       });
 
-      getEarliestJourney().then((response) => {
+      await getEarliestJourney().then((response) => {
         this.earliestJourney = response.data.journeys[0];
       });
 
-      getLatestJourney().then((response) => {
+      await getLatestJourney().then((response) => {
         this.latestJourney = response.data.journeys[0];
       });
 
-      getLongestDistance().then((response) => {
+      await getLongestDistance().then((response) => {
         this.longestJourneyByDistance = response.data.journeys[0];
       });
 
-      getLongestDuration().then((response) => {
+      await getLongestDuration().then((response) => {
         this.longestJourneyByDuration = response.data.journeys[0];
       });
 
-      getAllStations().then((response) => {
+      await getAllStations().then((response) => {
         this.stations = response.data;
         this.setupStationMarkers(response.data);
       });
+      this.storeReady = true;
+      console.log("Store ready");
     },
+
     setupStationMarkers(stations: StationType[]) {
       this.allStationMarkers = [] as StationLocation[];
       for (const station of stations) {
@@ -60,7 +65,6 @@ export const useStore = defineStore("store", {
           latLong: [Number(station.latitude), Number(station.longitude)],
         });
       }
-      console.log(this.allStationMarkers);
     },
   },
 });
