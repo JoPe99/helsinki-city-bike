@@ -8,7 +8,7 @@
       <v-data-table
         :height="tableHeight"
         :headers="headers"
-        :items="items"
+        :items="journeys"
         :options.sync="options"
         :server-items-length="totalJourneys"
         class="elevation-0"
@@ -131,7 +131,7 @@ export default defineComponent({
       startDate: "" as string,
       endDate: "" as string,
     },
-    items: [] as FormattedJourneyType[],
+    journeys: [] as FormattedJourneyType[],
     footerProps: {
       "items-per-page-options": [15, 20, 25, 30, 50, 100],
       showFirstLastPage: true,
@@ -209,7 +209,7 @@ export default defineComponent({
       if (status != 200) {
         return;
       }
-      this.items = formatJourneyTypeArray(data);
+      this.journeys = formatJourneyTypeArray(data);
     },
 
     // Handle filter values coming from journey filters

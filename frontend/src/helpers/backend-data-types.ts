@@ -77,7 +77,7 @@ export type StationType = {
 };
 
 /**
- * Stations come in this format from the server.
+ * Station details, used combined with StationType
  */
 export type StationDetails = {
   totalDepartJourneys: number;

@@ -7,6 +7,7 @@ import {
   getLongestDuration,
 } from "@/helpers/api-functions";
 import { JourneyType, StationType } from "@/helpers/backend-data-types";
+import { StationLocation } from "@/helpers/list-view-helpers";
 import { defineStore } from "pinia";
 
 export const useStore = defineStore("store", {
@@ -20,6 +21,7 @@ export const useStore = defineStore("store", {
     longestJourneyByDuration: {} as JourneyType,
 
     stations: [] as StationType[],
+    allStationMarkers: [] as StationLocation[],
   }),
   getters: {},
   actions: {
@@ -46,7 +48,19 @@ export const useStore = defineStore("store", {
 
       getAllStations().then((response) => {
         this.stations = response.data;
+        this.setupStationMarkers(response.data);
       });
+    },
+    setupStationMarkers(stations: StationType[]) {
+      this.allStationMarkers = [] as StationLocation[];
+      for (const station of stations) {
+        this.allStationMarkers.push({
+          id: station.id,
+          name: station.nameFi,
+          latLong: [Number(station.latitude), Number(station.longitude)],
+        });
+      }
+      console.log(this.allStationMarkers);
     },
   },
 });

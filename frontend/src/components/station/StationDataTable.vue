@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { SingleStationType, StationType } from "@/helpers/backend-data-types";
+import { StationLocation } from "@/helpers/list-view-helpers";
 import { useStore } from "@/store";
 import { defineComponent } from "vue";
 
@@ -99,13 +100,13 @@ export default defineComponent({
       }
     },
     // Clicked row is stored as selected journey
-    handleRowClick(item: StationType) {
-      if (this.selectedStation == item.id) {
+    handleRowClick(station: StationType) {
+      if (this.selectedStation == station.id) {
         this.selectedStation = 0;
         this.$emit("unselectedStation");
       } else {
-        this.selectedStation = item.id;
-        this.$emit("selectedStation", item);
+        this.selectedStation = station.id;
+        this.$emit("selectedStation", station);
       }
     },
   },
