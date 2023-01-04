@@ -166,8 +166,8 @@ fun getPaginationJourneysData(pageSize: Int,
                               minDistance: Int? = null,
                               maxDistance: Int?  = null,
                               minDuration: Int? = null,
-                              maxDuration: Int? = null): ArrayList<JourneyModelWithStationData> {
-    val ret: ArrayList<JourneyModelWithStationData> = arrayListOf()
+                              maxDuration: Int? = null): JourneyAPIResult {
+    val ret: JourneyAPIResult = JourneyAPIResult(0, arrayListOf() )
     var count: Long
     val orderBy = formOrderBy(sortBy, sortDesc)
     val departureStationsTable = Stations.alias("st1")
@@ -202,12 +202,13 @@ fun getPaginationJourneysData(pageSize: Int,
             maxDuration?.let {
                 journeys.andWhere { Journeys.duration lessEq maxDuration }
             }
-            count = journeys.count()
+
+            // Getting length before paginating
+            ret.length = journeys.count().toInt()
             journeys.orderBy(orderBy).limit(pageSize, offset)
 
-
         for (journey in journeys) {
-            ret.add(JourneyModelWithStationData(
+            ret.journeys.add(JourneyModelWithStationData(
                 journey[Journeys.id].toInt(),
                 journey[Journeys.departure_time].toString(),
                 journey[Journeys.return_time].toString(),
@@ -320,9 +321,7 @@ fun getJourneyCount(): Long {
 
 private fun validateDate(date: String?, toEndOfDay: Boolean): LocalDateTime? {
         var validatedDate: LocalDateTime?
-        println(date)
         if (date.isNullOrBlank()) {
-            println("Already null")
             return null
         } else {
             if (toEndOfDay) {

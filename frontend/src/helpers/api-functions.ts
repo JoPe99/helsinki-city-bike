@@ -9,6 +9,7 @@ import {
   JourneyType,
   StationType,
   SingleStationType,
+  JourneyAPIResult,
 } from "./backend-data-types";
 
 // If you want to use a self-hosted backend for testing,
@@ -37,7 +38,7 @@ const SERVER_IP = "http://localhost:8081";
  * @param maxDistance
  * @param minDuration
  * @param maxDuration
- * @returns JourneyType[]
+ * @returns JourneyAPIResult
  */
 export function getJourneys(
   pageSize: number,
@@ -53,7 +54,7 @@ export function getJourneys(
   maxDuration: number
 ) {
   const url = `${SERVER_IP}/journeys`;
-  return axios.get<JourneyType[]>(url, {
+  return axios.get<JourneyAPIResult>(url, {
     params: {
       pageSize: pageSize,
       offset: offset,
@@ -104,7 +105,7 @@ export function getSingleStation(stationId: number) {
  */
 export function getLongestDuration() {
   const url = `${SERVER_IP}/journeys/longestDuration`;
-  return axios.get<JourneyType[]>(url);
+  return axios.get<JourneyAPIResult>(url);
 }
 
 /**
@@ -113,7 +114,7 @@ export function getLongestDuration() {
  */
 export function getLongestDistance() {
   const url = `${SERVER_IP}/journeys/longestDistance`;
-  return axios.get<JourneyType[]>(url);
+  return axios.get<JourneyAPIResult>(url);
 }
 
 /**
@@ -122,7 +123,7 @@ export function getLongestDistance() {
  */
 export function getEarliestJourney() {
   const url = `${SERVER_IP}/journeys/earliest`;
-  return axios.get<JourneyType[]>(url);
+  return axios.get<JourneyAPIResult>(url);
 }
 
 /**
@@ -131,5 +132,5 @@ export function getEarliestJourney() {
  */
 export function getLatestJourney() {
   const url = `${SERVER_IP}/journeys/latest`;
-  return axios.get<JourneyType[]>(url);
+  return axios.get<JourneyAPIResult>(url);
 }

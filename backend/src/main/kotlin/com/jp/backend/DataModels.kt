@@ -66,6 +66,10 @@ data class TopStationModel(
         val count: Int
 )
 
+data class JourneyAPIResult(
+        var length: Int,
+        val journeys: ArrayList<JourneyModelWithStationData>
+)
 
 /**
  *   JourneyModel is used when parsing from the CSV files and inserting to the database.

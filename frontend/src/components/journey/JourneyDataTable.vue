@@ -201,18 +201,23 @@ export default defineComponent({
         minDuration,
         maxDuration
       ).then((response) => {
-        this.handleAPIResponse(response.data, response.status);
+        this.handleAPIResponse(
+          response.data.length,
+          response.data.journeys,
+          response.status
+        );
         this.tableLoading = false;
       });
     },
 
     // Handles API call status and formats the received data
-    handleAPIResponse(data: JourneyType[], status: any) {
+    handleAPIResponse(length: number, journeys: JourneyType[], status: any) {
       // Handle status here
       if (status != 200) {
         return;
       }
-      this.journeys = formatJourneyTypeArray(data);
+      this.totalJourneys = length;
+      this.journeys = formatJourneyTypeArray(journeys);
     },
 
     // Handle filter values coming from journey filters

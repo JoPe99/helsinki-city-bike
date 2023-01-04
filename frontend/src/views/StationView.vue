@@ -27,7 +27,6 @@ export default Vue.extend({
   }),
 
   mounted() {
-    console.log(this.store.allStationMarkers);
     this.allStationMarkers = this.store.allStationMarkers;
     this.markers = this.allStationMarkers;
   },

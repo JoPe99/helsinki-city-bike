@@ -7,6 +7,11 @@ import { formattedDateTime } from "./list-view-helpers";
 /**
  * Journeys come in this format from the server.
  */
+export type JourneyAPIResult = {
+  length: number;
+  journeys: JourneyType[];
+};
+
 export type JourneyType = {
   id: number;
 
@@ -89,8 +94,8 @@ export type StationDetails = {
   averageDepartDuration: number;
   averageReturnDuration: number;
 
-  topDepartStations: Array<{name: string, count: number}>;
-  topReturnStations: Array<{name: string, count: number}>;
+  topDepartStations: Array<{ name: string; count: number }>;
+  topReturnStations: Array<{ name: string; count: number }>;
 };
 
 /**

@@ -31,19 +31,19 @@ export const useStore = defineStore("store", {
       });
 
       getEarliestJourney().then((response) => {
-        this.earliestJourney = response.data[0];
+        this.earliestJourney = response.data.journeys[0];
       });
 
       getLatestJourney().then((response) => {
-        this.latestJourney = response.data[0];
+        this.latestJourney = response.data.journeys[0];
       });
 
       getLongestDistance().then((response) => {
-        this.longestJourneyByDistance = response.data[0];
+        this.longestJourneyByDistance = response.data.journeys[0];
       });
 
       getLongestDuration().then((response) => {
-        this.longestJourneyByDuration = response.data[0];
+        this.longestJourneyByDuration = response.data.journeys[0];
       });
 
       getAllStations().then((response) => {
