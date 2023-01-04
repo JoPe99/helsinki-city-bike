@@ -148,6 +148,7 @@ export default defineComponent({
       handler() {
         // Drop selected journey, get new journeys when table options are changed
         this.selectedJourney = 0;
+        this.$emit("unselectedJourney");
         this.getJourneysFromAPI();
       },
       deep: true,
@@ -163,8 +164,10 @@ export default defineComponent({
   },
 
   mounted() {
+    this.tableLoading = true;
     getJourneysCount().then((response) => {
       this.totalJourneys = response.data;
+      this.tableLoading = false;
     });
   },
 

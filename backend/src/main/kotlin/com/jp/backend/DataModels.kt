@@ -50,8 +50,20 @@ data class StationModelWithDetails(
         val averageDepartDistance: Float,
         val averageReturnDistance: Float,
 
-        val topDepartStations: ArrayList<Map<String, Int>>,
-        val topReturnStations: ArrayList<Map<String, Int>>
+        val averageDepartDuration: Float,
+        val averageReturnDuration: Float,
+
+        val topDepartStations: ArrayList<TopStationModel>,
+        val topReturnStations: ArrayList<TopStationModel>
+)
+
+/**
+ * Exclusively used for easier gathering of top return/depart stations for
+ * StationModelWithDetails.
+ */
+data class TopStationModel(
+        val name: String,
+        val count: Int
 )
 
 

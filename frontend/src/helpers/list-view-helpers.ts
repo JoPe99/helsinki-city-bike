@@ -133,7 +133,7 @@ export function formatSeconds(seconds: number) {
   if (seconds < 3600 && seconds >= 60) {
     const minutes = seconds / 60;
     const sec = seconds % 60;
-    ret = `${Math.floor(minutes)}min ${sec}s`;
+    ret = `${Math.floor(minutes)}min ${sec.toFixed()}s`;
   }
 
   if (seconds < 60) {

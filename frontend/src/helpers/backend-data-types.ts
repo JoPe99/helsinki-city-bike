@@ -86,8 +86,11 @@ export type StationDetails = {
   averageDepartDistance: number;
   averageReturnDistance: number;
 
-  topDepartStations: Array<Map<string, number>>;
-  topReturnStations: Array<Map<string, number>>;
+  averageDepartDuration: number;
+  averageReturnDuration: number;
+
+  topDepartStations: Array<{name: string, count: number}>;
+  topReturnStations: Array<{name: string, count: number}>;
 };
 
 /**

@@ -80,17 +80,17 @@ export default defineComponent({
       showFirstLastPage: true,
     },
     store: useStore(),
-    stations: [] as StationType[],
+    stations: null as StationType[] | null,
     selectedStation: null as number | null,
     selectedStationDetails: null as SingleStationType | null,
-    totalStations: 0,
-    tableHeight: 0,
+    totalStations: null as number | null,
+    tableHeight: null as number | null,
     tableLoading: false,
   }),
 
   watch: {},
 
-  mounted() {
+  created() {
     this.stations = this.store.stations;
     this.totalStations = this.store.stations.length;
   },

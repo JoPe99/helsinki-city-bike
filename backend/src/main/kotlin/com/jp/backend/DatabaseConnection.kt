@@ -144,6 +144,9 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
                 getAverageDepartDistanceForStation(id),
                 getAverageReturnDistanceForStation(id),
 
+                getAverageDepartDurationForStation(id),
+                getAverageReturnDurationForStation(id),
+
                 getTopDepartureStationsForStation(id),
                 getTopReturnStationsForStation(id)
             )
@@ -152,23 +155,6 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
     return ret
 }
 
-private fun validateDate(date: String?): LocalDateTime? {
-    var validatedDate: LocalDateTime?
-    println(date)
-    if (date.isNullOrBlank()) {
-        println("Already null")
-        return null
-    } else {
-        try {
-            var ISODate = date + "T00:00:00"
-            validatedDate = ISODate.toLocalDateTime()
-        } catch (e: Exception) {
-            println(e)
-            return null
-        }
-    }
-    return validatedDate
-}
 
 fun getPaginationJourneysData(pageSize: Int,
                               offset: Long,
@@ -186,8 +172,8 @@ fun getPaginationJourneysData(pageSize: Int,
     val orderBy = formOrderBy(sortBy, sortDesc)
     val departureStationsTable = Stations.alias("st1")
     val returnStationsTable = Stations.alias("st2")
-    val timestampStartDate = validateDate(startDate)
-    val timestampEndDate = validateDate(endDate)
+    val timestampStartDate = validateDate(startDate, toEndOfDay = false)
+    val timestampEndDate = validateDate(endDate, toEndOfDay = true)
 
 
     transaction(db) {
@@ -216,9 +202,9 @@ fun getPaginationJourneysData(pageSize: Int,
             maxDuration?.let {
                 journeys.andWhere { Journeys.duration lessEq maxDuration }
             }
+            count = journeys.count()
             journeys.orderBy(orderBy).limit(pageSize, offset)
 
-        count = journeys.count()
 
         for (journey in journeys) {
             ret.add(JourneyModelWithStationData(
@@ -332,8 +318,37 @@ fun getJourneyCount(): Long {
     return ret
 }
 
-private fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, Int>> {
-    var ret: ArrayList<Map<String, Int>> = arrayListOf()
+private fun validateDate(date: String?, toEndOfDay: Boolean): LocalDateTime? {
+        var validatedDate: LocalDateTime?
+        println(date)
+        if (date.isNullOrBlank()) {
+            println("Already null")
+            return null
+        } else {
+            if (toEndOfDay) {
+                try {
+                    val ISODate = date + "T23:59:59"
+                    validatedDate = ISODate.toLocalDateTime()
+                } catch (e: Exception) {
+                    println(e)
+                    return null
+                }
+            } else {
+                try {
+                    val ISODate = date + "T00:00:00"
+                    validatedDate = ISODate.toLocalDateTime()
+                } catch (e: Exception) {
+                    println(e)
+                    return null
+                }
+            }
+        }
+        return validatedDate
+    }
+
+
+private fun getTopDepartureStationsForStation(id: Int): ArrayList<TopStationModel> {
+    var ret: ArrayList<TopStationModel> = arrayListOf()
     val departureStationsTable = Stations.alias("departure")
     transaction(db) {
         departureStationsTable
@@ -343,15 +358,15 @@ private fun getTopDepartureStationsForStation(id: Int): ArrayList<Map<String, In
             .selectAll().groupBy(departureStationsTable[Stations.station_id], Stations.station_id)
             .orderBy(Stations.station_id.count(), SortOrder.DESC).limit(5)
             .forEach {
-                ret.add(mapOf(Pair(it[Stations.name_fi], it[Stations.station_id.count()].toInt())))
+                ret.add(TopStationModel(it[Stations.name_fi], it[Stations.station_id.count()].toInt()))
             }
 
     }
     return ret
 }
 
-private fun getTopReturnStationsForStation(id: Int): ArrayList<Map<String, Int>> {
-    var ret: ArrayList<Map<String, Int>> = arrayListOf()
+private fun getTopReturnStationsForStation(id: Int): ArrayList<TopStationModel> {
+    var ret: ArrayList<TopStationModel> = arrayListOf()
     val returnStationsTable = Stations.alias("return")
     transaction(db) {
         returnStationsTable
@@ -361,7 +376,7 @@ private fun getTopReturnStationsForStation(id: Int): ArrayList<Map<String, Int>>
             .selectAll().groupBy(returnStationsTable[Stations.station_id], Stations.station_id)
             .orderBy(Stations.station_id.count(), SortOrder.DESC).limit(5)
             .forEach {
-                ret.add(mapOf(Pair(it[Stations.name_fi], it[Stations.station_id.count()].toInt())))
+                ret.add(TopStationModel(it[Stations.name_fi], it[Stations.station_id.count()].toInt()))
             }
 
     }
@@ -405,6 +420,31 @@ private fun getAverageReturnDistanceForStation(id: Int): Float {
             .select {Journeys.return_station_id eq id}
             .map {
                 ret = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
+            }
+    }
+    return ret
+}
+private fun getAverageDepartDurationForStation(id: Int): Float {
+    var ret: Float = 0.0F
+    transaction(db) {
+        Journeys
+            .slice(Journeys.duration.avg(1))
+            .select {Journeys.departure_station_id eq id}
+            .map {
+                ret = it[Journeys.duration.avg(1)]?.toFloat() ?: 0.0F
+            }
+    }
+    return ret
+}
+
+private fun getAverageReturnDurationForStation(id: Int): Float {
+    var ret: Float = 0.0F
+    transaction(db) {
+        Journeys
+            .slice(Journeys.duration.avg(1))
+            .select {Journeys.return_station_id eq id}
+            .map {
+                ret = it[Journeys.duration.avg(1)]?.toFloat() ?: 0.0F
             }
     }
     return ret
