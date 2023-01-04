@@ -5,7 +5,11 @@
 // Axios used for API interactions
 import axios from "axios";
 
-import { JourneyType, SingleStationType } from "./backend-data-types";
+import {
+  JourneyType,
+  StationType,
+  SingleStationType,
+} from "./backend-data-types";
 
 // If you want to use a self-hosted backend for testing,
 // you can change this to "localhost:8081"
@@ -77,12 +81,21 @@ export function getJourneysCount() {
 }
 
 /**
- * Returns all stations from the backend.
- * @returns SingleStationType[]
+ * Returns all stations.
+ * @returns StationType[]
  */
 export function getAllStations() {
   const url = `${SERVER_IP}/stations/all`;
-  return axios.get<SingleStationType[]>(url);
+  return axios.get<StationType[]>(url);
+}
+
+/**
+ * Returns single station with details.
+ * @returns SingleStationType
+ */
+export function getSingleStation(stationId: number) {
+  const url = `${SERVER_IP}/stations/${stationId.toString()}`;
+  return axios.get<SingleStationType>(url);
 }
 
 /**

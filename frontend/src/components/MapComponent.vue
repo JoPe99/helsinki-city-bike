@@ -100,8 +100,6 @@ export default defineComponent({
       let boundsMap: LatLng[] = [];
       let polylineMap: LatLng[] = [];
 
-      console.log(newMarkers);
-
       for (let marker of newMarkers) {
         let currentLatLong = new LatLng(marker.latLong[0], marker.latLong[1]);
 

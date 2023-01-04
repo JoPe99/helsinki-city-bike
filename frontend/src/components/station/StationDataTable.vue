@@ -1,34 +1,46 @@
-<!-- Component includes filters and the data table -->
 <template>
   <div class="fill-height" v-resize="onResize">
     <div class="fill-height" ref="resizableDiv">
-      <v-data-table
-        :height="tableHeight"
-        :headers="headers"
-        :items="stations"
-        :options.sync="options"
-        class="elevation-0"
-        :footer-props="footerProps"
-        :loading="tableLoading"
-        @click:row="handleRowClick"
-        :item-class="isSelected"
-        :mobile-breakpoint="0"
-        fixed-header
-      >
-      </v-data-table>
+      <v-container fluid class="pa-0">
+        <v-row no-gutters>
+          <v-col cols="8">
+            <v-data-table
+              :height="tableHeight"
+              :headers="headers"
+              :items="stations"
+              :options.sync="options"
+              class="elevation-0"
+              :footer-props="footerProps"
+              :loading="tableLoading"
+              @click:row="handleRowClick"
+              :item-class="isSelected"
+              :mobile-breakpoint="0"
+              fixed-header
+            >
+            </v-data-table>
+          </v-col>
+          <v-col cols="4">
+            <station-details-card
+              :station="selectedStationDetails"
+            ></station-details-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { getSingleStation } from "@/helpers/api-functions";
 import { SingleStationType, StationType } from "@/helpers/backend-data-types";
-import { StationLocation } from "@/helpers/list-view-helpers";
 import { useStore } from "@/store";
 import { defineComponent } from "vue";
 
+import StationDetailsCard from "./StationDetailsCard.vue";
+
 export default defineComponent({
   name: "StationDataTable",
-  components: {},
+  components: { StationDetailsCard },
 
   data: () => ({
     headers: [
@@ -60,8 +72,7 @@ export default defineComponent({
     ],
     options: {
       itemsPerPage: 25,
-      page: 1,
-      sortBy: ["nameFI"],
+      sortBy: ["nameFi"],
       sortDesc: [false],
     },
     footerProps: {
@@ -70,7 +81,8 @@ export default defineComponent({
     },
     store: useStore(),
     stations: [] as StationType[],
-    selectedStation: 0,
+    selectedStation: null as number | null,
+    selectedStationDetails: null as SingleStationType | null,
     totalStations: 0,
     tableHeight: 0,
     tableLoading: false,
@@ -102,12 +114,19 @@ export default defineComponent({
     // Clicked row is stored as selected journey
     handleRowClick(station: StationType) {
       if (this.selectedStation == station.id) {
-        this.selectedStation = 0;
+        this.selectedStation = null;
+        this.selectedStationDetails = null;
         this.$emit("unselectedStation");
       } else {
         this.selectedStation = station.id;
+        this.getSingleStationDetails(station.id);
         this.$emit("selectedStation", station);
       }
+    },
+    getSingleStationDetails(stationId: number) {
+      getSingleStation(stationId).then((response) => {
+        this.selectedStationDetails = response.data;
+      });
     },
   },
 });
