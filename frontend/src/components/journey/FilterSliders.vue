@@ -10,8 +10,8 @@
             class="px-3"
             v-model="sliders.distanceSlider"
             :lazy="true"
-            :min="10"
-            :max="getLongestJourneyDistance"
+            :data="distanceData"
+            :tooltip-formatter="formatDistance"
           ></vue-slider>
         </v-card>
       </v-col>
@@ -26,8 +26,8 @@
             class="px-3"
             v-model="sliders.durationSlider"
             :lazy="true"
-            :min="10"
-            :max="getLongestJourneyDuration"
+            :data="durationData"
+            :tooltip-formatter="formatDuration"
           ></vue-slider>
         </v-card>
       </v-col>
@@ -42,6 +42,7 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 
 import { useStore } from "@/store";
+import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
 
 export default defineComponent({
   name: "FilterSliders",
@@ -49,15 +50,20 @@ export default defineComponent({
 
   data: () => ({
     sliders: {
-      distanceSlider: [10, 10],
-      durationSlider: [10, 10],
+      distanceSlider: [10, 10] as number[],
+      durationSlider: [10, 10] as number[],
     },
+    durationData: null as number[] | null,
+    distanceData: null as number[] | null,
     store: useStore(),
   }),
 
   mounted() {
-    this.sliders.distanceSlider = [10, this.getLongestJourneyDistance];
-    this.sliders.durationSlider = [10, this.getLongestJourneyDuration];
+    this.durationData = this.createDurationIntervals;
+    this.sliders.durationSlider = this.maxOutSlider(this.durationData);
+
+    this.distanceData = this.createIntervals(this.distanceSliderIntervals);
+    this.sliders.distanceSlider = this.maxOutSlider(this.distanceData);
   },
 
   watch: {
@@ -77,9 +83,142 @@ export default defineComponent({
     getLongestJourneyDuration(): number {
       return this.store.longestJourneyByDuration.durationSeconds;
     },
+    durationSliderIntervals() {
+      return [
+        {
+          value: 10,
+          step: 1,
+        },
+        {
+          value: 60,
+          step: 10,
+        },
+        {
+          value: 1800,
+          step: 30,
+        },
+        {
+          value: 3600,
+          step: 60,
+        },
+        {
+          value: 86400,
+          step: 43200,
+        },
+        {
+          value: Number(this.getLongestJourneyDuration) + 43200,
+          step: 86400,
+        },
+      ];
+    },
+    createDurationIntervals() {
+      let result = [] as number[];
+
+      this.durationSliderIntervals.forEach((point, idx) => {
+        const lastPointValue =
+          this.durationSliderIntervals[this.durationSliderIntervals.length - 1]
+            .value;
+
+        if (point.value === lastPointValue) {
+          return;
+        } else {
+          const nextPoint = this.durationSliderIntervals[idx + 1];
+
+          for (let i = point.value; i <= nextPoint.value; i += point.step) {
+            result.push(i);
+          }
+        }
+      });
+
+      const uniqueValues = new Set(result);
+      console.log(uniqueValues);
+      return [...uniqueValues];
+    },
+    distanceSliderIntervals() {
+      return [
+        {
+          value: 10,
+          step: 1,
+        },
+        {
+          value: 100,
+          step: 10,
+        },
+        {
+          value: 1000,
+          step: 50,
+        },
+        {
+          value: 10000,
+          step: 100,
+        },
+        {
+          value: 100000,
+          step: 500,
+        },
+        {
+          value: Number(this.getLongestJourneyDistance) + 500,
+          step: 1,
+        },
+      ];
+    },
+    createDistanceIntervals() {
+      let result = [] as number[];
+
+      this.distanceSliderIntervals.forEach((point, idx) => {
+        const lastPointValue =
+          this.distanceSliderIntervals[this.distanceSliderIntervals.length - 1]
+            .value;
+
+        if (point.value === lastPointValue) {
+          return;
+        } else {
+          const nextPoint = this.distanceSliderIntervals[idx + 1];
+
+          for (let i = point.value; i <= nextPoint.value; i += point.step) {
+            result.push(i);
+          }
+        }
+      });
+
+      const uniqueValues = new Set(result);
+      console.log(uniqueValues);
+      return [...uniqueValues];
+    },
   },
 
-  methods: {},
+  methods: {
+    formatDuration(value: number) {
+      return formatSeconds(value);
+    },
+    formatDistance(value: number) {
+      return formatDistance(value);
+    },
+    maxOutSlider(data: number[]) {
+      return [10, data[data.length - 1]] as number[];
+    },
+    createIntervals(data: { value: number; step: number }[]) {
+      let result = [] as number[];
+
+      data.forEach((point, idx) => {
+        const lastPointValue = data[data.length - 1].value;
+
+        if (point.value === lastPointValue) {
+          return;
+        } else {
+          const nextPoint = data[idx + 1];
+
+          for (let i = point.value; i <= nextPoint.value; i += point.step) {
+            result.push(i);
+          }
+        }
+      });
+
+      const uniqueValues = new Set(result);
+      console.log(uniqueValues);
+      return [...uniqueValues];
+    },
+  },
 });
 </script>
 
