@@ -87,7 +87,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
-import { SingleStationType } from "@/helpers/backend-data-types";
 import TopStationsTable from "./TopStationsTable.vue";
 
 export default defineComponent({

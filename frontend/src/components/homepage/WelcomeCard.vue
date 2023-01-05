@@ -46,7 +46,7 @@
 <script lang="ts">
 import { JourneyType } from "@/helpers/backend-data-types";
 import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
-import Vue, { set } from "vue";
+import Vue from "vue";
 import { useStore } from "../../store/index";
 
 export default Vue.extend({

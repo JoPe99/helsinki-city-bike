@@ -39,11 +39,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { useStore } from "@/store/index";
-import { use } from "chai";
 
-export default Vue.extend({
+export default defineComponent({
   name: "App",
 
   data: () => ({}),

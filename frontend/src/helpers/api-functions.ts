@@ -6,7 +6,6 @@
 import axios from "axios";
 
 import {
-  JourneyType,
   StationType,
   SingleStationType,
   JourneyAPIResult,

@@ -21,10 +21,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { useStore } from "../../store/index";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ActionsList",
   data: () => ({
     store: useStore(),
