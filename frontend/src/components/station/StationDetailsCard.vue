@@ -1,25 +1,21 @@
 <template>
   <v-card class="fill-height elevation-0">
-    <div v-if="stationSelected">
+    <div v-if="stationSelected" class="fill-height">
       <v-container>
         <v-row>
-          <!-- Addresses in all languages -->
           <v-col>
             <v-card class="elevation-4" color="primary">
               <v-card-title>
-                Station information ID {{ station.id }}:
-                {{ station.nameFi }}</v-card-title
+                Station information:
+                {{ station.nameFi }} (ID: {{ station.id }})</v-card-title
               >
-              <v-card-subtitle
-                >SE: {{ station.nameSe }} EN: {{ station.nameEn }}
-              </v-card-subtitle>
             </v-card>
           </v-col>
         </v-row>
         <!-- Total journeys and average distance/duration-->
-        <v-row>
+        <v-row class="mt-0">
           <v-col>
-            <v-card class="elevation-4" color="primary">
+            <v-card class="elevation-4 fill-height" color="primary">
               <v-card-title>
                 Station has {{ station.totalDepartJourneys }} departures and
                 {{ station.totalReturnJourneys }} returns
