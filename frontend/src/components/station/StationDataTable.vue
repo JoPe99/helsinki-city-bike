@@ -3,7 +3,7 @@
     <div class="fill-height" ref="resizableDiv">
       <v-container fluid class="pa-0">
         <v-row no-gutters>
-          <v-col cols="8">
+          <v-col cols="6">
             <v-data-table
               :height="tableHeight"
               :headers="headers"
@@ -19,7 +19,7 @@
             >
             </v-data-table>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="6">
             <station-details-card
               :station="selectedStationDetails"
             ></station-details-card>
@@ -105,12 +105,13 @@ export default defineComponent({
           window.innerHeight - resizableDiv.getBoundingClientRect().y - 56;
       }
     },
-    // If row is selected, apply class to it
+
     isSelected(item: StationType) {
       if (item.id == this.selectedStation) {
         return "selectedJourney";
       }
     },
+
     // Clicked row is stored as selected journey
     handleRowClick(station: StationType) {
       if (this.selectedStation == station.id) {
@@ -123,6 +124,7 @@ export default defineComponent({
         this.$emit("selectedStation", station);
       }
     },
+
     getSingleStationDetails(stationId: number) {
       getSingleStation(stationId).then((response) => {
         this.selectedStationDetails = response.data;

@@ -32,7 +32,7 @@
                 duration for depart journey was
                 {{ formatDuration(station.averageDepartDuration) }} and for
                 return journey average duration was
-                {{ formatDuration(station.averageReturnDuration) }}
+                {{ formatDuration(station.averageReturnDuration) }}.
               </v-card-subtitle>
             </v-card>
           </v-col>
@@ -42,19 +42,24 @@
           <v-col>
             <v-card class="elevation-4" color="primary">
               <v-row>
-                <v-col>
-                  <v-card-title>Top stations</v-card-title>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-card-subtitle>Departures</v-card-subtitle>
-                  <top-stations-table :topStations="station.topDepartStations">
+                <v-col class="px-8">
+                  <v-card-title class="pa-0 pb-3"
+                    >Top departure stations</v-card-title
+                  >
+                  <top-stations-table
+                    class="elevation-4"
+                    :topStations="station.topDepartStations"
+                  >
                   </top-stations-table>
                 </v-col>
-                <v-col>
-                  <v-card-subtitle>Returns</v-card-subtitle>
-                  <top-stations-table :topStations="station.topReturnStations">
+                <v-col class="px-8">
+                  <v-card-title class="pa-0 pb-3"
+                    >Top return stations</v-card-title
+                  >
+                  <top-stations-table
+                    class="elevation-4"
+                    :topStations="station.topReturnStations"
+                  >
                   </top-stations-table>
                 </v-col>
               </v-row>
