@@ -256,13 +256,15 @@ export default defineComponent({
       }
     },
 
-    // This makes sure that the table fits under filters and map,
-    // sizing the table exactly right. The app bar is always 56px high.
+    // This makes sure that the table fits perfectly with the filters and the map,
+    // sizing the table exactly right. The 59px reduced from height is the height
+    // of the table footer, allowing the footer to be displayed as well as it's not
+    // included in the height of the table.
     onResize() {
       const resizableDiv = this.$refs.resizableDiv as HTMLElement;
       if (resizableDiv) {
         this.tableHeight =
-          window.innerHeight - resizableDiv.getBoundingClientRect().y - 50;
+          window.innerHeight - resizableDiv.getBoundingClientRect().y - 59;
       }
     },
   },
