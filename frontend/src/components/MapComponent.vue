@@ -7,7 +7,9 @@
           v-for="marker in currentMarkers"
           :key="marker.id"
           :latLng="marker.latLong"
-        ></l-marker>
+        >
+          <l-tooltip> ID: {{ marker.id }} Name: {{ marker.name }} </l-tooltip>
+        </l-marker>
         <l-polyline
           v-if="polyline.active"
           :lat-lngs="polyline.latLong"
@@ -22,9 +24,16 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { LMap, LTileLayer, LMarker, LPolyline } from "vue2-leaflet";
+import {
+  LMap,
+  LTileLayer,
+  LMarker,
+  LPolyline,
+  LLayerGroup,
+  LTooltip,
+} from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon, LatLng, LatLngBounds, latLngBounds } from "leaflet";
+import { Icon, LatLng, latLngBounds } from "leaflet";
 import { StationLocation } from "@/helpers/list-view-helpers";
 
 // This block of code is from leaflet docs to fix a problem with missing Leaflet markers.
@@ -54,6 +63,8 @@ export default defineComponent({
     LTileLayer,
     LMarker,
     LPolyline,
+    LLayerGroup,
+    LTooltip,
   },
 
   data: () => ({
