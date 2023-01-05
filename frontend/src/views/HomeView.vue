@@ -1,13 +1,13 @@
 <template>
   <v-container fluid>
     <welcome-card />
-    <actions-list />
+    <information-card />
   </v-container>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ActionsList from "../components/homepage/ActionsList.vue";
+import InformationCard from "../components/homepage/InformationCard.vue";
 import WelcomeCard from "../components/homepage/WelcomeCard.vue";
 
 export default defineComponent({
@@ -15,7 +15,7 @@ export default defineComponent({
 
   components: {
     WelcomeCard,
-    ActionsList,
+    InformationCard,
   },
 });
 </script>
