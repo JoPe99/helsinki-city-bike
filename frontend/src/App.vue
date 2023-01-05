@@ -26,6 +26,14 @@
       >
         Stations
       </v-btn>
+      <v-btn
+        color="secondary"
+        class="mx-3"
+        :disabled="$route.path == '/insert' ? true : false"
+        @click="$router.push('/insert')"
+      >
+        Insert data
+      </v-btn>
       <v-spacer />
       <v-btn icon @click="toggleTheme()">
         <v-icon :color="themeButtonColor()">mdi-theme-light-dark</v-icon>

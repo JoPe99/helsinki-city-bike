@@ -1,8 +1,9 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import JourneyView from "../views/JourneyView.vue";
-import StationView from "../views/StationView.vue";
+import HomeView from "@/views/HomeView.vue";
+import JourneyView from "@/views/JourneyView.vue";
+import StationView from "@/views/StationView.vue";
+import InsertView from "@/views/InsertView.vue";
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes: Array<RouteConfig> = [
     path: "/stations",
     name: "stations",
     component: StationView,
+  },
+  {
+    path: "/insert",
+    name: "insert",
+    component: InsertView,
   },
 ];
 
