@@ -6,11 +6,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import ActionsList from "../components/homepage/ActionsList.vue";
 import WelcomeCard from "../components/homepage/WelcomeCard.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "HomeView",
 
   components: {

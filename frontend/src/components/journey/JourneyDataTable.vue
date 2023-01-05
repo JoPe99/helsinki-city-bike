@@ -211,7 +211,7 @@ export default defineComponent({
     },
 
     // Handles API call status and formats the received data
-    handleAPIResponse(length: number, journeys: JourneyType[], status: any) {
+    handleAPIResponse(length: number, journeys: JourneyType[], status: number) {
       // Handle status here
       if (status != 200) {
         return;

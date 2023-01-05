@@ -9,14 +9,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import MapComponent from "../components/MapComponent.vue";
 import StationDataTable from "@/components/station/StationDataTable.vue";
 import { StationLocation } from "@/helpers/list-view-helpers";
 import { StationType } from "@/helpers/backend-data-types";
 import { useStore } from "@/store";
 
-export default Vue.extend({
+export default defineComponent({
   name: "StationView",
   components: { MapComponent, StationDataTable },
 
