@@ -69,7 +69,7 @@ export default defineComponent({
       durationFilter: [10, 10] as number[],
     },
     search: "",
-    timeout: {} as any,
+    timeout: {} as number,
     store: useStore(),
   }),
 
@@ -94,7 +94,7 @@ export default defineComponent({
 
         this.timeout = setTimeout(() => {
           this.filters.debouncedSearch = this.search;
-        }, 500);
+        }, 500) as unknown as number;
       },
     },
   },
