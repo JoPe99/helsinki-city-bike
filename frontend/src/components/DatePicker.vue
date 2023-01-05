@@ -58,8 +58,9 @@ export default defineComponent({
 
   methods: {
     saveDate(date: string) {
-      if (this.$refs.menu) {
-        (this.$refs.menu as any).save(date);
+      let menuElement = this.$refs.menu;
+      if (menuElement) {
+        (menuElement as any).save(date);
         this.$emit("newData", this.$props.id, date);
       }
     },

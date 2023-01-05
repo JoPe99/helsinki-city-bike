@@ -1,19 +1,20 @@
 <template>
-  <div class="fill-height" v-resize="onResize">
-    <div class="fill-height">
+  <div class="pa-0 fill-height">
+    <div class="pa-0 fill-height">
       <v-container fluid class="pa-0">
         <v-row no-gutters>
-          <v-col cols="6">
+          <v-col cols="12">
             <v-card class="fill-height">
               <v-text-field
                 class="pa-2 mt-0"
+                style="height: 48px"
                 v-model="search"
                 append-icon="mdi-magnify"
                 label="Search"
                 single-line
                 hide-details
               ></v-text-field>
-              <div ref="resizableDiv">
+              <div v-resize="onResize" ref="resizableDiv">
                 <v-data-table
                   :height="tableHeight"
                   :headers="headers"
@@ -32,11 +33,6 @@
               </div>
             </v-card>
           </v-col>
-          <v-col cols="6">
-            <station-details-card
-              :station="selectedStationDetails"
-            ></station-details-card>
-          </v-col>
         </v-row>
       </v-container>
     </div>
@@ -49,11 +45,8 @@ import { SingleStationType, StationType } from "@/helpers/backend-data-types";
 import { useStore } from "@/store";
 import { defineComponent } from "vue";
 
-import StationDetailsCard from "./StationDetailsCard.vue";
-
 export default defineComponent({
   name: "StationDataTable",
-  components: { StationDetailsCard },
 
   data: () => ({
     headers: [
@@ -116,7 +109,7 @@ export default defineComponent({
       const resizableDiv = this.$refs.resizableDiv as HTMLElement;
       if (resizableDiv) {
         this.tableHeight =
-          window.innerHeight - resizableDiv.getBoundingClientRect().y - 56;
+          window.innerHeight - resizableDiv.getBoundingClientRect().y - 59;
       }
     },
 
@@ -135,13 +128,13 @@ export default defineComponent({
       } else {
         this.selectedStation = station.id;
         this.getSingleStationDetails(station.id);
-        this.$emit("selectedStation", station);
       }
     },
 
     getSingleStationDetails(stationId: number) {
       getSingleStation(stationId).then((response) => {
         this.selectedStationDetails = response.data;
+        this.$emit("selectedStation", response.data);
       });
     },
   },

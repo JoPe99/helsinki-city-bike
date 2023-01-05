@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { SingleStationType } from "@/helpers/backend-data-types";
 
 export default defineComponent({
   name: "TopStationsTable",

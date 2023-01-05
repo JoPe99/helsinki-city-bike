@@ -1,10 +1,10 @@
 <!-- Component includes filters and the data table -->
 <template>
-  <div class="fill-height" v-resize="onResize">
+  <div class="fill-height">
     <v-card class="elevation-0" style="height: 250px">
       <journey-filters @newFilters="handleFilters"></journey-filters>
     </v-card>
-    <div class="fill-height" ref="resizableDiv">
+    <div class="fill-height" v-resize="onResize" ref="resizableDiv">
       <v-data-table
         :height="tableHeight"
         :headers="headers"
@@ -262,7 +262,7 @@ export default defineComponent({
       const resizableDiv = this.$refs.resizableDiv as HTMLElement;
       if (resizableDiv) {
         this.tableHeight =
-          window.innerHeight - resizableDiv.getBoundingClientRect().y - 56;
+          window.innerHeight - resizableDiv.getBoundingClientRect().y - 50;
       }
     },
   },
