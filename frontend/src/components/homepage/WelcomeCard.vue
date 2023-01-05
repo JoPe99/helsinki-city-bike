@@ -44,12 +44,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { JourneyType } from "@/helpers/backend-data-types";
 import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
-import Vue from "vue";
 import { useStore } from "../../store/index";
 
-export default Vue.extend({
+export default defineComponent({
   name: "WelcomeCard",
   data: () => ({
     interval: null as number | null,
@@ -63,11 +63,11 @@ export default Vue.extend({
   }),
 
   mounted() {
-    this.interval = setInterval(this.setupData, 150);
+    this.interval = setInterval(this.setupData, 150) as unknown as number;
   },
 
   computed: {
-    storeReady() {
+    storeReady(): boolean {
       return this.store.storeReady;
     },
   },

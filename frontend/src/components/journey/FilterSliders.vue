@@ -89,7 +89,6 @@ export default defineComponent({
     getLongestJourneyDistance(): number {
       return this.store.longestJourneyByDistance.distanceCovered;
     },
-
     getLongestJourneyDuration(): number {
       return this.store.longestJourneyByDuration.durationSeconds;
     },
