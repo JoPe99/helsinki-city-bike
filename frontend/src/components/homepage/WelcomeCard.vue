@@ -34,11 +34,6 @@
           {{ formatDistance(longestJourneyByDuration.distanceCovered) }} long.
           Must have been an adventure!
         </v-card-text>
-        <v-card-text>
-          In total, the combined statistics show that in the timespan covered,
-          journeys took total 54555 days and in that time the bikes traveled
-          over 150 million kilometers!
-        </v-card-text>
       </v-card-text>
       <v-card-text v-else>
         Setting up the information, just a moment! If this doesn't stop loading
