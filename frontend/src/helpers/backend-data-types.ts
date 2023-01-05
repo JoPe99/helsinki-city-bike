@@ -12,6 +12,11 @@ export type JourneyAPIResult = {
   journeys: JourneyType[];
 };
 
+/**
+ * Journeys come from backend with departure and return
+ * station coordinates. JourneyType is then formatted into 
+ * FormattedJourneyType.
+ */
 export type JourneyType = {
   id: number;
 
@@ -96,6 +101,22 @@ export type StationDetails = {
 
   topDepartStations: Array<{ name: string; count: number }>;
   topReturnStations: Array<{ name: string; count: number }>;
+};
+
+export type InsertJourneyType = {
+  id: number;
+
+  departureTime: string;
+  returnTime: string;
+
+  departureStationName: string;
+  departureStationId: number;
+
+  returnStationName: string;
+  returnStationId: number;
+
+  distanceCovered: number;
+  durationSeconds: number;
 };
 
 /**

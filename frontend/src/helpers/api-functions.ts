@@ -9,6 +9,7 @@ import {
   StationType,
   SingleStationType,
   JourneyAPIResult,
+  InsertJourneyType,
 } from "./backend-data-types";
 
 // If you want to use a self-hosted backend for testing,
@@ -132,4 +133,20 @@ export function getEarliestJourney() {
 export function getLatestJourney() {
   const url = `${SERVER_IP}/journeys/latest`;
   return axios.get<JourneyAPIResult>(url);
+}
+
+/**
+ * Inserts a station into backend database.
+ * @param station
+ */
+export function insertStation(station: StationType) {
+  console.log("inserting ${station}");
+}
+
+/**
+ * Inserts journey into backend database.
+ * @param journey
+ */
+export function insertJourney(journey: InsertJourneyType) {
+  console.log("inserting journey");
 }
