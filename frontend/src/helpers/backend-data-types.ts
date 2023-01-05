@@ -14,7 +14,7 @@ export type JourneyAPIResult = {
 
 /**
  * Journeys come from backend with departure and return
- * station coordinates. JourneyType is then formatted into 
+ * station coordinates. JourneyType is then formatted into
  * FormattedJourneyType.
  */
 export type JourneyType = {
@@ -103,6 +103,9 @@ export type StationDetails = {
   topReturnStations: Array<{ name: string; count: number }>;
 };
 
+/**
+ * This type is used for inserting into the backend database.
+ */
 export type InsertJourneyType = {
   id: number;
 
