@@ -66,6 +66,9 @@ export default defineComponent({
 </script>
 
 <style>
+/* Take 100% of the available space all times
+ * and don't allow scrolling pages 
+*/
 body {
   overflow: hidden;
   height: 100vh;
