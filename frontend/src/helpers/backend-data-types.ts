@@ -107,8 +107,6 @@ export type StationDetails = {
  * This type is used for inserting into the backend database.
  */
 export type InsertJourneyType = {
-  id: number;
-
   departureTime: string;
   returnTime: string;
 
