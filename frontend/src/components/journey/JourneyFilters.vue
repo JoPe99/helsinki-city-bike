@@ -28,12 +28,13 @@
             <v-col cols="6">
               <v-card color="primary" class="fill-height elevation-4">
                 <v-text-field
-                  class="pa-4 mt-0"
+                  class="pa-4 py-5 mt-0"
                   v-model="search"
                   append-icon="mdi-magnify"
                   label="Search stations"
                   single-line
                   hide-details
+                  color="white"
                 ></v-text-field>
               </v-card>
             </v-col>
