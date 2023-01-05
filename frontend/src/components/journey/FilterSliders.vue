@@ -11,6 +11,8 @@
             v-model="sliders.distanceSlider"
             :lazy="true"
             :data="distanceData"
+            :min="10"
+            :max="getLongestJourneyDistance"
             :tooltip-formatter="formatDistance"
           ></vue-slider>
         </v-card>
@@ -27,6 +29,8 @@
             v-model="sliders.durationSlider"
             :lazy="true"
             :data="durationData"
+            :min="10"
+            :max="getLongestJourneyDuration"
             :tooltip-formatter="formatDuration"
           ></vue-slider>
         </v-card>
@@ -59,10 +63,16 @@ export default defineComponent({
   }),
 
   mounted() {
-    this.durationData = this.createDurationIntervals;
-    this.sliders.durationSlider = this.maxOutSlider(this.durationData);
+    this.durationData = this.createIntervals(
+      this.durationSliderIntervals,
+      this.getLongestJourneyDuration
+    );
+    this.distanceData = this.createIntervals(
+      this.distanceSliderIntervals,
+      this.getLongestJourneyDistance
+    );
 
-    this.distanceData = this.createIntervals(this.distanceSliderIntervals);
+    this.sliders.durationSlider = this.maxOutSlider(this.durationData);
     this.sliders.distanceSlider = this.maxOutSlider(this.distanceData);
   },
 
@@ -106,33 +116,10 @@ export default defineComponent({
           step: 43200,
         },
         {
-          value: Number(this.getLongestJourneyDuration) + 43200,
+          value: Number(this.getLongestJourneyDuration),
           step: 86400,
         },
       ];
-    },
-    createDurationIntervals() {
-      let result = [] as number[];
-
-      this.durationSliderIntervals.forEach((point, idx) => {
-        const lastPointValue =
-          this.durationSliderIntervals[this.durationSliderIntervals.length - 1]
-            .value;
-
-        if (point.value === lastPointValue) {
-          return;
-        } else {
-          const nextPoint = this.durationSliderIntervals[idx + 1];
-
-          for (let i = point.value; i <= nextPoint.value; i += point.step) {
-            result.push(i);
-          }
-        }
-      });
-
-      const uniqueValues = new Set(result);
-      console.log(uniqueValues);
-      return [...uniqueValues];
     },
     distanceSliderIntervals() {
       return [
@@ -157,33 +144,10 @@ export default defineComponent({
           step: 500,
         },
         {
-          value: Number(this.getLongestJourneyDistance) + 500,
+          value: Number(this.getLongestJourneyDistance),
           step: 1,
         },
       ];
-    },
-    createDistanceIntervals() {
-      let result = [] as number[];
-
-      this.distanceSliderIntervals.forEach((point, idx) => {
-        const lastPointValue =
-          this.distanceSliderIntervals[this.distanceSliderIntervals.length - 1]
-            .value;
-
-        if (point.value === lastPointValue) {
-          return;
-        } else {
-          const nextPoint = this.distanceSliderIntervals[idx + 1];
-
-          for (let i = point.value; i <= nextPoint.value; i += point.step) {
-            result.push(i);
-          }
-        }
-      });
-
-      const uniqueValues = new Set(result);
-      console.log(uniqueValues);
-      return [...uniqueValues];
     },
   },
 
@@ -195,15 +159,20 @@ export default defineComponent({
       return formatDistance(value);
     },
     maxOutSlider(data: number[]) {
+      console.log(data);
+      console.log(data[data.length - 1]);
       return [10, data[data.length - 1]] as number[];
     },
-    createIntervals(data: { value: number; step: number }[]) {
+    // https://nightcatsama.github.io/vue-slider-component/#/basics/interval
+    createIntervals(data: { value: number; step: number }[], maxValue: number) {
       let result = [] as number[];
 
       data.forEach((point, idx) => {
         const lastPointValue = data[data.length - 1].value;
 
         if (point.value === lastPointValue) {
+          // Last point is equal to max value in database
+          result.push(maxValue);
           return;
         } else {
           const nextPoint = data[idx + 1];
@@ -215,7 +184,6 @@ export default defineComponent({
       });
 
       const uniqueValues = new Set(result);
-      console.log(uniqueValues);
       return [...uniqueValues];
     },
   },
