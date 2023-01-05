@@ -1,23 +1,36 @@
 <template>
   <div class="fill-height" v-resize="onResize">
-    <div class="fill-height" ref="resizableDiv">
+    <div class="fill-height">
       <v-container fluid class="pa-0">
         <v-row no-gutters>
           <v-col cols="6">
-            <v-data-table
-              :height="tableHeight"
-              :headers="headers"
-              :items="stations"
-              :options.sync="options"
-              class="elevation-0"
-              :footer-props="footerProps"
-              :loading="tableLoading"
-              @click:row="handleRowClick"
-              :item-class="isSelected"
-              :mobile-breakpoint="0"
-              fixed-header
-            >
-            </v-data-table>
+            <v-card class="fill-height">
+              <v-text-field
+                class="pa-2 mt-0"
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+              <div ref="resizableDiv">
+                <v-data-table
+                  :height="tableHeight"
+                  :headers="headers"
+                  :items="stations"
+                  :options.sync="options"
+                  class="elevation-0"
+                  :footer-props="footerProps"
+                  :loading="tableLoading"
+                  :search="search"
+                  @click:row="handleRowClick"
+                  :item-class="isSelected"
+                  :mobile-breakpoint="0"
+                  fixed-header
+                >
+                </v-data-table>
+              </div>
+            </v-card>
           </v-col>
           <v-col cols="6">
             <station-details-card
@@ -79,6 +92,7 @@ export default defineComponent({
       "items-per-page-options": [15, 20, 25, 30, 50, 100],
       showFirstLastPage: true,
     },
+    search: "" as string,
     store: useStore(),
     stations: null as StationType[] | null,
     selectedStation: null as number | null,

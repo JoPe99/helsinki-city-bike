@@ -47,6 +47,7 @@ export default defineComponent({
   },
 
   watch: {},
+
   computed: {
     // Formatting date to dd-mm-yyyy to make it more readable
     formattedDate(): string {
