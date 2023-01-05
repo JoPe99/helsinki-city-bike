@@ -159,8 +159,6 @@ export default defineComponent({
       return formatDistance(value);
     },
     maxOutSlider(data: number[]) {
-      console.log(data);
-      console.log(data[data.length - 1]);
       return [10, data[data.length - 1]] as number[];
     },
     // https://nightcatsama.github.io/vue-slider-component/#/basics/interval
