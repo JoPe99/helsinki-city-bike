@@ -14,10 +14,11 @@
         >
         </station-data-table>
       </v-col>
-      <v-col class="py-0 fill-height" cols="6">
+      <v-col class="pa-0 fill-height" cols="6">
         <map-component :markers="markers" class="fill-height"></map-component>
       </v-col>
     </v-row>
+    <!-- Vertical layout in case of a smaller viewport -->
     <v-col v-else class="pa-0 fill-height">
       <map-component :markers="markers" style="height: 500px"></map-component>
       <v-row no-gutters>

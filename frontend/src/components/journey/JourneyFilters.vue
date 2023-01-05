@@ -1,7 +1,7 @@
 <template>
   <div class="fill-height">
-    <v-card class="elevation-0">
-      <v-container fluid class="mx-0 px-4">
+    <v-card tile class="elevation-0">
+      <v-container fluid class="mx-0 px-4 py-0">
         <v-col>
           <!-- Row contains datepickers & search -->
           <v-row>

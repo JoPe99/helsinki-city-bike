@@ -1,5 +1,5 @@
 <template>
-  <v-card class="fill-height elevation-0">
+  <v-card tile class="fill-height elevation-0">
     <div v-if="stationSelected" class="fill-height">
       <v-container>
         <v-row>

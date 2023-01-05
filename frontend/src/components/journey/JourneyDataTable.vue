@@ -1,7 +1,7 @@
 <!-- Component includes filters and the data table -->
 <template>
   <div class="fill-height">
-    <v-card class="elevation-0" style="height: 250px">
+    <v-card tile class="elevation-0" style="height: 250px">
       <journey-filters @newFilters="handleFilters"></journey-filters>
     </v-card>
     <div class="fill-height" v-resize="onResize" ref="resizableDiv">

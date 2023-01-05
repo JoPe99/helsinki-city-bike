@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0 fill-height" style="align-items: flex-start">
     <!-- <v-row no-gutters> -->
     <v-col cols="12" class="pa-0">
-      <v-card class="fill-height">
+      <v-card tile class="elevation-0 fill-height">
         <v-text-field
           class="pa-2 mt-0"
           style="height: 48px"
