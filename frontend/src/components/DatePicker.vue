@@ -9,16 +9,15 @@
     min-width="auto"
   >
     <template v-slot:activator="{ on, attrs }">
-      <v-card-subtitle class="subtitle-2 px-3 pt-1 pb-0">
-        {{ title }}
-      </v-card-subtitle>
       <v-text-field
-        class="pb-3 pt-0 px-3"
         v-model="formattedDate"
         readonly
+        :label="label"
         v-bind="attrs"
+        outlined
         v-on="on"
         hide-details
+        color="highlight"
       ></v-text-field>
     </template>
     <v-date-picker v-model="date" no-title scrollable>
@@ -31,11 +30,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Vue from "vue";
 
 export default defineComponent({
   name: "DatePicker",
 
-  props: ["id", "title", "defaultDate"],
+  props: ["id", "label", "defaultDate"],
 
   data: () => ({
     date: new Date().toISOString().substring(0, 10),
@@ -60,7 +60,7 @@ export default defineComponent({
     saveDate(date: string) {
       let menuElement = this.$refs.menu;
       if (menuElement) {
-        (menuElement as any).save(date);
+        (menuElement as Vue & { save: (date: string) => boolean }).save(date);
         this.$emit("newData", this.$props.id, date);
       }
     },
