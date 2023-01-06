@@ -6,21 +6,27 @@
           <!-- Row contains datepickers & search -->
           <v-row>
             <v-col cols="3">
-              <v-card color="primary" class="elevation-4">
+              <v-card
+                color="primary"
+                class="pt-3 pb-1 px-3 elevation-4 fill-height"
+              >
                 <date-picker
                   @newData="handleNewDate"
                   id="start_date"
-                  title="Start date"
+                  label="Start date"
                   :default-date="getEarliestJourneyDate"
                 ></date-picker>
               </v-card>
             </v-col>
             <v-col cols="3">
-              <v-card color="primary" class="elevation-4">
+              <v-card
+                color="primary"
+                class="pt-3 pb-1 px-3 elevation-4 fill-height"
+              >
                 <date-picker
                   @newData="handleNewDate"
                   id="end_date"
-                  title="End date"
+                  label="End date"
                   :default-date="getLatestJourneyDate"
                 ></date-picker>
               </v-card>
@@ -28,13 +34,14 @@
             <v-col cols="6">
               <v-card color="primary" class="fill-height elevation-4">
                 <v-text-field
-                  class="pa-4 py-5 mt-0"
+                  class="py-3 px-3"
                   v-model="search"
                   append-icon="mdi-magnify"
                   label="Search stations"
                   single-line
+                  outlined
                   hide-details
-                  color="white"
+                  color="highlight"
                 ></v-text-field>
               </v-card>
             </v-col>
