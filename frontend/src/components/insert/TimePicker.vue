@@ -54,7 +54,7 @@ export default defineComponent({
       let menuElement = this.$refs.menu;
       (menuElement as Vue & { save: (v: string) => boolean }).save(time);
 
-      this.$emit("newData", { id: this.$props.id, time: time });
+      this.$emit("newData", this.$props.id, time);
       this.time = time;
     },
   },
