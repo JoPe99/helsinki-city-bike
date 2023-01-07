@@ -1,6 +1,5 @@
 /**
- * This file includes helper functions for parsing the CSV files,
- * and populating the database with the functions
+ * This file includes functions for parsing the CSV files
  */
 
 package com.jp.backend
@@ -8,24 +7,16 @@ package com.jp.backend
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.DatabaseConn.insertIntoJourneys
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.jp.backend.ValidationHelpers.validateJourneyCSVRow
 
 
 object CSVParser {
-
-    // Contains all station ids found in the stations CSV.
-    // Is used to reject journeys with departure/return id outside
-    // declared stations.
-    private var allowedStationIDs: ArrayList<Int> = arrayListOf()
 
     fun parseStationData() {
         var stationArray: ArrayList<StationModel> = arrayListOf()
         csvReader().open("src/main/resources/data/stations.csv") {
             readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
-                if (validateStationData(row)) { stationArray.add(stationRowToModel(row)) }
+                 stationArray.add(stationRowToModel(row))
             }
         }
 
@@ -33,11 +24,8 @@ object CSVParser {
         println("Stations parsed into database")
     }
 
-    // TODO: Parse all files concurrently
+    // TODO: Parse journey files concurrently
     fun parseJourneyData() {
-        var journeyArray: ArrayList<JourneyModel> = arrayListOf()
-        var firstRow: Map<String, String> = mapOf()
-        var rowCounter: Long = 0
 
         // TODO: Get file location from params
         var filenames = arrayListOf(
@@ -72,7 +60,7 @@ object CSVParser {
                     rowCounter++
 
                     // If journey data is valid, format to JourneyModel and add to array to be returned
-                    if (validateJourneyData(row)) {
+                    if (validateJourneyCSVRow(row)) {
                         journeyArray.add(journeyRowToModel(row))
                     }
                 }
@@ -82,52 +70,6 @@ object CSVParser {
         println("CSV from $pathToFile parsed into database")
     }
 
-    // TODO: Tests
-    private fun validateStationData(row: Map<String, String>): Boolean {
-        // Add station id to allowed ids
-        allowedStationIDs.add(row.getValue("ID").toInt())
-        return true
-    }
-
-    // TODO: Tests
-    private fun validateJourneyData(row: Map<String, String>): Boolean {
-        // Simplify testing by grouping values by test types
-        val timestampTests: Array<String> = arrayOf("Departure", "Return")
-        val intTests = arrayOf("Departure station id", "Return station id", "Covered distance (m)", "Duration (sec.)")
-
-        // Timestamp should be "YYYY-MM-DD'T'HH:MM:SS" e.g. "2021-05-31T23:50:19"
-        for (key in timestampTests) {
-            var timestamp = row.getValue(key)
-            // Use RegExp to check for correct format // TODO: Make better?
-            val regex = Regex(pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?")
-            if (!regex.matches(timestamp)) { return false }
-        }
-
-        for (key in intTests) {
-            var value = row.getValue(key)
-
-            // Check that number can be converted to int, else return false
-            try {value.toInt()} catch (e: Exception) { return false }
-
-            // If covered distance under 10 metres, journey is not included.
-            if (key == "Covered distance (m)" && value.toInt() < 10) {
-                //println("Rejected ${value.toInt()}")
-                return false
-            }
-
-            // If journey length is under 10 seconds, journey is not included.
-            if (key == "Duration (sec.)" && value.toInt() < 10) { return false }
-
-            // Reject if departure or return station id is not in the allowed list of station ids.
-            if (key == "Departure station id" || key == "Return station id") {
-                var id = row.getValue(key).toInt()
-                if (!allowedStationIDs.contains(id)) {return false}
-            }
-        }
-
-        // If passes all tests
-        return true
-    }
 
     // TODO: Tests
     private fun stationRowToModel(row: Map<String, String>): StationModel {

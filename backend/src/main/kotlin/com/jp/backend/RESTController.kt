@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
 import com.jp.backend.DatabaseConn.insertIntoJourneys
+import com.jp.backend.ValidationHelpers.validateJourneyInsertFromApp
 
 // TODO: Add correct responses to queries, errors etc
 @CrossOrigin(maxAge = 3600)
@@ -108,8 +109,12 @@ class RESTController() {
 
     @PostMapping("/insert/journey")
     fun insertJourney(@RequestBody journey: JourneyModel): ResponseEntity<String> {
-        insertIntoJourneys(arrayListOf(journey))
-        return ResponseEntity("Journey created", HttpStatus.OK)
+        return if (validateJourneyInsertFromApp(journey)) {
+            insertIntoJourneys(arrayListOf(journey))
+            ResponseEntity("Journey created", HttpStatus.OK)
+        } else {
+            ResponseEntity("Journey failed validation", HttpStatus.BAD_REQUEST)
+        }
     }
 
     @PostMapping("/create")

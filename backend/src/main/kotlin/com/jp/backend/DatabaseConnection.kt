@@ -5,15 +5,12 @@
 
 package com.jp.backend
 
-import kotlinx.datetime.LocalDate
+import com.jp.backend.ValidationHelpers.updateStationIDs
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toLocalDate
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Sort
 
 object DatabaseConn {
 	// Initialize database connection.
@@ -34,18 +31,18 @@ object DatabaseConn {
 				password = "password")
 		}
 
-	// TODO: Make work
-    // If tables don't exist, create them
 	init {
+        // If tables don't exist, create them
 		 if (!tablesExist()) {
 			transaction(db) {
                 SchemaUtils.create(Journeys)
                 SchemaUtils.create(Stations)
 			}
+         // Send command to parse the CSV files and populate database
 		}
 	}
 
-// Function for all stations
+// Function for getting all stations
 fun getStationsData(): ArrayList<StationModel> {
     var ret: ArrayList<StationModel> = arrayListOf()
     transaction(db) {
@@ -75,7 +72,18 @@ fun getStationsData(): ArrayList<StationModel> {
     return ret
 }
 
-// Function for getting paginated/sorted/searched data
+
+fun getAllStationIDs(): ArrayList<Int> {
+    var ret: ArrayList<Int> = arrayListOf()
+    transaction(db) {
+        for (station in Stations.selectAll()) {
+            ret.add(station[Stations.station_id])
+        }
+    }
+    return ret
+}
+
+// Function for getting paginated/sorted/searched station data
 fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = "", sortDesc: Boolean?, search: String? = ""): ArrayList<StationModel> {
     var ret: ArrayList<StationModel> = arrayListOf()
     transaction(db) {
@@ -105,6 +113,7 @@ fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = "",
     }
     return ret
 }
+
 
 /**
  * Form detailed single station data by id given as a parameter.
@@ -154,7 +163,6 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
     }
     return ret
 }
-
 
 fun getPaginationJourneysData(pageSize: Int,
                               offset: Long,
@@ -245,20 +253,9 @@ private fun formOrderBy(sortBy: String?, sortDesc: Boolean?): Pair<Column<*>, So
     }
 }
 
-// Function for checking if tables already exist.
-private fun tablesExist(): Boolean {
-    var ret = true
-    transaction(db) {
-        try {Journeys.selectAll()} catch (e: Exception) {ret = false}
-        try {Stations.selectAll()} catch (e: Exception) {ret = false}
-    }
-    return ret
-}
 
-
-
-// Functions for inserting data into database
 fun insertIntoStations(stations: ArrayList<StationModel>) {
+    println("Inserting ${stations.size} station(s)")
     transaction(db) {
         Stations.batchInsert(stations) { it ->
             this[Stations.station_id] = it.id
@@ -274,12 +271,15 @@ fun insertIntoStations(stations: ArrayList<StationModel>) {
             this[Stations.longitude] = it.longitude
             this[Stations.latitude] = it.latitude
         }
-
     }
+
+    // After insert of station, update allowed IDs
+    // to ValidationHelpers
+    updateStationIDs()
 }
 
 fun insertIntoJourneys(journeys: ArrayList<JourneyModel>) {
-    println("Inserting journeys")
+    println("Inserting ${journeys.size} Journey(s)")
     transaction(db) {
             // Times are saved as timestamps in the database,
             // check DataModels.kt for more information
@@ -345,6 +345,14 @@ private fun validateDate(date: String?, toEndOfDay: Boolean): LocalDateTime? {
         return validatedDate
     }
 
+private fun tablesExist(): Boolean {
+    var ret = true
+    transaction(db) {
+        try {Journeys.selectAll()} catch (e: Exception) {ret = false}
+        try {Stations.selectAll()} catch (e: Exception) {ret = false}
+    }
+    return ret
+}
 
 private fun getTopDepartureStationsForStation(id: Int): ArrayList<TopStationModel> {
     var ret: ArrayList<TopStationModel> = arrayListOf()
