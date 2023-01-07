@@ -167,8 +167,7 @@ fun getPaginationJourneysData(pageSize: Int,
                               maxDistance: Int?  = null,
                               minDuration: Int? = null,
                               maxDuration: Int? = null): JourneyAPIResult {
-    val ret: JourneyAPIResult = JourneyAPIResult(0, arrayListOf() )
-    var count: Long
+    val ret = JourneyAPIResult(0, arrayListOf() )
     val orderBy = formOrderBy(sortBy, sortDesc)
     val departureStationsTable = Stations.alias("st1")
     val returnStationsTable = Stations.alias("st2")
@@ -205,6 +204,7 @@ fun getPaginationJourneysData(pageSize: Int,
 
             // Getting length before paginating
             ret.length = journeys.count().toInt()
+
             journeys.orderBy(orderBy).limit(pageSize, offset)
 
         for (journey in journeys) {

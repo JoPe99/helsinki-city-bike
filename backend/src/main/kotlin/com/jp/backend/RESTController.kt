@@ -105,6 +105,12 @@ class RESTController() {
         return ResponseEntity("Journeys parsed", HttpStatus.OK)
     }
 
+    @PostMapping("/insert/journey")
+    fun insertJourney(@RequestBody station: StationModel): ResponseEntity<String> {
+        println(station)
+        return ResponseEntity("Journey created", HttpStatus.OK)
+    }
+
     @PostMapping("/create")
     fun createTables(): ResponseEntity<Any?> {
         DatabaseConn.createTables()
