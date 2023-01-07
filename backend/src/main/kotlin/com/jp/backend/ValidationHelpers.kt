@@ -59,8 +59,9 @@ object ValidationHelpers {
         return true
     }
 
-    fun validateStationInsertFromApp(journey: StationModel): Boolean {
-        return false
+    fun validateStationInsertFromApp(station: StationModel): Boolean {
+        if (allowedStationIDs.contains(station.id)) { return false }
+        return true
     }
 
     // TODO: Tests
