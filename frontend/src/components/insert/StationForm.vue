@@ -10,124 +10,147 @@
     >
       <span v-if="insertResultBar.success">{{ insertResultBar.text }}</span>
       <span v-else>{{ insertResultBar.text }}</span>
-      <v-icon dark> mdi-checkbox-marked-circle </v-icon>
+      <v-icon v-if="insertResultBar.success" dark>
+        mdi-checkbox-marked-circle
+      </v-icon>
     </v-snackbar>
 
     <v-container class="py-1">
-      <v-card-title class="py-3 px-0">Insert station</v-card-title>
-      <v-text-field
-        label="ID"
-        single-line
-        outlined
-        color="black"
-        type="number"
-        v-model="currentStation.id"
-        hint="ID, can't be already taken. Allowed values 1-1999."
-        max="2000"
-      ></v-text-field>
+      <v-row>
+        <v-col>
+          <v-card-title class="py-3 px-0">Insert station</v-card-title>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            label="ID"
+            outlined
+            color="highlight"
+            type="number"
+            v-model="currentStation.id"
+            hint="ID, can't be already taken. Allowed values 1-1999."
+            max="2000"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            label="Name (FI)"
+            outlined
+            color="highlight"
+            v-model="currentStation.nameFi"
+            hint="Name in Finnish"
+            counter
+            maxlength="50"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            label="Name (SE)"
+            outlined
+            color="highlight"
+            v-model="currentStation.nameSe"
+            hint="Name in Swedish"
+            counter
+            maxlength="50"
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+            label="Name (EN)"
+            outlined
+            color="highlight"
+            v-model="currentStation.nameEn"
+            hint="Name in English"
+            counter
+            maxlength="50"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            label="Address (FI)"
+            outlined
+            color="highlight"
+            v-model="currentStation.addressFi"
+            hint="Address in Finnish"
+            counter
+            maxlength="50"
+          ></v-text-field
+        ></v-col>
+        <v-col>
+          <v-text-field
+            label="Address (SE)"
+            outlined
+            color="highlight"
+            v-model="currentStation.addressSe"
+            hint="Address in Swedish"
+            counter
+            maxlength="50"
+          ></v-text-field
+        ></v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            label="City (Fi)"
+            outlined
+            color="highlight"
+            v-model="currentStation.cityFi"
+            hint="City in Finnish"
+            counter
+            maxlength="50"
+          ></v-text-field>
+        </v-col>
 
-      <v-text-field
-        label="Name (FI)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.nameFi"
-        hint="Name in Finnish"
-        counter
-        maxlength="50"
-      ></v-text-field>
+        <v-col>
+          <v-text-field
+            label="City (SE)"
+            outlined
+            color="highlight"
+            v-model="currentStation.citySe"
+            hint="City in Swedish"
+            counter
+            maxlength="50"
+          ></v-text-field
+        ></v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            label="Operator"
+            outlined
+            color="highlight"
+            v-model="currentStation.operator"
+            hint="Operator of the station"
+            counter
+            maxlength="50"
+          ></v-text-field
+        ></v-col>
 
-      <v-text-field
-        label="Name (SE)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.nameSe"
-        hint="Name in Swedish"
-        counter
-        maxlength="50"
-      ></v-text-field>
+        <v-col>
+          <v-text-field
+            label="Capacity"
+            outlined
+            color="highlight"
+            v-model="currentStation.capacity"
+            type="number"
+            suffix="bikes"
+            hint="Capacity of the station. Allowed values 1-500."
+          ></v-text-field>
+        </v-col>
+      </v-row>
 
-      <v-text-field
-        label="Name (EN)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.nameEn"
-        hint="Name in English"
-        counter
-        maxlength="50"
-      ></v-text-field>
+      <location-picker @newData="newLocationData"></location-picker>
 
-      <v-text-field
-        label="Address (FI)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.addressFi"
-        hint="Address in Finnish"
-        counter
-        maxlength="50"
-      ></v-text-field>
-      <v-text-field
-        label="Address (SE)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.addressSe"
-        hint="Address in Swedish"
-        counter
-        maxlength="50"
-      ></v-text-field>
-
-      <v-text-field
-        label="City (Fi)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.cityFi"
-        hint="City in Finnish"
-        counter
-        maxlength="50"
-      ></v-text-field>
-
-      <v-text-field
-        label="City (SE)"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.citySe"
-        hint="City in Swedish"
-        counter
-        maxlength="50"
-      ></v-text-field>
-
-      <v-text-field
-        label="Operator"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.operator"
-        hint="Operator of the station"
-        counter
-        maxlength="50"
-      ></v-text-field>
-
-      <v-text-field
-        label="Capacity"
-        single-line
-        outlined
-        color="black"
-        v-model="currentStation.capacity"
-        type="number"
-        suffix="bikes"
-        hint="Capacity of the station. Allowed values 1-500."
-      ></v-text-field>
-
-      <!-- TODO: Map location picker for station here  -->
-      <!-- https://medium.com/swlh/create-an-interactive-location-selector-with-vue-js-and-leaflet-5808c55b4636 -->
-
-      <v-btn @click="submitStation">Submit station</v-btn>
+      <v-row>
+        <v-col>
+          <v-btn color="submit" @click="submitStation">Submit station</v-btn>
+        </v-col>
+      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -137,11 +160,12 @@ import { defineComponent } from "vue";
 import { useStore } from "@/store";
 import { StationType } from "@/helpers/backend-data-types";
 import { insertStation } from "@/helpers/api-functions";
+import LocationPicker from "./LocationPicker.vue";
 
 export default defineComponent({
   name: "StationForm",
 
-  components: {},
+  components: { LocationPicker },
 
   created() {
     this.stationIDs = this.store.stationIDs;
@@ -153,17 +177,17 @@ export default defineComponent({
 
     currentStation: {
       id: 516,
-      nameFi: "Joonankatu",
-      nameSe: "Joonagatan",
-      nameEn: "Joona Street",
-      addressFi: "Joonankatu 55",
-      addressSe: "Joonagatan 55",
-      cityFi: "Kouvola",
-      citySe: "Kouvolarna",
-      operator: "PeniSoft Oy",
-      capacity: 50,
-      longitude: "25.045481",
-      latitude: "60.151844",
+      nameFi: "",
+      nameSe: "",
+      nameEn: "",
+      addressFi: "",
+      addressSe: "",
+      cityFi: "",
+      citySe: "",
+      operator: "",
+      capacity: 0,
+      latitude: "",
+      longitude: "",
     } as StationType,
 
     insertResultBar: {
@@ -175,6 +199,10 @@ export default defineComponent({
   }),
 
   methods: {
+    newLocationData(location: { lat: number; lng: number }) {
+      this.currentStation.latitude = location.lat.toString();
+      this.currentStation.longitude = location.lng.toString();
+    },
     postStationToAPI(station: StationType) {
       console.log("Posting station", station);
       insertStation(station).then((response) => {
@@ -184,7 +212,7 @@ export default defineComponent({
     },
 
     updateStoreData() {
-      this.store.updateStoreStationData().then((response) => {
+      this.store.updateStoreStationData().then(() => {
         this.showResultBar(true, []);
       });
     },
@@ -236,18 +264,24 @@ export default defineComponent({
 
       let validationStatus = { success: true, invalidKeys: [] as string[] };
 
-      // Reject if ID already taken or outside [1, 2000].
+      // Reject if ID already taken or outside [1, 2000], and that
+      // it is a whole number.
       if (
         this.stationIDs.includes(Number(currentStation.id)) ||
         currentStation.id > 2000 ||
-        currentStation.id < 1
+        currentStation.id < 1 ||
+        currentStation.id % 1 != 0
       ) {
         validationStatus.success = false;
         validationStatus.invalidKeys.push("Station ID");
       }
 
-      // Capacity has to be in range of [1, 400].
-      if (currentStation.capacity > 500 || currentStation.capacity < 1) {
+      // Reject if capacity not in range [1, 500] or not whole number.
+      if (
+        currentStation.capacity > 500 ||
+        currentStation.capacity < 1 ||
+        currentStation.capacity % 1 != 0
+      ) {
         validationStatus.success = false;
         validationStatus.invalidKeys.push("Capacity");
       }
