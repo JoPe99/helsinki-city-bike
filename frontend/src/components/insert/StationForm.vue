@@ -1,5 +1,6 @@
 <template>
-  <v-card color="primary" class="pa-4 elevation-4 fill-height">
+  <v-card color="primary" class="pa-4 elevation-4">
+    <!-- Status message -->
     <v-snackbar
       v-model="insertResultBar.show"
       absolute
@@ -15,6 +16,7 @@
       </v-icon>
     </v-snackbar>
 
+    <!-- Form items -->
     <v-container class="py-1">
       <v-row>
         <v-col>
@@ -29,7 +31,8 @@
             color="highlight"
             type="number"
             v-model="currentStation.id"
-            hint="ID, can't be already taken. Allowed values 1-1999."
+            hint="ID can't be already taken, defaults to first available ID. Allowed values 1-1999."
+            min="1"
             max="2000"
           ></v-text-field>
         </v-col>
@@ -138,17 +141,22 @@
             color="highlight"
             v-model="currentStation.capacity"
             type="number"
-            suffix="bikes"
+            suffix="bike(s)"
             hint="Capacity of the station. Allowed values 1-500."
           ></v-text-field>
         </v-col>
       </v-row>
 
-      <location-picker @newData="newLocationData"></location-picker>
+      <location-picker
+        :refresh="refreshLocationPicker"
+        @newData="newLocationData"
+      ></location-picker>
 
       <v-row>
-        <v-col>
-          <v-btn color="submit" @click="submitStation">Submit station</v-btn>
+        <v-col align="end">
+          <v-btn :disabled="disableSubmit" color="submit" @click="submitStation"
+            >Submit station</v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -171,12 +179,17 @@ export default defineComponent({
     this.stationIDs = this.store.stationIDs;
   },
 
+  mounted() {
+    this.currentStation.id = this.getFirstFreeStationID();
+  },
+
   data: () => ({
     store: useStore(),
     stationIDs: [] as number[],
-
+    disableSubmit: false,
+    refreshLocationPicker: false,
     currentStation: {
-      id: 516,
+      id: 1,
       nameFi: "",
       nameSe: "",
       nameEn: "",
@@ -185,7 +198,7 @@ export default defineComponent({
       cityFi: "",
       citySe: "",
       operator: "",
-      capacity: 0,
+      capacity: 1,
       latitude: "",
       longitude: "",
     } as StationType,
@@ -199,36 +212,42 @@ export default defineComponent({
   }),
 
   methods: {
-    newLocationData(location: { lat: number; lng: number }) {
-      this.currentStation.latitude = location.lat.toString();
-      this.currentStation.longitude = location.lng.toString();
-    },
-    postStationToAPI(station: StationType) {
-      console.log("Posting station", station);
-      insertStation(station).then((response) => {
-        console.log(response);
-        this.updateStoreData();
-      });
-    },
-
-    updateStoreData() {
-      this.store.updateStoreStationData().then(() => {
-        this.showResultBar(true, []);
-      });
-    },
-
     submitStation() {
+      this.disableSubmit = true;
       console.log("Submitting station");
       let validationResult = this.validateStation();
 
       // If frontend validation successful, post station to API.
       if (validationResult.success) {
-        console.log("Insert successful");
+        console.log("Validation successful");
         this.postStationToAPI(this.currentStation);
       } else {
-        console.log("Insert failed");
+        console.log("Validation failed");
         this.showResultBar(false, validationResult.invalidKeys);
+        this.disableSubmit = false;
       }
+    },
+
+    // Post station to API and update store if successful
+    postStationToAPI(station: StationType) {
+      console.log("Posting station", station);
+      insertStation(station).then((response) => {
+        // Handle response here too.
+        console.log(response);
+        this.updateStoreData();
+      });
+    },
+
+    // Update store and clear up form for new station
+    updateStoreData() {
+      this.store.updateStoreStationData().then(() => {
+        this.stationIDs = this.store.stationIDs;
+        this.disableSubmit = false;
+        this.clearForm();
+        this.showResultBar(true, []);
+        // Notifying InsertView to update stations on JourneyForm
+        this.$emit("storeUpdated");
+      });
     },
 
     showResultBar(success: boolean, failedValues: string[]) {
@@ -301,6 +320,45 @@ export default defineComponent({
       });
 
       return validationStatus;
+    },
+
+    newLocationData(location: { lat: number; lng: number }) {
+      this.currentStation.latitude = location.lat.toString();
+      this.currentStation.longitude = location.lng.toString();
+    },
+
+    clearForm() {
+      let currentStation = this.currentStation;
+      currentStation.id = this.getFirstFreeStationID();
+      currentStation.nameFi = "";
+      currentStation.nameSe = "";
+      currentStation.nameEn = "";
+      currentStation.addressFi = "";
+      currentStation.addressSe = "";
+      currentStation.cityFi = "";
+      currentStation.citySe = "";
+      currentStation.operator = "";
+      currentStation.capacity = 1;
+      currentStation.latitude = "";
+      currentStation.longitude = "";
+
+      // Could be done by refs, but would be unnecessarily complicated
+      // for such a simple thing
+      this.refreshLocationPicker = !this.refreshLocationPicker;
+    },
+
+    getFirstFreeStationID() {
+      let counter = 1;
+      while (counter < 2000) {
+        if (!this.stationIDs.includes(counter)) {
+          return counter;
+        }
+        counter++;
+      }
+
+      // If all IDs are taken, alert user.
+      alert("All IDs are taken.");
+      return 0;
     },
   },
 });

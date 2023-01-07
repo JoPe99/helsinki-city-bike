@@ -1,11 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="70%">
+  <v-dialog v-model="dialog" max-width="70%">
     <template v-slot:activator="{ on, attrs }">
       <v-container fluid class="pa-0">
         <v-row>
           <v-col cols="4">
             <v-btn
-              style="height: 50%; width: 90%; align-self: center"
+              style="height: 85%; width: 90%"
               class="no-text-transform"
               color="secondary"
               dark
@@ -79,6 +79,7 @@ Icon.Default.mergeOptions({
 
 export default defineComponent({
   name: "LocationPicker",
+  props: ["refresh"],
 
   components: { LMap, LTileLayer, LMarker },
 
@@ -100,6 +101,10 @@ export default defineComponent({
           setTimeout(this.invalidateSize, 100);
         });
       }
+    },
+    refresh: function () {
+      this.displayLat = null;
+      this.displayLng = null;
     },
   },
 
