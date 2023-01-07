@@ -145,8 +145,10 @@ export function insertStation(station: StationType) {
 
 /**
  * Inserts journey into backend database.
- * @param journey
+ * @param journey InsertJourneyType
  */
 export function insertJourney(journey: InsertJourneyType) {
-  console.log("inserting journey");
+  console.log("inserting journey", journey);
+  const url = `${SERVER_IP}/insert/journey`;
+  return axios.post<InsertJourneyType>(url);
 }
