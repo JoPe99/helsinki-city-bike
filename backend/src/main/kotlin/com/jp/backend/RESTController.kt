@@ -119,7 +119,7 @@ class RESTController() {
         }
     }
 
-    @PostMapping("/insert/stations")
+    @PostMapping("/insert/station")
     fun insertStation(@RequestBody station: StationModel): ResponseEntity<String> {
         return if (validateStationInsertFromApp(station)) {
             insertIntoStations(arrayListOf(station))

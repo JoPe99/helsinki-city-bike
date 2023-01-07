@@ -70,11 +70,43 @@ export const useStore = defineStore("store", {
     },
 
     setupStationIDs(stations: StationType[]) {
-      this.stationIDs = [];
+      this.stationIDs = [] as number[];
       for (const station of stations) {
         this.stationIDs.push(station.id);
       }
       console.log(this.stationIDs);
+    },
+
+    // Called after inserting new station
+    async updateStoreStationData() {
+      await getAllStations().then((response) => {
+        this.stations = response.data;
+        this.setupStationMarkers(response.data);
+        this.setupStationIDs(response.data);
+      });
+    },
+
+    // Called after inserting new journey
+    async updateStoreJourneyData() {
+      await getJourneysCount().then((response) => {
+        this.totalJourneys = response.data;
+      });
+
+      await getEarliestJourney().then((response) => {
+        this.earliestJourney = response.data.journeys[0];
+      });
+
+      await getLatestJourney().then((response) => {
+        this.latestJourney = response.data.journeys[0];
+      });
+
+      await getLongestDistance().then((response) => {
+        this.longestJourneyByDistance = response.data.journeys[0];
+      });
+
+      await getLongestDuration().then((response) => {
+        this.longestJourneyByDuration = response.data.journeys[0];
+      });
     },
   },
 });

@@ -87,7 +87,7 @@
         outlined
         color="black"
         v-model="currentStation.cityFi"
-        hint="Address in Swedish"
+        hint="City in Finnish"
         counter
         maxlength="50"
       ></v-text-field>
@@ -95,11 +95,10 @@
       <v-text-field
         label="City (SE)"
         single-line
-        readonly
         outlined
         color="black"
         v-model="currentStation.citySe"
-        hint="Address in Swedish"
+        hint="City in Swedish"
         counter
         maxlength="50"
       ></v-text-field>
@@ -123,7 +122,7 @@
         v-model="currentStation.capacity"
         type="number"
         suffix="bikes"
-        hint="Capacity of the station"
+        hint="Capacity of the station (Max 150 bikes)"
       ></v-text-field>
 
       <!-- TODO: Map location picker for station here  -->
@@ -138,6 +137,7 @@
 import { defineComponent } from "vue";
 import { useStore } from "@/store";
 import { StationType } from "@/helpers/backend-data-types";
+import { insertStation } from "@/helpers/api-functions";
 
 export default defineComponent({
   name: "StationForm",
@@ -163,6 +163,8 @@ export default defineComponent({
       citySe: "Kouvolarna",
       operator: "PeniSoft Oy",
       capacity: 50,
+      longitude: "25.045481",
+      latitude: "60.151844",
     } as StationType,
 
     insertResultBar: {
@@ -174,6 +176,20 @@ export default defineComponent({
   }),
 
   methods: {
+    postStationToAPI(station: StationType) {
+      console.log("Posting station", station);
+      insertStation(station).then((response) => {
+        console.log(response);
+        this.updateStoreData();
+      });
+    },
+
+    updateStoreData() {
+      this.store.updateStoreStationData().then((response) => {
+        this.showResultBar(true, []);
+      });
+    },
+
     submitStation() {
       console.log("Submitting station");
       let validationResult = this.validateStation();
@@ -247,10 +263,6 @@ export default defineComponent({
       });
 
       return validationStatus;
-    },
-
-    postStationToAPI(station: StationType) {
-      console.log("Posting station", station);
     },
   },
 });

@@ -15,7 +15,6 @@ object ValidationHelpers {
     private var allowedStationIDs: ArrayList<Int> = arrayListOf()
 
     init {
-        println("ValidationHelpers Init")
         updateStationIDs()
     }
 
@@ -23,6 +22,7 @@ object ValidationHelpers {
      * Updates station IDs of ValidationHelpers
      */
     fun updateStationIDs() {
+        println("Updating allowed station IDs")
         allowedStationIDs = getAllStationIDs()
         println(allowedStationIDs)
     }

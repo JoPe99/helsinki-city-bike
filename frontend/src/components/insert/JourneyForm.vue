@@ -102,6 +102,7 @@
         v-model="getFormatSeconds"
         suffix="Duration"
       ></v-text-field>
+
       <v-btn @click="submitJourney">Submit journey</v-btn>
     </v-container>
   </v-card>
@@ -186,15 +187,15 @@ export default defineComponent({
     },
 
     formJourney() {
+      // Station data (ID/Name) is inserted into
+      // currentJourney inside these functions
+      this.formStationData("departure");
+      this.formStationData("return");
+
       this.currentJourney.departureTime = this.formDateTimeString("departure");
       this.currentJourney.returnTime = this.formDateTimeString("return");
       this.currentJourney.durationSeconds = this.formDuration();
       this.currentJourney.distanceCovered = Number(this.distanceMetres);
-
-      // Station data is inserted into
-      // currentJourney inside the function
-      this.formStationData("departure");
-      this.formStationData("return");
     },
 
     postJourneyToAPI(journey: InsertJourneyType) {

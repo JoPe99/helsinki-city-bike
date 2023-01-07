@@ -81,7 +81,8 @@ export type InsertJourneyType = {
 };
 
 /**
- * Stations come in this format from the server.
+ * Stations come in this format from the server,
+ * and can be inserted using the same format.
  */
 export type StationType = {
   id: number;
