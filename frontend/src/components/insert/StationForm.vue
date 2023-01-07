@@ -22,9 +22,8 @@
         color="black"
         type="number"
         v-model="currentStation.id"
-        hint="ID, can't be already taken"
-        counter
-        maxlength="50"
+        hint="ID, can't be already taken. Allowed values 1-1999."
+        max="2000"
       ></v-text-field>
 
       <v-text-field
@@ -122,7 +121,7 @@
         v-model="currentStation.capacity"
         type="number"
         suffix="bikes"
-        hint="Capacity of the station (Max 150 bikes)"
+        hint="Capacity of the station. Allowed values 1-500."
       ></v-text-field>
 
       <!-- TODO: Map location picker for station here  -->
@@ -198,7 +197,6 @@ export default defineComponent({
       if (validationResult.success) {
         console.log("Insert successful");
         this.postStationToAPI(this.currentStation);
-        this.showResultBar(true, []);
       } else {
         console.log("Insert failed");
         this.showResultBar(false, validationResult.invalidKeys);
@@ -238,12 +236,18 @@ export default defineComponent({
 
       let validationStatus = { success: true, invalidKeys: [] as string[] };
 
-      if (this.stationIDs.includes(Number(currentStation.id))) {
+      // Reject if ID already taken or outside [1, 2000].
+      if (
+        this.stationIDs.includes(Number(currentStation.id)) ||
+        currentStation.id > 2000 ||
+        currentStation.id < 1
+      ) {
         validationStatus.success = false;
         validationStatus.invalidKeys.push("Station ID");
       }
 
-      if (currentStation.capacity > 150) {
+      // Capacity has to be in range of [1, 400].
+      if (currentStation.capacity > 500 || currentStation.capacity < 1) {
         validationStatus.success = false;
         validationStatus.invalidKeys.push("Capacity");
       }
