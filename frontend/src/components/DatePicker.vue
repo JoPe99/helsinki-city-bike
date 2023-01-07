@@ -20,7 +20,13 @@
         color="highlight"
       ></v-text-field>
     </template>
-    <v-date-picker v-model="date" no-title scrollable>
+    <v-date-picker
+      v-model="date"
+      no-title
+      :min="minDate"
+      :max="maxDate"
+      scrollable
+    >
       <v-spacer></v-spacer>
       <v-btn text color="primary" @click="menu = false"> Cancel </v-btn>
       <v-btn text color="primary" @click="saveDate(date)"> OK </v-btn>
@@ -29,8 +35,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import Vue from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "DatePicker",
@@ -39,6 +45,8 @@ export default defineComponent({
 
   data: () => ({
     date: new Date().toISOString().substring(0, 10),
+    minDate: "2021-01-01",
+    maxDate: "2021-12-31",
     menu: false,
   }),
 
