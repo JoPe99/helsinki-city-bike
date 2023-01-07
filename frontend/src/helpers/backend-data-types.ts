@@ -64,6 +64,23 @@ export type FormattedJourneyType = {
 };
 
 /**
+ * This type is used for inserting into the backend database.
+ */
+export type InsertJourneyType = {
+  departureTime: string;
+  returnTime: string;
+
+  departureStationName: string;
+  departureStationId: number;
+
+  returnStationName: string;
+  returnStationId: number;
+
+  distanceCovered: number;
+  durationSeconds: number;
+};
+
+/**
  * Stations come in this format from the server.
  */
 export type StationType = {
@@ -101,23 +118,6 @@ export type StationDetails = {
 
   topDepartStations: Array<{ name: string; count: number }>;
   topReturnStations: Array<{ name: string; count: number }>;
-};
-
-/**
- * This type is used for inserting into the backend database.
- */
-export type InsertJourneyType = {
-  departureTime: string;
-  returnTime: string;
-
-  departureStationName: string;
-  departureStationId: number;
-
-  returnStationName: string;
-  returnStationId: number;
-
-  distanceCovered: number;
-  durationSeconds: number;
 };
 
 /**

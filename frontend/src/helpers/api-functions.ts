@@ -150,5 +150,5 @@ export function insertStation(station: StationType) {
 export function insertJourney(journey: InsertJourneyType) {
   console.log("inserting journey", journey);
   const url = `${SERVER_IP}/insert/journey`;
-  return axios.post<InsertJourneyType>(url);
+  return axios.post<InsertJourneyType>(url, journey);
 }

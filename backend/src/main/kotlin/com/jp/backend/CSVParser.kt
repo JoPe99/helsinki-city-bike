@@ -125,7 +125,7 @@ object CSVParser {
             }
         }
 
-        // Return true if passes all tests
+        // If passes all tests
         return true
     }
 

@@ -114,6 +114,7 @@ import { InsertJourneyType, StationType } from "@/helpers/backend-data-types";
 import TimePicker from "./TimePicker.vue";
 import DatePicker from "@/components/DatePicker.vue";
 import { formatSeconds } from "@/helpers/list-view-helpers";
+import { insertJourney } from "@/helpers/api-functions";
 
 export default defineComponent({
   name: "JourneyForm",
@@ -181,6 +182,7 @@ export default defineComponent({
     submitJourney() {
       this.formJourney();
       console.log("Submitting", this.currentJourney);
+      this.postJourneyToAPI(this.currentJourney);
     },
 
     formJourney() {
@@ -193,6 +195,12 @@ export default defineComponent({
       // currentJourney inside the function
       this.formStationData("departure");
       this.formStationData("return");
+    },
+
+    postJourneyToAPI(journey: InsertJourneyType) {
+      insertJourney(journey).then((response) => {
+        console.log(response);
+      });
     },
 
     formDateTimeString(type: "departure" | "return") {

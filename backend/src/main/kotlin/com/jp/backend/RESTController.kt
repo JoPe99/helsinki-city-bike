@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
+import com.jp.backend.DatabaseConn.insertIntoJourneys
 
 // TODO: Add correct responses to queries, errors etc
 @CrossOrigin(maxAge = 3600)
@@ -106,8 +107,8 @@ class RESTController() {
     }
 
     @PostMapping("/insert/journey")
-    fun insertJourney(@RequestBody station: StationModel): ResponseEntity<String> {
-        println(station)
+    fun insertJourney(@RequestBody journey: JourneyModel): ResponseEntity<String> {
+        insertIntoJourneys(arrayListOf(journey))
         return ResponseEntity("Journey created", HttpStatus.OK)
     }
 
