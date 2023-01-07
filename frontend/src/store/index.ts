@@ -24,6 +24,7 @@ export const useStore = defineStore("store", {
 
     stations: [] as StationType[],
     allStationMarkers: [] as StationLocation[],
+    stationIDs: [] as number[],
   }),
   getters: {},
   actions: {
@@ -51,6 +52,7 @@ export const useStore = defineStore("store", {
       await getAllStations().then((response) => {
         this.stations = response.data;
         this.setupStationMarkers(response.data);
+        this.setupStationIDs(response.data);
       });
       this.storeReady = true;
       console.log("Store ready");
@@ -65,6 +67,14 @@ export const useStore = defineStore("store", {
           latLong: [Number(station.latitude), Number(station.longitude)],
         });
       }
+    },
+
+    setupStationIDs(stations: StationType[]) {
+      this.stationIDs = [];
+      for (const station of stations) {
+        this.stationIDs.push(station.id);
+      }
+      console.log(this.stationIDs);
     },
   },
 });

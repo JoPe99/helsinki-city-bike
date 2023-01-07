@@ -1,5 +1,18 @@
 <template>
   <v-card color="primary" class="pa-4 elevation-4 fill-height">
+    <v-snackbar
+      v-model="insertResultBar.show"
+      absolute
+      top
+      right
+      :color="insertResultBar.color"
+      timeout="2000"
+    >
+      <span v-if="insertResultBar.success">{{ insertResultBar.text }}</span>
+      <span v-else>{{ insertResultBar.text }}</span>
+      <v-icon dark> mdi-checkbox-marked-circle </v-icon>
+    </v-snackbar>
+
     <v-container class="py-1">
       <v-card-title class="py-3 px-0">Insert station</v-card-title>
       <v-text-field
@@ -7,9 +20,11 @@
         single-line
         outlined
         color="black"
+        type="number"
         v-model="currentStation.id"
         hint="ID, can't be already taken"
-        required
+        counter
+        maxlength="50"
       ></v-text-field>
 
       <v-text-field
@@ -19,7 +34,8 @@
         color="black"
         v-model="currentStation.nameFi"
         hint="Name in Finnish"
-        required
+        counter
+        maxlength="50"
       ></v-text-field>
 
       <v-text-field
@@ -29,7 +45,8 @@
         color="black"
         v-model="currentStation.nameSe"
         hint="Name in Swedish"
-        required
+        counter
+        maxlength="50"
       ></v-text-field>
 
       <v-text-field
@@ -39,7 +56,8 @@
         color="black"
         v-model="currentStation.nameEn"
         hint="Name in English"
-        required
+        counter
+        maxlength="50"
       ></v-text-field>
 
       <v-text-field
@@ -49,7 +67,8 @@
         color="black"
         v-model="currentStation.addressFi"
         hint="Address in Finnish"
-        required
+        counter
+        maxlength="50"
       ></v-text-field>
       <v-text-field
         label="Address (SE)"
@@ -58,7 +77,31 @@
         color="black"
         v-model="currentStation.addressSe"
         hint="Address in Swedish"
-        required
+        counter
+        maxlength="50"
+      ></v-text-field>
+
+      <v-text-field
+        label="City (Fi)"
+        single-line
+        outlined
+        color="black"
+        v-model="currentStation.cityFi"
+        hint="Address in Swedish"
+        counter
+        maxlength="50"
+      ></v-text-field>
+
+      <v-text-field
+        label="City (SE)"
+        single-line
+        readonly
+        outlined
+        color="black"
+        v-model="currentStation.citySe"
+        hint="Address in Swedish"
+        counter
+        maxlength="50"
       ></v-text-field>
 
       <v-text-field
@@ -68,7 +111,8 @@
         color="black"
         v-model="currentStation.operator"
         hint="Operator of the station"
-        required
+        counter
+        maxlength="50"
       ></v-text-field>
 
       <v-text-field
@@ -77,10 +121,15 @@
         outlined
         color="black"
         v-model="currentStation.capacity"
+        type="number"
         suffix="bikes"
         hint="Capacity of the station"
-        required
       ></v-text-field>
+
+      <!-- TODO: Map location picker for station here  -->
+      <!-- https://medium.com/swlh/create-an-interactive-location-selector-with-vue-js-and-leaflet-5808c55b4636 -->
+
+      <v-btn @click="submitStation">Submit station</v-btn>
     </v-container>
   </v-card>
 </template>
@@ -95,19 +144,113 @@ export default defineComponent({
 
   components: {},
 
-  mounted() {
-    this.getStationIds(this.store.stations);
+  created() {
+    this.stationIDs = this.store.stationIDs;
   },
 
   data: () => ({
     store: useStore(),
-    stationIds: [] as number[],
-    currentStation: {} as StationType,
+    stationIDs: [] as number[],
+
+    currentStation: {
+      id: 516,
+      nameFi: "Joonankatu",
+      nameSe: "Joonagatan",
+      nameEn: "Joona Street",
+      addressFi: "Joonankatu 55",
+      addressSe: "Joonagatan 55",
+      cityFi: "Kouvola",
+      citySe: "Kouvolarna",
+      operator: "PeniSoft Oy",
+      capacity: 50,
+    } as StationType,
+
+    insertResultBar: {
+      show: false,
+      color: "error",
+      success: false,
+      text: "",
+    },
   }),
 
   methods: {
-    getStationIds(stations: StationType[]) {
-      console.log(stations);
+    submitStation() {
+      console.log("Submitting station");
+      let validationResult = this.validateStation();
+
+      // If frontend validation successful, post station to API.
+      if (validationResult.success) {
+        console.log("Insert successful");
+        this.postStationToAPI(this.currentStation);
+        this.showResultBar(true, []);
+      } else {
+        console.log("Insert failed");
+        this.showResultBar(false, validationResult.invalidKeys);
+      }
+    },
+
+    showResultBar(success: boolean, failedValues: string[]) {
+      if (success) {
+        this.insertResultBar.color = "success";
+        this.insertResultBar.text = "Insert success!";
+        this.insertResultBar.success = true;
+        this.insertResultBar.show = true;
+      } else {
+        this.insertResultBar.color = "error";
+        this.insertResultBar.success = false;
+
+        let errorText = "";
+        if (failedValues.length > 1) {
+          errorText = "Values: ";
+          for (let value of failedValues) {
+            errorText += ` "${value}" `;
+          }
+          errorText += "failed validation.";
+        } else if (failedValues.length == 1) {
+          errorText = `Value ${failedValues[0]} failed validation.`;
+        } else {
+          errorText = "Insert failed for some other reason.";
+        }
+        this.insertResultBar.text = errorText;
+
+        this.insertResultBar.show = true;
+      }
+    },
+
+    validateStation(): { success: boolean; invalidKeys: string[] } {
+      let currentStation = this.currentStation;
+
+      let validationStatus = { success: true, invalidKeys: [] as string[] };
+
+      if (this.stationIDs.includes(Number(currentStation.id))) {
+        validationStatus.success = false;
+        validationStatus.invalidKeys.push("Station ID");
+      }
+
+      if (currentStation.capacity > 150) {
+        validationStatus.success = false;
+        validationStatus.invalidKeys.push("Capacity");
+      }
+
+      // Validate all strings
+      (Object.keys(currentStation) as (keyof StationType)[]).forEach((key) => {
+        if (typeof currentStation[key] === "string") {
+          if ((currentStation[key] as string).length == 0) {
+            validationStatus.success = false;
+            validationStatus.invalidKeys.push(key);
+          }
+          if ((currentStation[key] as string).length > 50) {
+            validationStatus.success = false;
+            validationStatus.invalidKeys.push(key);
+          }
+        }
+      });
+
+      return validationStatus;
+    },
+
+    postStationToAPI(station: StationType) {
+      console.log("Posting station", station);
     },
   },
 });
