@@ -39,7 +39,13 @@
       </v-container>
     </template>
     <v-card style="height: 800px">
-      <l-map ref="map" style="height: 750px" :zoom="zoom" :center="center">
+      <l-map
+        ref="map"
+        style="height: 750px"
+        :zoom="zoom"
+        :center="center"
+        @ready="invalidateSize"
+      >
         <l-tile-layer :url="url"></l-tile-layer>
         <l-marker :draggable="true" :lat-lng.sync="markerPosition"></l-marker>
       </l-map>
@@ -96,13 +102,6 @@ export default defineComponent({
   }),
 
   watch: {
-    dialog(visible) {
-      if (visible) {
-        this.$nextTick(() => {
-          setTimeout(this.invalidateSize, 100);
-        });
-      }
-    },
     refresh: function () {
       this.displayLat = null;
       this.displayLng = null;
@@ -112,6 +111,7 @@ export default defineComponent({
   computed: {},
 
   methods: {
+    // Called after map is ready to center it correctly
     invalidateSize() {
       // There is for sure a cleaner way to do this,
       // than with "as any".
