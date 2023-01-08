@@ -140,11 +140,15 @@ export default defineComponent({
         },
         {
           value: 100000,
-          step: 500,
+          step: 1000,
+        },
+        {
+          value: 500000,
+          step: 100000,
         },
         {
           value: Number(this.getLongestJourneyDistance),
-          step: 1,
+          step: 100000,
         },
       ];
     },
