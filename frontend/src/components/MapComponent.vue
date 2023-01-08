@@ -1,6 +1,11 @@
 <template>
   <div class="elevation-1">
-    <l-map style="height: 100%" :zoom="zoom" :center="center" :bounds="bounds">
+    <l-map
+      style="height: 100%; z-index: 0"
+      :zoom="zoom"
+      :center="center"
+      :bounds="bounds"
+    >
       <l-tile-layer :url="url"></l-tile-layer>
       <l-layer-group :ref="markers">
         <l-marker
