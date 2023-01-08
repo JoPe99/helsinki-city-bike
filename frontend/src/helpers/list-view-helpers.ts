@@ -108,6 +108,7 @@ export function formatDistance(meters: number) {
  *
  * Examples:
  *  86540 is formatted to 1d 2h
+ *  86399 is formatted to 1d 0h
  *  7524 is formatted to 2h 5min
  *  948 is formatted to 15min 48s
  *  50 is formatted to 50s
@@ -118,24 +119,36 @@ export function formatDistance(meters: number) {
 export function formatSeconds(seconds: number) {
   let ret = "";
 
+  // Day or over
   if (seconds >= 86400) {
-    const days = seconds / 86400;
-    const hours = (seconds % 86400) / 3600;
+    let days = seconds / 86400;
+    let hours = (seconds % 86400) / 3600;
+
+    // If hour amount rounds to 24 hours, hours to 0
+    // and extra day to days.
+    if (Number(hours.toFixed()) == 24) {
+      days++;
+      hours = 0;
+    }
     ret = `${Math.floor(days)}d ${hours.toFixed()}h`;
   }
 
+  // Over an hour
   if (seconds < 86400) {
     const hours = seconds / 3600;
     const minutes = (seconds % 3600) / 60;
+
     ret = `${Math.floor(hours)}h ${minutes.toFixed()}min`;
   }
 
+  // Under an hour but over or exactly minute
   if (seconds < 3600 && seconds >= 60) {
     const minutes = seconds / 60;
     const sec = seconds % 60;
     ret = `${Math.floor(minutes)}min ${sec.toFixed()}s`;
   }
 
+  // Under a minute
   if (seconds < 60) {
     ret = `${seconds}s`;
   }
