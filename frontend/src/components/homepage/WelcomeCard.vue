@@ -1,11 +1,11 @@
 <template>
   <v-container fluid>
-    <v-card color="primary" :loading="!storeReady" dark>
+    <v-card color="primary" :loading="!cardReady" dark>
       <template slot="progress">
         <v-progress-linear color="blue" indeterminate></v-progress-linear>
       </template>
       <v-card-title dark>Welcome to my app!</v-card-title>
-      <v-card-text v-if="storeReady">
+      <v-card-text v-if="cardReady">
         <v-card-text>
           This app has information of {{ totalJourneys }} journeys done with
           Helsinki city bikes and {{ totalStations }}
@@ -54,6 +54,7 @@ export default defineComponent({
   data: () => ({
     interval: null as number | null,
     store: useStore(),
+    cardReady: false,
     earliestJourneyDate: "" as string,
     latestJourneyDate: "" as string,
     longestJourneyByDistance: {} as JourneyType,
@@ -62,8 +63,8 @@ export default defineComponent({
     totalJourneys: 0 as number,
   }),
 
-  mounted() {
-    this.interval = setInterval(this.setupData, 150) as unknown as number;
+  created() {
+    this.interval = setInterval(this.setupData, 50) as unknown as number;
   },
 
   computed: {
@@ -75,6 +76,7 @@ export default defineComponent({
   methods: {
     setupData() {
       if (this.storeReady) {
+        console.log("Setting up card");
         this.earliestJourneyDate = this.getEarliestJourneyDate();
         this.latestJourneyDate = this.getLatestJourneyDate();
         this.longestJourneyByDistance = this.getLongestJourneyByDistance();
@@ -82,7 +84,8 @@ export default defineComponent({
         this.totalStations = this.getTotalStations();
         this.totalJourneys = this.getTotalJourneys();
 
-        this.interval = null;
+        clearInterval(this.interval as number);
+        this.cardReady = true;
       } else {
         console.log("Store not ready");
       }
