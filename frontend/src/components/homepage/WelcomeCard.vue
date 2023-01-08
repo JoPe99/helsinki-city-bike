@@ -1,39 +1,34 @@
 <template>
   <v-container fluid>
-    <v-card color="primary" :loading="!cardReady" dark>
+    <v-card color="primary" :loading="!cardReady">
       <template slot="progress">
         <v-progress-linear color="blue" indeterminate></v-progress-linear>
       </template>
-      <v-card-title dark>Welcome to my app!</v-card-title>
-      <v-card-text v-if="cardReady">
-        <v-card-text>
-          This app has information of {{ totalJourneys }} journeys done with
-          Helsinki city bikes and {{ totalStations }}
-          bike stations. The data used in this application is gathered from
-          Helsingin Seudun Liikenne, which is a public transportation
-          organization working in Helsinki. The data included spans from
-          {{ earliestJourneyDate }} to {{ latestJourneyDate }}.
-        </v-card-text>
-        <v-card-text>
-          The journey with longest distance traveled was started at station
-          {{ longestJourneyByDistance.departureStationName }} and it ended at
-          station {{ longestJourneyByDistance.returnStationName }}. The journey
-          was
-          {{ formatDistance(longestJourneyByDistance.distanceCovered) }} long,
-          and it took
-          {{ formatDuration(longestJourneyByDistance.durationSeconds) }} to
-          complete the journey.
-        </v-card-text>
-        <v-card-text>
-          The journey which took the most time was a journey started at
-          {{ longestJourneyByDuration.departureStationName }} and it ended at
-          station {{ longestJourneyByDuration.returnStationName }}. The journey
-          took whopping
-          {{ formatDuration(longestJourneyByDuration.durationSeconds) }} to
-          complete, and the journey was
-          {{ formatDistance(longestJourneyByDuration.distanceCovered) }} long.
-          Must have been an adventure!
-        </v-card-text>
+      <v-card-title>Welcome to my app!</v-card-title>
+      <v-card-text v-if="cardReady" class="text-body-1">
+        This app has information of {{ totalJourneys }} journeys done with
+        Helsinki city bikes and {{ totalStations }}
+        bike stations. The data used in this application is gathered from
+        Helsingin Seudun Liikenne, which is a public transportation organization
+        working in Helsinki. The data included spans from
+        {{ earliestJourneyDate }} to {{ latestJourneyDate }}.
+        <p></p>
+        The journey with longest distance traveled was started at station
+        {{ longestJourneyByDistance.departureStationName }} and it ended at
+        station {{ longestJourneyByDistance.returnStationName }}. The journey
+        was {{ formatDistance(longestJourneyByDistance.distanceCovered) }} long,
+        and it took
+        {{ formatDuration(longestJourneyByDistance.durationSeconds) }} to
+        complete the journey.
+        <p></p>
+        The journey which took the most time was a journey started at
+        {{ longestJourneyByDuration.departureStationName }} and it ended at
+        station {{ longestJourneyByDuration.returnStationName }}. The journey
+        took whopping
+        {{ formatDuration(longestJourneyByDuration.durationSeconds) }} to
+        complete, and the journey was
+        {{ formatDistance(longestJourneyByDuration.distanceCovered) }} long.
+        Must have been an adventure!
       </v-card-text>
       <v-card-text v-else>
         Setting up the information, just a moment! If this doesn't stop loading
