@@ -3,12 +3,11 @@
     <template v-slot:activator="{ on, attrs }">
       <v-container fluid class="pa-0">
         <v-row>
-          <v-col cols="4">
+          <v-col cols="4" align="middle">
             <v-btn
               style="height: 85%; width: 90%"
               class="no-text-transform"
               color="secondary"
-              dark
               v-bind="attrs"
               v-on="on"
             >
@@ -17,7 +16,7 @@
               </span>
             </v-btn>
           </v-col>
-          <v-col class="py-5" cols="8">
+          <v-col cols="8">
             <v-text-field
               label="Latitude"
               outlined
