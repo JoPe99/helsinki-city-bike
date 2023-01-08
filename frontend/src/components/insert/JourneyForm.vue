@@ -174,6 +174,8 @@ import { insertJourney } from "@/helpers/api-functions";
 
 export default defineComponent({
   name: "JourneyForm",
+  props: ["refreshStore"],
+
   components: { TimePicker, DatePicker },
 
   created() {
@@ -217,6 +219,13 @@ export default defineComponent({
     submitDisabled: false,
     refreshPickers: false,
   }),
+
+  watch: {
+    refreshStore: function () {
+      this.stations = null;
+      this.stations = this.store.stations;
+    },
+  },
 
   computed: {
     getFormattedDuration(): string {

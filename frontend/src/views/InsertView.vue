@@ -2,10 +2,10 @@
   <v-container fluid class="pa-0">
     <v-row no-gutters>
       <v-col class="pa-6 pr-3 fill-width">
-        <journey-form></journey-form>
+        <journey-form :refreshStore="refreshStore"></journey-form>
       </v-col>
       <v-col class="pa-6 pl-3">
-        <station-form></station-form>
+        <station-form @storeUpdated="handleStoreUpdated"></station-form>
       </v-col>
     </v-row>
   </v-container>
@@ -20,5 +20,13 @@ export default defineComponent({
   name: "InsertView",
 
   components: { JourneyForm, StationForm },
+  data: () => ({
+    refreshStore: false,
+  }),
+  methods: {
+    handleStoreUpdated() {
+      this.refreshStore = !this.refreshStore;
+    },
+  },
 });
 </script>
