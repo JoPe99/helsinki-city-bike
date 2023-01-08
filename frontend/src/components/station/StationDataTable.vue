@@ -3,27 +3,30 @@
     <!-- <v-row no-gutters> -->
     <v-col cols="12" class="pa-0">
       <v-card tile class="elevation-0 fill-height">
-        <v-row class="pt-3 pl-4 pr-5">
-          <v-col>
-            <v-text-field
-              class="pa-2 mt-0"
-              style="height: 48px"
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Search"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col align="end" cols="5">
-            <v-btn
-              color="secondary"
-              :disabled="selectedStation == null"
-              @click="showModal()"
-              >Show station details</v-btn
-            >
-          </v-col>
-        </v-row>
+        <v-card class="mb-4" color="primary">
+          <v-row class="pt-5 pl-4 pr-5">
+            <v-col>
+              <v-text-field
+                class=""
+                v-model="search"
+                append-icon="mdi-magnify"
+                color="highlight"
+                label="Search"
+                outlined
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col class="fill-height" align="end" align-self="center" cols="5">
+              <v-btn
+                color="secondary"
+                :disabled="selectedStation == null"
+                @click="showModal()"
+                >Show station details</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-card>
+
         <div v-resize="onResize" ref="resizableDiv">
           <v-data-table
             :height="tableHeight"
