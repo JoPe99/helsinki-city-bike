@@ -29,33 +29,13 @@ export const useStore = defineStore("store", {
   getters: {},
   actions: {
     async setupStore() {
-      await getJourneysCount().then((response) => {
-        this.totalJourneys = response.data;
-      });
+      const journeyPromise = this.updateStoreJourneyData();
+      const stationPromise = this.updateStoreStationData();
 
-      await getEarliestJourney().then((response) => {
-        this.earliestJourney = response.data.journeys[0];
+      Promise.all([journeyPromise, stationPromise]).then(() => {
+        this.storeReady = true;
+        console.log("Store ready");
       });
-
-      await getLatestJourney().then((response) => {
-        this.latestJourney = response.data.journeys[0];
-      });
-
-      await getLongestDistance().then((response) => {
-        this.longestJourneyByDistance = response.data.journeys[0];
-      });
-
-      await getLongestDuration().then((response) => {
-        this.longestJourneyByDuration = response.data.journeys[0];
-      });
-
-      await getAllStations().then((response) => {
-        this.stations = response.data;
-        this.setupStationMarkers(response.data);
-        this.setupStationIDs(response.data);
-      });
-      this.storeReady = true;
-      console.log("Store ready");
     },
 
     setupStationMarkers(stations: StationType[]) {
@@ -88,25 +68,33 @@ export const useStore = defineStore("store", {
 
     // Called after inserting new journey
     async updateStoreJourneyData() {
-      await getJourneysCount().then((response) => {
+      const countPromise = getJourneysCount().then((response) => {
         this.totalJourneys = response.data;
       });
 
-      await getEarliestJourney().then((response) => {
+      const earliestPromise = getEarliestJourney().then((response) => {
         this.earliestJourney = response.data.journeys[0];
       });
 
-      await getLatestJourney().then((response) => {
+      const latestPromise = getLatestJourney().then((response) => {
         this.latestJourney = response.data.journeys[0];
       });
 
-      await getLongestDistance().then((response) => {
+      const distancePromise = getLongestDistance().then((response) => {
         this.longestJourneyByDistance = response.data.journeys[0];
       });
 
-      await getLongestDuration().then((response) => {
+      const durationPromise = getLongestDuration().then((response) => {
         this.longestJourneyByDuration = response.data.journeys[0];
       });
+
+      Promise.allSettled([
+        countPromise,
+        earliestPromise,
+        latestPromise,
+        distancePromise,
+        durationPromise,
+      ]);
     },
   },
 });
