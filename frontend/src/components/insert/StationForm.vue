@@ -22,6 +22,9 @@
         <v-col>
           <v-card-title class="py-3 px-0">Insert station</v-card-title>
         </v-col>
+        <v-col align="end">
+          <v-btn color="info" @click="clearForm">Clear form</v-btn>
+        </v-col>
       </v-row>
       <v-row>
         <v-col>
@@ -283,8 +286,8 @@ export default defineComponent({
 
       let validationStatus = { success: true, invalidKeys: [] as string[] };
 
-      // Reject if ID already taken or outside [1, 2000], and that
-      // it is a whole number.
+      // Reject if ID already taken or outside [1, 2000], and
+      // verify that it is a whole number.
       if (
         this.stationIDs.includes(Number(currentStation.id)) ||
         currentStation.id > 2000 ||

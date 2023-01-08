@@ -38,7 +38,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "TimePicker",
-  props: ["id", "defaultTime", "label"],
+  props: ["id", "defaultTime", "label", "refresh"],
 
   mounted() {
     this.time = this.defaultTime;
@@ -48,6 +48,12 @@ export default defineComponent({
     menu: false,
     time: "" as string,
   }),
+
+  watch: {
+    refresh: function () {
+      this.time = this.defaultTime;
+    },
+  },
 
   methods: {
     save(time: string) {

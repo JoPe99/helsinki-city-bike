@@ -41,7 +41,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "DatePicker",
 
-  props: ["id", "label", "defaultDate"],
+  props: ["id", "label", "defaultDate", "refresh"],
+
+  mounted() {
+    this.date = this.$props.defaultDate;
+  },
 
   data: () => ({
     date: new Date().toISOString().substring(0, 10),
@@ -50,11 +54,11 @@ export default defineComponent({
     menu: false,
   }),
 
-  mounted() {
-    this.date = this.$props.defaultDate;
+  watch: {
+    refresh: function () {
+      this.date = this.defaultDate;
+    },
   },
-
-  watch: {},
 
   computed: {
     // Formatting date to dd-mm-yyyy to make it more readable

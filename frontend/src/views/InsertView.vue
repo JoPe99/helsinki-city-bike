@@ -1,10 +1,10 @@
 <template>
-  <v-container fluid class="fill-height pa-0">
-    <v-row no-gutters class="fill-height">
-      <v-col class="pa-6 fill-height">
+  <v-container fluid class="pa-0">
+    <v-row no-gutters>
+      <v-col class="pa-6 pr-3 fill-height">
         <journey-form></journey-form>
       </v-col>
-      <v-col class="pa-6 fill-height">
+      <v-col class="pa-6 pl-3 fill-height">
         <station-form></station-form>
       </v-col>
     </v-row>
