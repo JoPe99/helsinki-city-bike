@@ -38,7 +38,6 @@
                   v-model="search"
                   append-icon="mdi-magnify"
                   label="Search stations"
-                  single-line
                   outlined
                   hide-details
                   color="highlight"
