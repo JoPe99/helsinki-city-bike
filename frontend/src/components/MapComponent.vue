@@ -1,10 +1,12 @@
 <template>
   <div class="elevation-1">
     <l-map
+      ref="map"
       style="height: 100%; z-index: 0"
       :zoom="zoom"
       :center="center"
       :bounds="bounds"
+      @ready="invalidateSize"
     >
       <l-tile-layer :url="url"></l-tile-layer>
       <l-layer-group :ref="markers">
@@ -29,6 +31,7 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import { defineComponent } from "vue";
 import {
   LMap,
@@ -100,6 +103,7 @@ export default defineComponent({
   watch: {
     markers: {
       handler(newVal: StationLocation[]) {
+        console.log(newVal);
         if (newVal.length == 0) {
           this.resetMap();
         } else {
@@ -132,14 +136,23 @@ export default defineComponent({
       }
 
       // If polylinemap got the right amount of coordinates,
-      // add coordinates and make it active
+      // add coordinates to polyline and make it active
       if (polylineMap.length == 2) {
         this.polyline.latLong = polylineMap;
         this.polyline.active = true;
       }
 
-      // Add new markers to the map, and change bounds to fit those
-      this.currentMarkers = newMarkers;
+      // To avoid Vue duplicate key error in cases where departure and
+      // return stations are same, only push one marker on the map.
+      // If not two same stations, push all markers to the map.
+      if (newMarkers.length == 2 && newMarkers[0].id == newMarkers[1].id) {
+        console.log("Duplicate keys");
+        this.currentMarkers = [newMarkers[0]] as StationLocation[];
+      } else {
+        this.currentMarkers = newMarkers;
+      }
+
+      // Change bounds to fit markers with padding
       this.bounds = latLngBounds(boundsMap).pad(0.1);
     },
 
@@ -148,6 +161,15 @@ export default defineComponent({
       this.currentMarkers = [];
       this.bounds = this.default_bounds;
       this.polyline.active = false;
+    },
+
+    // Refresh map size on ready, to make sure that the center is correct
+    invalidateSize() {
+      // There is for sure a cleaner way to do this,
+      // than with "as any".
+      // eslint-disable-next-line
+      let mapObject = (this.$refs.map as any).mapObject;
+      (mapObject as Vue & { invalidateSize(): void }).invalidateSize();
     },
 
     handleMarkerClick(id: number, name: string) {
