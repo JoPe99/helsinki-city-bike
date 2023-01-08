@@ -7,6 +7,7 @@
           v-for="marker in currentMarkers"
           :key="marker.id"
           :latLng="marker.latLong"
+          @click="handleMarkerClick(marker.id, marker.name)"
         >
           <l-tooltip> ID: {{ marker.id }} Name: {{ marker.name }} </l-tooltip>
         </l-marker>
@@ -140,6 +141,12 @@ export default defineComponent({
       this.currentMarkers = [];
       this.bounds = this.default_bounds;
       this.polyline.active = false;
+    },
+
+    handleMarkerClick(id: number, name: string) {
+      let clickedMarker = { id: id, name: name };
+      console.log(clickedMarker);
+      this.$emit("markerClicked", clickedMarker);
     },
   },
 });

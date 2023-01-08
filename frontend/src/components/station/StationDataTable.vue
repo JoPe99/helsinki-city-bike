@@ -44,6 +44,8 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "StationDataTable",
 
+  props: ["clickedMarker"],
+
   data: () => ({
     headers: [
       {
@@ -91,7 +93,12 @@ export default defineComponent({
     tableLoading: false,
   }),
 
-  watch: {},
+  watch: {
+    clickedMarker(clickedMarker: { id: number; name: string }) {
+      this.search = clickedMarker.name;
+      this.getDetailsForId(clickedMarker.id);
+    },
+  },
 
   created() {
     this.stations = this.store.stations;
@@ -119,13 +126,18 @@ export default defineComponent({
 
     // Clicked row is stored as selected journey
     handleRowClick(station: StationType) {
-      if (this.selectedStation == station.id) {
+      this.getDetailsForId(station.id);
+    },
+
+    getDetailsForId(stationId: number) {
+      if (this.selectedStation == stationId) {
         this.selectedStation = null;
         this.selectedStationDetails = null;
+        this.search = "";
         this.$emit("unselectedStation");
       } else {
-        this.selectedStation = station.id;
-        this.getSingleStationDetails(station.id);
+        this.selectedStation = stationId;
+        this.getSingleStationDetails(stationId);
       }
     },
 

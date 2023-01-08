@@ -320,13 +320,15 @@ export default defineComponent({
 
     postJourneyToAPI(journey: InsertJourneyType) {
       insertJourney(journey).then((response) => {
-        console.log(response);
+        // Handle response here
         this.updateStore();
       });
     },
 
+    // Update store after journey has been inserted
     updateStore() {
       this.store.updateStoreJourneyData().then(() => {
+        this.showStatusMessage(true, "Journey inserted!");
         this.clearForm();
         this.submitDisabled = false;
       });

@@ -11,22 +11,32 @@
           class="fill-height"
           @selectedStation="stationSelected"
           @unselectedStation="stationUnselected"
+          :clickedMarker="clickedMarker"
         >
         </station-data-table>
       </v-col>
       <v-col class="pa-0 fill-height" cols="6">
-        <map-component :markers="markers" class="fill-height"></map-component>
+        <map-component
+          :markers="markers"
+          @markerClicked="handleClickedMarker"
+          class="fill-height"
+        ></map-component>
       </v-col>
     </v-row>
     <!-- Vertical layout in case of a smaller viewport -->
     <v-col v-else class="pa-0 fill-height">
-      <map-component :markers="markers" style="height: 500px"></map-component>
+      <map-component
+        :markers="markers"
+        @markerClicked="handleClickedMarker"
+        style="height: 500px"
+      ></map-component>
       <v-row no-gutters>
         <v-col cols="6">
           <station-data-table
             class="fill-height"
             @selectedStation="stationSelected"
             @unselectedStation="stationUnselected"
+            :clickedMarker="clickedMarker"
           >
           </station-data-table>
         </v-col>
@@ -59,6 +69,7 @@ export default defineComponent({
     allStationMarkers: [] as StationLocation[],
     markers: [] as StationLocation[],
     selectedStation: null as SingleStationType | null,
+    clickedMarker: {} as { id: number; name: string },
   }),
 
   mounted() {
@@ -77,6 +88,9 @@ export default defineComponent({
       let name = station.nameFi;
       let latLong = [Number(station.latitude), Number(station.longitude)];
       this.markers = [{ id: id, name: name, latLong: latLong }];
+    },
+    handleClickedMarker(clickedMarker: { id: number; name: string }) {
+      this.clickedMarker = clickedMarker;
     },
   },
 });
