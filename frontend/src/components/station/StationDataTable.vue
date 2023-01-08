@@ -3,15 +3,27 @@
     <!-- <v-row no-gutters> -->
     <v-col cols="12" class="pa-0">
       <v-card tile class="elevation-0 fill-height">
-        <v-text-field
-          class="pa-2 mt-0"
-          style="height: 48px"
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
+        <v-row class="pt-3 pl-4 pr-5">
+          <v-col>
+            <v-text-field
+              class="pa-2 mt-0"
+              style="height: 48px"
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-col>
+          <v-col align="end" cols="5">
+            <v-btn
+              color="secondary"
+              :disabled="selectedStation == null"
+              @click="showModal()"
+              >Show station details</v-btn
+            >
+          </v-col>
+        </v-row>
         <div v-resize="onResize" ref="resizableDiv">
           <v-data-table
             :height="tableHeight"
@@ -49,6 +61,11 @@ export default defineComponent({
   data: () => ({
     headers: [
       {
+        text: "ID",
+        align: "start",
+        value: "id",
+      },
+      {
         text: "Name (FI)",
         align: "start",
         value: "nameFi",
@@ -62,11 +79,6 @@ export default defineComponent({
         text: "Name (SE)",
         align: "start",
         value: "nameSe",
-      },
-      {
-        text: "Address (SE)",
-        align: "start",
-        value: "addressSe",
       },
       {
         text: "Capacity",
@@ -95,6 +107,8 @@ export default defineComponent({
 
   watch: {
     clickedMarker(clickedMarker: { id: number; name: string }) {
+      // Add station name to search to make sure
+      // the station is also visible in the data table
       this.search = clickedMarker.name;
       this.getDetailsForId(clickedMarker.id);
     },
@@ -106,7 +120,7 @@ export default defineComponent({
   },
 
   methods: {
-    // This makes sure that the table fits perfectly with station details and map,
+    // This makes sure that the table fits perfectly with the map,
     // sizing the table exactly right. The 59px reduced from height is the height
     // of the table footer, allowing the footer to be displayed as well as it's not
     // included in the height of the table.
@@ -118,17 +132,13 @@ export default defineComponent({
       }
     },
 
-    isSelected(item: StationType) {
-      if (item.id == this.selectedStation) {
-        return "selectedJourney";
-      }
-    },
-
     // Clicked row is stored as selected journey
     handleRowClick(station: StationType) {
       this.getDetailsForId(station.id);
     },
 
+    // Marker click and row click both call this
+    // function to get single station data
     getDetailsForId(stationId: number) {
       if (this.selectedStation == stationId) {
         this.selectedStation = null;
@@ -143,9 +153,18 @@ export default defineComponent({
 
     getSingleStationDetails(stationId: number) {
       getSingleStation(stationId).then((response) => {
-        this.selectedStationDetails = response.data;
         this.$emit("selectedStation", response.data);
       });
+    },
+
+    showModal() {
+      this.$emit("showModal");
+    },
+
+    isSelected(item: StationType) {
+      if (item.id == this.selectedStation) {
+        return "selectedJourney";
+      }
     },
   },
 });

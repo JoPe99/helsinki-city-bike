@@ -1,16 +1,18 @@
 <template>
   <v-container fluid class="pa-0 fill-height">
+    <single-station-modal
+      :modal="showModal"
+      :station="selectedStation"
+      @modalClosed="handleModalClosed"
+    ></single-station-modal>
     <!-- Default layout for desktops and larger viewports -->
     <v-row v-if="$vuetify.breakpoint.lgAndUp" class="fill-height" no-gutters>
       <v-col class="py-0 fill-height" cols="6">
-        <station-details-card
-          :station="selectedStation"
-          style="height: 480px"
-        ></station-details-card>
         <station-data-table
           class="fill-height"
           @selectedStation="stationSelected"
           @unselectedStation="stationUnselected"
+          @showModal="handleShowModal"
           :clickedMarker="clickedMarker"
         >
         </station-data-table>
@@ -31,19 +33,15 @@
         style="height: 500px"
       ></map-component>
       <v-row no-gutters>
-        <v-col cols="6">
+        <v-col>
           <station-data-table
             class="fill-height"
             @selectedStation="stationSelected"
             @unselectedStation="stationUnselected"
+            @showModal="handleShowModal"
             :clickedMarker="clickedMarker"
           >
           </station-data-table>
-        </v-col>
-        <v-col cols="6">
-          <station-details-card
-            :station="selectedStation"
-          ></station-details-card>
         </v-col>
       </v-row>
     </v-col>
@@ -55,6 +53,7 @@ import { defineComponent } from "vue";
 import MapComponent from "../components/MapComponent.vue";
 import StationDataTable from "@/components/station/StationDataTable.vue";
 import StationDetailsCard from "@/components/station/StationDetailsCard.vue";
+import SingleStationModal from "@/components/station/SingleStationModal.vue";
 
 import { StationLocation } from "@/helpers/list-view-helpers";
 import { SingleStationType } from "@/helpers/backend-data-types";
@@ -62,7 +61,11 @@ import { useStore } from "@/store";
 
 export default defineComponent({
   name: "StationView",
-  components: { MapComponent, StationDataTable, StationDetailsCard },
+  components: {
+    MapComponent,
+    StationDataTable,
+    SingleStationModal,
+  },
 
   data: () => ({
     store: useStore(),
@@ -70,6 +73,7 @@ export default defineComponent({
     markers: [] as StationLocation[],
     selectedStation: null as SingleStationType | null,
     clickedMarker: {} as { id: number; name: string },
+    showModal: false,
   }),
 
   mounted() {
@@ -91,6 +95,12 @@ export default defineComponent({
     },
     handleClickedMarker(clickedMarker: { id: number; name: string }) {
       this.clickedMarker = clickedMarker;
+    },
+    handleShowModal() {
+      this.showModal = true;
+    },
+    handleModalClosed() {
+      this.showModal = false;
     },
   },
 });

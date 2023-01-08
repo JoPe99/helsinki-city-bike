@@ -1,7 +1,14 @@
 <template>
-  <v-card tile class="fill-height elevation-0">
-    <div v-if="stationSelected" class="fill-height">
-      <v-container>
+  <v-dialog
+    persistent
+    class="ma-0 pa-0"
+    v-model="dialog"
+    max-height="800px"
+    max-width="800px"
+  >
+    <v-card class="ma-0 pa-0" style="height: 800px; width: 800px">
+      <v-container style="height: 100%">
+        <!-- Title and information -->
         <v-row>
           <v-col>
             <v-card class="elevation-4" color="primary">
@@ -33,7 +40,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <!-- Top stations to depart to -->
+        <!-- Top stations -->
         <v-row>
           <v-col>
             <v-card class="elevation-4" color="primary">
@@ -62,36 +69,49 @@
             </v-card>
           </v-col>
         </v-row>
+        <!-- Close button -->
+        <v-row class="pr-3">
+          <v-col align="end">
+            <v-btn color="secondary" @click="closeModal"> Close </v-btn>
+          </v-col>
+        </v-row>
       </v-container>
-      <!-- Top stations to return from -->
-    </div>
-    <div
-      v-else
-      class="fill-height d-flex flex-column align-center justify-center"
-      style="text-align-last: center"
-    >
-      <v-card-title class="d-flex align-center">
-        No station selected
-      </v-card-title>
-      <v-card-subtitle class="d-flex align-center">
-        Select a station from the map or the list to see awesome details!
-      </v-card-subtitle>
-    </div>
-  </v-card>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
+import StationDetailsCard from "@/components/station/StationDetailsCard.vue";
+import { SingleStationType } from "@/helpers/backend-data-types";
 import TopStationsTable from "./TopStationsTable.vue";
 
 export default defineComponent({
-  name: "StationDetailsCard",
-  props: ["station"],
+  name: "SingleStationModal",
+
+  props: ["modal", "station"],
 
   components: { TopStationsTable },
 
-  data: () => ({}),
+  mounted() {
+    this.dialog = this.modal;
+    this.singleStation = this.station;
+  },
+
+  data: () => ({
+    dialog: false,
+    singleStation: {} as SingleStationType,
+  }),
+
+  watch: {
+    modal: function (modal: boolean) {
+      this.dialog = modal;
+    },
+    station: function (station: SingleStationType) {
+      this.singleStation = station;
+    },
+  },
 
   computed: {
     stationSelected() {
@@ -102,12 +122,16 @@ export default defineComponent({
       }
     },
   },
+
   methods: {
     formatDistance(distance: number) {
       return formatDistance(distance) as string;
     },
     formatDuration(duration: number) {
       return formatSeconds(duration) as string;
+    },
+    closeModal() {
+      this.$emit("modalClosed");
     },
   },
 });
