@@ -63,8 +63,7 @@ export default defineComponent({
   computed: {
     // Formatting date to dd-mm-yyyy to make it more readable
     formattedDate(): string {
-      let ret = Date.parse(this.date).toString("d.M.yyyy");
-      return ret;
+      return Date.parse(this.date).toString("d.M.yyyy");
     },
   },
 

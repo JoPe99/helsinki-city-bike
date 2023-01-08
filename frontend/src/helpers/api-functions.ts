@@ -94,9 +94,19 @@ export function getAllStations() {
  * Returns single station with details.
  * @returns SingleStationType
  */
-export function getSingleStation(stationId: number) {
-  const url = `${SERVER_IP}/stations/${stationId.toString()}`;
-  return axios.get<SingleStationType>(url);
+export function getSingleStation(
+  stationId: number,
+  startDate: string | null,
+  endDate: string | null
+) {
+  const url = `${SERVER_IP}/stations/${stationId}`;
+
+  return axios.get<SingleStationType>(url, {
+    params: {
+      startDate: startDate,
+      endDate: endDate,
+    },
+  });
 }
 
 /**

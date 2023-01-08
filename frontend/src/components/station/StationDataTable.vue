@@ -155,7 +155,7 @@ export default defineComponent({
     },
 
     getSingleStationDetails(stationId: number) {
-      getSingleStation(stationId).then((response) => {
+      getSingleStation(stationId, null, null).then((response) => {
         this.$emit("selectedStation", response.data);
       });
     },

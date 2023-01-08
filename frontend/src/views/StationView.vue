@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0 fill-height">
     <single-station-modal
       :modal="showModal"
-      :station="selectedStation"
+      :singleStation="selectedStation"
       @modalClosed="handleModalClosed"
     ></single-station-modal>
     <!-- Default layout for desktops and larger viewports -->
