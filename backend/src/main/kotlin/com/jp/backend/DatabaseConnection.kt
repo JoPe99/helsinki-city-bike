@@ -11,6 +11,8 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 
 object DatabaseConn {
 	// Initialize database connection.
@@ -83,11 +85,13 @@ fun getAllStationIDs(): ArrayList<Int> {
     return ret
 }
 
-// Function for getting paginated/sorted/searched station data
+/** Function for getting paginated station data.
+ * Not used for anything, but left here for possible
+ * future needs. Sorting and searching not implemented.
+ */
 fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = "", sortDesc: Boolean?, search: String? = ""): ArrayList<StationModel> {
     var ret: ArrayList<StationModel> = arrayListOf()
     transaction(db) {
-        // TODO: Refactor to forEach loop?
         for (station in Stations.selectAll().limit(pageSize, offset)) {
             val stationId = station[Stations.station_id].toInt()
             ret.add(StationModel(
@@ -124,8 +128,12 @@ fun getPaginationStationsData(pageSize: Int, offset: Long, sortBy: String? = "",
  * @param id Station id
  * @return StationModelWithDetails || null
  */
-fun getSingleStationData(id: Int): StationModelWithDetails? {
+fun getSingleStationData(id: Int, startDate: String?, endDate: String?): StationModelWithDetails? {
     var ret: StationModelWithDetails? = null
+
+    val timestampStartDate = validateDate(startDate, toEndOfDay = false)
+    val timestampEndDate = validateDate(endDate, toEndOfDay = true)
+
     transaction(db) {
         Stations.select { Stations.station_id eq id }.forEach {
             ret = StationModelWithDetails(
@@ -147,17 +155,17 @@ fun getSingleStationData(id: Int): StationModelWithDetails? {
                 it[Stations.longitude],
                 it[Stations.latitude],
 
-                getTotalJourneysFromStation(id),
-                getTotalJourneysToStation(id),
+                getTotalJourneysFromStation(id, timestampStartDate, timestampEndDate),
+                getTotalJourneysToStation(id, timestampStartDate, timestampEndDate),
 
-                getAverageDepartDistanceForStation(id),
-                getAverageReturnDistanceForStation(id),
+                getAverageDepartDistanceForStation(id, timestampStartDate, timestampEndDate),
+                getAverageReturnDistanceForStation(id, timestampStartDate, timestampEndDate),
 
-                getAverageDepartDurationForStation(id),
-                getAverageReturnDurationForStation(id),
+                getAverageDepartDurationForStation(id, timestampStartDate, timestampEndDate),
+                getAverageReturnDurationForStation(id, timestampStartDate, timestampEndDate),
 
-                getTopDepartureStationsForStation(id),
-                getTopReturnStationsForStation(id)
+                getTopDepartureStationsForStation(id, timestampStartDate, timestampEndDate),
+                getTopReturnStationsForStation(id, timestampStartDate, timestampEndDate)
             )
         }
     }
@@ -354,15 +362,24 @@ private fun tablesExist(): Boolean {
     return ret
 }
 
-private fun getTopDepartureStationsForStation(id: Int): ArrayList<TopStationModel> {
+private fun getTopDepartureStationsForStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): ArrayList<TopStationModel> {
     var ret: ArrayList<TopStationModel> = arrayListOf()
     val departureStationsTable = Stations.alias("departure")
     transaction(db) {
-        departureStationsTable
+        var table = departureStationsTable
             .join(Journeys, JoinType.INNER, additionalConstraint = {(departureStationsTable[Stations.station_id] eq Journeys.departure_station_id) and (Journeys.departure_station_id eq id)})
             .join(Stations, JoinType.INNER, additionalConstraint = {Stations.station_id eq Journeys.return_station_id})
             .slice(departureStationsTable[Stations.station_id], Stations.name_fi, Stations.station_id.count())
-            .selectAll().groupBy(departureStationsTable[Stations.station_id], Stations.station_id)
+            .selectAll()
+            startDate?.let {
+                table.andWhere { Journeys.departure_time greaterEq startDate }
+            }
+            endDate?.let {
+                table.andWhere { Journeys.departure_time lessEq  endDate }
+            }
+
+            table
+            .groupBy(departureStationsTable[Stations.station_id], Stations.station_id)
             .orderBy(Stations.station_id.count(), SortOrder.DESC).limit(5)
             .forEach {
                 ret.add(TopStationModel(it[Stations.name_fi], it[Stations.station_id.count()].toInt()))
@@ -372,15 +389,23 @@ private fun getTopDepartureStationsForStation(id: Int): ArrayList<TopStationMode
     return ret
 }
 
-private fun getTopReturnStationsForStation(id: Int): ArrayList<TopStationModel> {
+private fun getTopReturnStationsForStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): ArrayList<TopStationModel> {
     var ret: ArrayList<TopStationModel> = arrayListOf()
     val returnStationsTable = Stations.alias("return")
     transaction(db) {
-        returnStationsTable
+        var table = returnStationsTable
             .join(Journeys, JoinType.INNER, additionalConstraint = {(returnStationsTable[Stations.station_id] eq Journeys.return_station_id) and (Journeys.return_station_id eq id)})
             .join(Stations, JoinType.INNER, additionalConstraint = {Stations.station_id eq Journeys.departure_station_id})
             .slice(returnStationsTable[Stations.station_id], Stations.name_fi, Stations.station_id.count())
             .selectAll().groupBy(returnStationsTable[Stations.station_id], Stations.station_id)
+            startDate?.let {
+                table.andWhere { Journeys.departure_time greaterEq startDate }
+            }
+            endDate?.let {
+                table.andWhere { Journeys.departure_time lessEq  endDate }
+            }
+
+            table
             .orderBy(Stations.station_id.count(), SortOrder.DESC).limit(5)
             .forEach {
                 ret.add(TopStationModel(it[Stations.name_fi], it[Stations.station_id.count()].toInt()))
@@ -390,71 +415,111 @@ private fun getTopReturnStationsForStation(id: Int): ArrayList<TopStationModel> 
     return ret
 }
 
-private fun getTotalJourneysFromStation(id: Int): Int {
-    var ret = 0
+private fun getTotalJourneysFromStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): Int {
+    var totalDeparts = 0
     transaction(db) {
-        ret = Journeys.select {Journeys.departure_station_id eq id}.count().toInt()
+        var table = Journeys.select {Journeys.departure_station_id eq id}
+                startDate?.let {
+                    table.andWhere { Journeys.departure_time greaterEq startDate }
+                }
+                endDate?.let {
+                    table.andWhere { Journeys.departure_time lessEq  endDate }
+                }
+
+            totalDeparts = table.count().toInt()
     }
-    return ret
+    return totalDeparts
 }
 
-private fun getTotalJourneysToStation(id: Int): Int {
-    var ret = 0
+private fun getTotalJourneysToStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): Int {
+    var totalReturns = 0
     transaction(db) {
-        ret = Journeys.select {Journeys.return_station_id eq id}.count().toInt()
+        val table = Journeys.select {Journeys.return_station_id eq id}
+        startDate?.let {
+            table.andWhere { Journeys.departure_time greaterEq startDate }
+        }
+        endDate?.let {
+            table.andWhere { Journeys.departure_time lessEq  endDate }
+        }
+
+        totalReturns = table.count().toInt()
     }
-    return ret
+    return totalReturns
 }
 
-private fun getAverageDepartDistanceForStation(id: Int): Float {
-    var ret: Float = 0.0F
+private fun getAverageDepartDistanceForStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): Float {
+    var averageDepartDistance = 0.0F
     transaction(db) {
-        Journeys
-            .slice(Journeys.distance.avg(1))
+        val table = Journeys.slice(Journeys.distance.avg(1))
             .select {Journeys.departure_station_id eq id}
-            .map {
-                ret = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
+            startDate?.let {
+                table.andWhere { Journeys.departure_time greaterEq startDate }
+            }
+            endDate?.let {
+                table.andWhere { Journeys.departure_time lessEq  endDate }
+            }
+
+            table.map {
+                averageDepartDistance = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
             }
     }
-    return ret
+    return averageDepartDistance
 }
 
-private fun getAverageReturnDistanceForStation(id: Int): Float {
-    var ret: Float = 0.0F
+private fun getAverageReturnDistanceForStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): Float {
+    var averageReturnDistance = 0.0F
     transaction(db) {
-        Journeys
-            .slice(Journeys.distance.avg(1))
+        val table = Journeys.slice(Journeys.distance.avg(1))
             .select {Journeys.return_station_id eq id}
-            .map {
-                ret = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
+            startDate?.let {
+                table.andWhere { Journeys.departure_time greaterEq startDate }
+            }
+            endDate?.let {
+                table.andWhere { Journeys.departure_time lessEq  endDate }
+            }
+
+            table.map {
+                averageReturnDistance = it[Journeys.distance.avg(1)]?.toFloat() ?: 0.0F
             }
     }
-    return ret
+    return averageReturnDistance
 }
-private fun getAverageDepartDurationForStation(id: Int): Float {
-    var ret: Float = 0.0F
+private fun getAverageDepartDurationForStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): Float {
+    var averageDepartDuration = 0.0F
     transaction(db) {
-        Journeys
-            .slice(Journeys.duration.avg(1))
+        val table = Journeys.slice(Journeys.duration.avg(1))
             .select {Journeys.departure_station_id eq id}
-            .map {
-                ret = it[Journeys.duration.avg(1)]?.toFloat() ?: 0.0F
+            startDate?.let {
+                table.andWhere { Journeys.departure_time greaterEq startDate }
+            }
+            endDate?.let {
+                table.andWhere { Journeys.departure_time lessEq  endDate }
+            }
+
+            table.map {
+                averageDepartDuration = it[Journeys.duration.avg(1)]?.toFloat() ?: 0.0F
             }
     }
-    return ret
+    return averageDepartDuration
 }
 
-private fun getAverageReturnDurationForStation(id: Int): Float {
-    var ret: Float = 0.0F
+private fun getAverageReturnDurationForStation(id: Int, startDate: LocalDateTime?, endDate: LocalDateTime?): Float {
+    var averageReturnDuration = 0.0F
     transaction(db) {
-        Journeys
-            .slice(Journeys.duration.avg(1))
+        val table = Journeys.slice(Journeys.duration.avg(1))
             .select {Journeys.return_station_id eq id}
-            .map {
-                ret = it[Journeys.duration.avg(1)]?.toFloat() ?: 0.0F
+            startDate?.let {
+                table.andWhere { Journeys.departure_time greaterEq startDate }
+            }
+            endDate?.let {
+                table.andWhere { Journeys.departure_time lessEq  endDate }
+            }
+
+            table.map {
+                averageReturnDuration = it[Journeys.duration.avg(1)]?.toFloat() ?: 0.0F
             }
     }
-    return ret
+    return averageReturnDuration
 }
 
 }

@@ -33,8 +33,8 @@ class RESTController() {
 
     @GetMapping("/stations/{id}")
     @ResponseBody
-    fun getSingleStationDetailed(@PathVariable id: Int): ResponseEntity<Any?> {
-        val stationData = DatabaseConn.getSingleStationData(id)
+    fun getSingleStationDetailed(@PathVariable id: Int, @RequestParam startDate: String?, @RequestParam endDate: String?): ResponseEntity<Any?> {
+        val stationData = DatabaseConn.getSingleStationData(id, startDate, endDate)
         return if (stationData == null) {
             ResponseEntity(HttpStatus.NOT_FOUND)
         } else {
