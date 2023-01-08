@@ -52,7 +52,6 @@
 import { defineComponent } from "vue";
 import MapComponent from "../components/MapComponent.vue";
 import StationDataTable from "@/components/station/StationDataTable.vue";
-import StationDetailsCard from "@/components/station/StationDetailsCard.vue";
 import SingleStationModal from "@/components/station/SingleStationModal.vue";
 
 import { StationLocation } from "@/helpers/list-view-helpers";

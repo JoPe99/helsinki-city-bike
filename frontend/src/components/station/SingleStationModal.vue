@@ -83,7 +83,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
-import StationDetailsCard from "@/components/station/StationDetailsCard.vue";
 import { SingleStationType } from "@/helpers/backend-data-types";
 import TopStationsTable from "./TopStationsTable.vue";
 

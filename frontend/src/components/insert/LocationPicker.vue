@@ -68,6 +68,8 @@ type D = Icon.Default & {
 
 delete (Icon.Default.prototype as D)._getIconUrl;
 
+// Awful but works perfectly
+// eslint-disable-next-line
 declare var require: any;
 
 Icon.Default.mergeOptions({
@@ -112,6 +114,9 @@ export default defineComponent({
 
   methods: {
     invalidateSize() {
+      // There is for sure a cleaner way to do this,
+      // than with "as any".
+      // eslint-disable-next-line
       let mapObject = (this.$refs.map as any).mapObject;
       (mapObject as Vue & { invalidateSize(): void }).invalidateSize();
     },

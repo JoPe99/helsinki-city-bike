@@ -219,23 +219,16 @@ export default defineComponent({
   }),
 
   computed: {
-    validDateRange(): boolean {
-      let departureDate = this.departureDateTime;
-      let returnDate = this.returnDateTime;
-      let seconds = this.getSecondsBetweenDates(departureDate!, returnDate!);
-
-      if (departureDate! < returnDate! && seconds >= 10) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-
     getFormattedDuration(): string {
-      let seconds = this.getSecondsBetweenDates(
-        this.departureDateTime!,
-        this.returnDateTime!
-      );
+      let departDateTime = this.departureDateTime;
+      let returnDateTime = this.returnDateTime;
+
+      if (departDateTime == null || returnDateTime == null) {
+        return formatSeconds(0);
+      }
+
+      let seconds = this.getSecondsBetweenDates(departDateTime, returnDateTime);
+
       return formatSeconds(seconds);
     },
   },
@@ -319,7 +312,7 @@ export default defineComponent({
     },
 
     postJourneyToAPI(journey: InsertJourneyType) {
-      insertJourney(journey).then((response) => {
+      insertJourney(journey).then(() => {
         // Handle response here
         this.updateStore();
       });

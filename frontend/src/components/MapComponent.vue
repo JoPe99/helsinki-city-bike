@@ -50,6 +50,8 @@ type D = Icon.Default & {
 
 delete (Icon.Default.prototype as D)._getIconUrl;
 
+// Awful but works perfectly
+// eslint-disable-next-line
 declare var require: any;
 
 Icon.Default.mergeOptions({
