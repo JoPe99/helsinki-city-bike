@@ -54,7 +54,7 @@ import MapComponent from "../components/MapComponent.vue";
 import StationDataTable from "@/components/station/StationDataTable.vue";
 import SingleStationModal from "@/components/station/SingleStationModal.vue";
 
-import { StationLocation } from "@/helpers/list-view-helpers";
+import { StationLocation } from "@/helpers/format-helpers";
 import { SingleStationType } from "@/helpers/backend-data-types";
 import { useStore } from "@/store";
 

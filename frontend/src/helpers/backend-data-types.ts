@@ -2,7 +2,7 @@
  *  This module includes the data types coming from the server.
  */
 
-import { formattedDateTime } from "./list-view-helpers";
+import { FormattedDateTime } from "./format-helpers";
 
 /**
  * Journeys come in this format from the server.
@@ -46,8 +46,8 @@ export type JourneyType = {
 export type FormattedJourneyType = {
   id: number;
 
-  departureDateTime: formattedDateTime;
-  returnDateTime: formattedDateTime;
+  departureDateTime: FormattedDateTime;
+  returnDateTime: FormattedDateTime;
 
   departureStationName: string;
   departureStationId: number;

@@ -46,7 +46,7 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 
 import { useStore } from "@/store";
-import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
+import { formatDistance, formatSeconds } from "@/helpers/format-helpers";
 
 export default defineComponent({
   name: "FilterSliders",

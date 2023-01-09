@@ -115,7 +115,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
+import { formatDistance, formatSeconds } from "@/helpers/format-helpers";
 import { SingleStationType } from "@/helpers/backend-data-types";
 import { getSingleStation } from "@/helpers/api-functions";
 import TopStationsTable from "./TopStationsTable.vue";

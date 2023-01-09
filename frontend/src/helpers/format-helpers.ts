@@ -1,6 +1,29 @@
 import "datejs";
 import { FormattedJourneyType, JourneyType } from "./backend-data-types";
 
+/**
+ * Returns an offset for working with database. Vuetify table uses 
+ * page number and size for pagination, and backend needs a number of where
+ * to start.
+ * 
+ * Examples:
+ * 
+ * First page with page size of 25:
+ * page = 0, pageSize = 25
+ * returns 0
+ * 
+ * Second page with same size:
+ * page = 1, pageSize = 25
+ * return 25
+ * 
+ * Fifth page with page size of 50:
+ * page = 5, pageSize = 50
+ * returns 200
+ * 
+ * @param page 
+ * @param pageSize 
+ * @returns offset as number
+ */
 export function pageToOffset(page: number, pageSize: number) {
   if (page == 0) {
     return 0;
@@ -9,14 +32,40 @@ export function pageToOffset(page: number, pageSize: number) {
   }
 }
 
+/**
+ * Vuetify data table puts sort parameters in an array.
+ * This function returns the string in the array.
+ * 
+ * @param sortBy 
+ * @returns string
+ */
 export function sortByArrayToString(sortBy: string[]) {
   return sortBy[0];
 }
 
+/**
+ * Vuetify data table puts sort order in an array.
+ * This function returns the boolean in the array.
+ * 
+ * @param sortDesc 
+ * @returns string
+ */
 export function sortDescArrayToString(sortDesc: boolean[]) {
   return sortDesc[0];
 }
 
+/**
+ * Formats a backend raw data journey into more readable
+ * format to display in backend. Takes an array of 
+ * JourneyType as parameter, and for each one creates a 
+ * formatted version of the type in an array. 
+ * Changes made are backend time strings to a FormattedDateTime,
+ * and distance and duration are formatted by formatDistance 
+ * and formatSeconds.
+ * 
+ * @param JourneyType[]
+ * @returns FormattedJourneyType[]
+ */
 export function formatJourneyTypeArray(journeys: JourneyType[]) {
   const formattedJourneyArray: FormattedJourneyType[] = [];
   let currentJourney = {} as FormattedJourneyType;
@@ -54,6 +103,17 @@ export function formatJourneyTypeArray(journeys: JourneyType[]) {
  * formattedDateTime type.
  *
  * Takes "YYYY-MM-DD'T'HH:MM:SS" as timestamp
+ * 
+ * Example:
+ * 
+ * Timestamp: "2021-05-30T20:44:37"
+ * Returns a FormattedDateTime of
+ * {year: 2021,
+ * month: 5,
+ * day: 30,
+ * hours: 20,
+ * minutes: 44,
+ * seconds: 37}
  *
  * @param timestamp
  * @returns formattedDateTime
@@ -61,7 +121,7 @@ export function formatJourneyTypeArray(journeys: JourneyType[]) {
 export function timestampToDate(timestamp: string) {
   const date = Date.parse(timestamp);
 
-  const formattedDateTime = {} as formattedDateTime;
+  const formattedDateTime = {} as FormattedDateTime;
 
   formattedDateTime.year = date.getFullYear();
   formattedDateTime.month = date.getMonth() + 1;
@@ -156,7 +216,7 @@ export function formatSeconds(seconds: number) {
   return ret;
 }
 
-export type formattedDateTime = {
+export type FormattedDateTime = {
   hours: number;
   minutes: number;
   seconds: number;

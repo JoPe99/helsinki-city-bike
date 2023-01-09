@@ -71,7 +71,7 @@ import {
   pageToOffset,
   sortByArrayToString,
   sortDescArrayToString,
-} from "../../helpers/list-view-helpers";
+} from "../../helpers/format-helpers";
 
 import {
   FormattedJourneyType,

@@ -39,7 +39,7 @@
             <v-card style="height: 100%" color="secondary">
               <v-card-title>Stations</v-card-title>
               <v-card-text class="text-body-1">
-                Stations can be browsed from the Stations-tab.
+                Stations can be browsed from the Stations tab.
                 <p></p>
                 Stations are fetched from server on app startup. All stations
                 are shown on the map when no specific station is selected.
@@ -81,7 +81,7 @@
                 Also good to note is that in the case that you are connected to
                 the server in cloud, everyone can see the stations you insert.
                 So please don't put your credit card number and your favorite
-                security questions into the data fields.
+                security questions' answers into the data.
               </v-card-text>
             </v-card>
           </v-col>

@@ -7,7 +7,7 @@ import {
   getLongestDuration,
 } from "@/helpers/api-functions";
 import { JourneyType, StationType } from "@/helpers/backend-data-types";
-import { StationLocation } from "@/helpers/list-view-helpers";
+import { StationLocation } from "@/helpers/format-helpers";
 import { defineStore } from "pinia";
 
 export const useStore = defineStore("store", {

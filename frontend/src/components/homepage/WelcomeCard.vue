@@ -41,7 +41,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { JourneyType } from "@/helpers/backend-data-types";
-import { formatDistance, formatSeconds } from "@/helpers/list-view-helpers";
+import { formatDistance, formatSeconds } from "@/helpers/format-helpers";
 import { useStore } from "../../store/index";
 
 export default defineComponent({

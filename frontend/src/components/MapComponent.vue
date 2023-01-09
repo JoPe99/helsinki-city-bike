@@ -43,7 +43,7 @@ import {
 } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon, LatLng, latLngBounds } from "leaflet";
-import { StationLocation } from "@/helpers/list-view-helpers";
+import { StationLocation } from "@/helpers/format-helpers";
 
 // This block of code is from leaflet docs to fix a problem with missing Leaflet markers.
 // https://vue2-leaflet.netlify.app/quickstart/#marker-icons-are-missing

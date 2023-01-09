@@ -169,7 +169,7 @@ import { useStore } from "@/store";
 import { InsertJourneyType, StationType } from "@/helpers/backend-data-types";
 import TimePicker from "./TimePicker.vue";
 import DatePicker from "@/components/DatePicker.vue";
-import { formatSeconds } from "@/helpers/list-view-helpers";
+import { formatSeconds } from "@/helpers/format-helpers";
 import { insertJourney } from "@/helpers/api-functions";
 
 export default defineComponent({
