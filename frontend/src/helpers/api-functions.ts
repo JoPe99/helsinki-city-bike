@@ -111,7 +111,7 @@ export function getSingleStation(
 
 /**
  * Returns journey with longest duration from the backend.
- * @returns JourneyType[]
+ * @returns JourneyAPIResult
  */
 export function getLongestDuration() {
   const url = `${SERVER_IP}/journeys/longestDuration`;
@@ -120,7 +120,7 @@ export function getLongestDuration() {
 
 /**
  * Returns journey with longest distance from the backend.
- * @returns JourneyType[]
+ * @returns JourneyAPIResult
  */
 export function getLongestDistance() {
   const url = `${SERVER_IP}/journeys/longestDistance`;
@@ -129,7 +129,7 @@ export function getLongestDistance() {
 
 /**
  * Returns earliest journey by departure time
- * @returns JourneyType[]
+ * @returns JourneyAPIResult
  */
 export function getEarliestJourney() {
   const url = `${SERVER_IP}/journeys/earliest`;
@@ -138,7 +138,7 @@ export function getEarliestJourney() {
 
 /**
  * Returns latest journey by departure time
- * @returns JourneyType[]
+ * @returns JourneyAPIResult
  */
 export function getLatestJourney() {
   const url = `${SERVER_IP}/journeys/latest`;
