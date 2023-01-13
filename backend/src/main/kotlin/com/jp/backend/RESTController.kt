@@ -96,8 +96,6 @@ class RESTController() {
         return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
     }
 
-    // TODO: Add inserts for stations and journeys
-
     @PostMapping("/parse/stations")
     fun parseStations(): ResponseEntity<String> {
         CSVParser.parseStationData()
