@@ -5,10 +5,9 @@
 import { StationType, InsertJourneyType } from "@/helpers/backend-data-types";
 
 /**
- * Stations to be inserted. In total 4 stations.
+ * Valid stations to be inserted. In total 4 stations.
  */
 export const stations: StationType[] = [
-  // First station
   {
     id: 1,
     nameFi: "Ensimmäinen",
@@ -28,7 +27,6 @@ export const stations: StationType[] = [
     latitude: "60.156500",
   },
 
-  // Seconds station
   {
     id: 2,
     nameFi: "Toinen",
@@ -48,7 +46,6 @@ export const stations: StationType[] = [
     latitude: "60.156500",
   } as StationType,
 
-  // Third station
   {
     id: 3,
     nameFi: "Kolmas",
@@ -68,7 +65,6 @@ export const stations: StationType[] = [
     latitude: "60.156500",
   } as StationType,
 
-  // Fourth station
   {
     id: 4,
     nameFi: "Neljäs",
@@ -89,7 +85,9 @@ export const stations: StationType[] = [
   } as StationType,
 ];
 
-// Stations which should be rejected by backend validation
+/**
+ * Stations which should be rejected by backend validation
+ */
 export const tooLongValueStation: StationType = {
   id: 5,
   nameFi: "Viides",
@@ -111,7 +109,7 @@ export const tooLongValueStation: StationType = {
 };
 
 /**
- * Journeys to be inserted.
+ * Valid journeys to be inserted.
  * In total 9 journeys, with 6 of the journeys starting at "Ensimmäinen."
  * "Ensimmäinen" -> "Ensimmäinen": 3 journeys
  * "Ensimmäinen" -> "Toinen", "Kolmas", "Neljäs": 1 each
@@ -253,3 +251,67 @@ export const journeys: InsertJourneyType[] = [
     durationSeconds: 1200,
   },
 ];
+
+/**
+ * Journeys to be rejected by backend validation
+ */
+
+// Journey departing from non-existing station
+export const invalidDepartJourney = {
+  departureTime: "2021-05-01T12:00:00",
+  returnTime: "2021-05-01T13:00:15",
+
+  departureStationName: "Viides",
+  departureStationId: 5,
+
+  returnStationName: "Ensimmäinen",
+  returnStationId: 1,
+
+  distanceCovered: 400,
+  durationSeconds: 15,
+};
+
+// Journey returning to non-existing station
+export const invalidReturnJourney = {
+  departureTime: "2021-05-01T12:00:00",
+  returnTime: "2021-05-01T13:00:15",
+
+  departureStationName: "Ensimmäinen",
+  departureStationId: 1,
+
+  returnStationName: "Viides",
+  returnStationId: 5,
+
+  distanceCovered: 400,
+  durationSeconds: 15,
+};
+
+// Journey with distance under 10 meters
+export const invalidDistanceJourney = {
+  departureTime: "2021-05-01T12:00:00",
+  returnTime: "2021-05-01T13:00:15",
+
+  departureStationName: "Ensimmäinen",
+  departureStationId: 1,
+
+  returnStationName: "Ensimmäinen",
+  returnStationId: 1,
+
+  distanceCovered: 9,
+  durationSeconds: 15,
+};
+
+// Journey with duration under 10 seconds
+export const invalidDurationJourney = {
+  departureTime: "2021-05-01T12:00:00",
+  returnTime: "2021-05-01T13:00:15",
+
+  departureStationName: "Ensimmäinen",
+  departureStationId: 1,
+
+  returnStationName: "Ensimmäinen",
+  returnStationId: 1,
+
+  distanceCovered: 1500,
+  durationSeconds: 9,
+};

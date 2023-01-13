@@ -1,7 +1,15 @@
 import { assert } from "chai";
 import * as api from "@/helpers/api-functions";
 import { destroyTables, createTables } from "./test-helpers";
-import { stations, journeys, tooLongValueStation } from "./test-data";
+import {
+  stations,
+  journeys,
+  tooLongValueStation,
+  invalidDepartJourney,
+  invalidReturnJourney,
+  invalidDistanceJourney,
+  invalidDurationJourney,
+} from "./test-data";
 import { JourneyAPIResult, JourneyType } from "@/helpers/backend-data-types";
 
 // Populate database before doing tests
@@ -23,13 +31,6 @@ before(async function () {
 });
 
 describe("Stations from API", function () {
-  it("Stations inserted", async function () {
-    api.getAllStations().then((response) => {
-      assert.equal(response.status, 200);
-      assert.equal(response.data, stations);
-    });
-  });
-
   it("Station with taken ID rejected with 400", async function () {
     api.insertStation(stations[0]).then((response) => {
       assert.equal(response.status, 400);
@@ -41,10 +42,41 @@ describe("Stations from API", function () {
       assert.equal(response.status, 400);
     });
   });
+
+  it("Correct amount of stations inserted", async function () {
+    api.getAllStations().then((response) => {
+      assert.equal(response.status, 200);
+      assert.equal(response.data, stations);
+    });
+  });
 });
 
 describe("Journeys from API", function () {
-  it("Journeys inserted", async function () {
+  it("Rejects journey with invalid departure station", async function () {
+    api.insertJourney(invalidDepartJourney).then((response) => {
+      assert.equal(response.status, 400);
+    });
+  });
+
+  it("Rejects journey with invalid return station", async function () {
+    api.insertJourney(invalidReturnJourney).then((response) => {
+      assert.equal(response.status, 400);
+    });
+  });
+
+  it("Rejects journey with distance under 10 meters", async function () {
+    api.insertJourney(invalidDistanceJourney).then((response) => {
+      assert.equal(response.status, 400);
+    });
+  });
+
+  it("Rejects journey with duration under 10 seconds", async function () {
+    api.insertJourney(invalidDurationJourney).then((response) => {
+      assert.equal(response.status, 400);
+    });
+  });
+
+  it("Correct amount of stations inserted", async function () {
     api.getJourneysCount().then((response) => {
       assert.equal(response.status, 200);
 
