@@ -57,7 +57,6 @@ object ValidationHelpers {
         // Reject if departure or return station id is not in the allowed list of station ids.
         if (!usedStationIDs.contains(journey.departureStationId) ||
             !usedStationIDs.contains(journey.returnStationId)) {
-            println(" ${journey.departureStationId} not in allowed stations")
             return false
         }
 
