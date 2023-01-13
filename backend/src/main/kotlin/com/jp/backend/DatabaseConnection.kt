@@ -34,14 +34,14 @@ object DatabaseConn {
 		}
 
 	init {
-        // If tables don't exist, create them
-		 if (!tablesExist()) {
-			transaction(db) {
+        if (!tablesExist()) {
+            // If tables don't exist, create them
+            transaction(db) {
                 SchemaUtils.create(Journeys)
                 SchemaUtils.create(Stations)
-			}
-         // Send command to parse the CSV files and populate database
-		}
+            }
+            // Send command to parse the CSV files and populate database
+        }
 	}
 
 // Function for getting all stations
@@ -77,9 +77,11 @@ fun getStationsData(): ArrayList<StationModel> {
 
 fun getAllStationIDs(): ArrayList<Int> {
     var ret: ArrayList<Int> = arrayListOf()
-    transaction(db) {
-        for (station in Stations.selectAll()) {
-            ret.add(station[Stations.station_id])
+    if (tablesExist()) {
+        transaction(db) {
+            for (station in Stations.selectAll()) {
+                ret.add(station[Stations.station_id])
+            }
         }
     }
     return ret
@@ -306,15 +308,21 @@ fun insertIntoJourneys(journeys: ArrayList<JourneyModel>) {
 
 // Function for deleting all data
 fun deleteTables() {
-    transaction(db) {
-        SchemaUtils.drop(Journeys)
-        SchemaUtils.drop(Stations)
+    println("Destroying tables")
+    if (tablesExist()) {
+        transaction(db) {
+            SchemaUtils.drop(Journeys)
+            SchemaUtils.drop(Stations)
+        }
     }
 }
 fun createTables() {
-    transaction(db) {
-        SchemaUtils.create(Journeys)
-        SchemaUtils.create(Stations)
+    println("Creating tables")
+    if (!tablesExist()) {
+        transaction(db) {
+            SchemaUtils.create(Journeys)
+            SchemaUtils.create(Stations)
+        }
     }
 }
 
@@ -328,7 +336,7 @@ fun getJourneyCount(): Long {
 }
 
 private fun validateDate(date: String?, toEndOfDay: Boolean): LocalDateTime? {
-        var validatedDate: LocalDateTime?
+        val validatedDate: LocalDateTime?
         if (date.isNullOrBlank()) {
             return null
         } else {
@@ -353,11 +361,16 @@ private fun validateDate(date: String?, toEndOfDay: Boolean): LocalDateTime? {
         return validatedDate
     }
 
-private fun tablesExist(): Boolean {
+/**
+ * tablesExist tries to get a count from both tables, and returns false
+ * if the query results in an exception. This happens when the tables
+ * are not yet created.
+ */
+fun tablesExist(): Boolean {
     var ret = true
     transaction(db) {
-        try {Journeys.selectAll()} catch (e: Exception) {ret = false}
-        try {Stations.selectAll()} catch (e: Exception) {ret = false}
+        try { Journeys.selectAll().count() } catch (e: Exception) {ret = false}
+        try { Stations.selectAll().count() } catch (e: Exception) {ret = false}
     }
     return ret
 }

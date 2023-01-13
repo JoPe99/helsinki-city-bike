@@ -150,7 +150,6 @@ export function getLatestJourney() {
  * @param station
  */
 export function insertStation(station: StationType) {
-  console.log("inserting station", station);
   const url = `${SERVER_IP}/insert/station`;
   return axios.post<StationType>(url, station);
 }
@@ -160,7 +159,6 @@ export function insertStation(station: StationType) {
  * @param journey InsertJourneyType
  */
 export function insertJourney(journey: InsertJourneyType) {
-  console.log("inserting journey", journey);
   const url = `${SERVER_IP}/insert/journey`;
   return axios.post<InsertJourneyType>(url, journey);
 }

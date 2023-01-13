@@ -6,13 +6,14 @@
 package com.jp.backend
 
 import com.jp.backend.DatabaseConn.getAllStationIDs
+import com.jp.backend.DatabaseConn.tablesExist
 
 object ValidationHelpers {
 
     // Contains all station ids in the Stations CSV/Database.
     // Is used to reject journeys with departure/return id outside
     // declared stations.
-    private var allowedStationIDs: ArrayList<Int> = arrayListOf()
+    private var usedStationIDs: ArrayList<Int> = arrayListOf()
 
     init {
         updateStationIDs()
@@ -22,9 +23,13 @@ object ValidationHelpers {
      * Updates station IDs of ValidationHelpers
      */
     fun updateStationIDs() {
-        println("Updating allowed station IDs")
-        allowedStationIDs = getAllStationIDs()
-        println(allowedStationIDs)
+        if (tablesExist()) {
+            println("Updating allowed station IDs")
+            usedStationIDs = getAllStationIDs()
+            println(usedStationIDs)
+        } else {
+            usedStationIDs = arrayListOf()
+        }
     }
 
     fun validateJourneyInsertFromApp(journey: JourneyModel): Boolean {
@@ -49,8 +54,8 @@ object ValidationHelpers {
         }
 
         // Reject if departure or return station id is not in the allowed list of station ids.
-        if (!allowedStationIDs.contains(journey.departureStationId) ||
-            !allowedStationIDs.contains(journey.returnStationId)) {
+        if (!usedStationIDs.contains(journey.departureStationId) ||
+            !usedStationIDs.contains(journey.returnStationId)) {
             println(" ${journey.departureStationId} not in allowed stations")
             return false
         }
@@ -60,7 +65,9 @@ object ValidationHelpers {
     }
 
     fun validateStationInsertFromApp(station: StationModel): Boolean {
-        if (allowedStationIDs.contains(station.id)) { return false }
+        println(station)
+        println(usedStationIDs.contains(station.id))
+        if (usedStationIDs.contains(station.id)) { return false }
         return true
     }
 

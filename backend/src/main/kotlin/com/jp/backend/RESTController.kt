@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
 import com.jp.backend.DatabaseConn.insertIntoJourneys
 import com.jp.backend.DatabaseConn.insertIntoStations
+import com.jp.backend.ValidationHelpers.updateStationIDs
 import com.jp.backend.ValidationHelpers.validateJourneyInsertFromApp
 import com.jp.backend.ValidationHelpers.validateStationInsertFromApp
 
@@ -138,6 +139,7 @@ class RESTController() {
     @DeleteMapping("/delete")
     fun deleteTables(): ResponseEntity<Any?> {
         DatabaseConn.deleteTables()
+        updateStationIDs()
         return ResponseEntity("Tables destroyed", HttpStatus.OK)
     }
 }
