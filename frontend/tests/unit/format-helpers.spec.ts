@@ -6,7 +6,7 @@ import {
   timestampToDate,
 } from "@/helpers/format-helpers";
 
-describe("Format helpers", function () {
+describe("Distance & duration data formatting", function () {
   describe("formatDistance", function () {
     it("Formats 0 to 0m", function () {
       const result = formatDistance(0);
