@@ -7,6 +7,7 @@ package com.jp.backend
 
 import com.jp.backend.DatabaseConn.getAllStationIDs
 import com.jp.backend.DatabaseConn.tablesExist
+import kotlin.reflect.full.memberProperties
 
 object ValidationHelpers {
 
@@ -65,10 +66,22 @@ object ValidationHelpers {
     }
 
     fun validateStationInsertFromApp(station: StationModel): Boolean {
-        println(station)
-        println(usedStationIDs.contains(station.id))
+        var valid = true
+        val stringKeysToCheck = arrayListOf(
+            "nameFi", "nameSe", "nameEn", "addressFi",
+            "addressSe", "cityFi", "citySe",
+            "operator", "longitude", "latitude")
+
         if (usedStationIDs.contains(station.id)) { return false }
-        return true
+
+        // Check station string properties to be under 50 chars
+        for (key in StationModel::class.memberProperties) {
+            if (stringKeysToCheck.contains(key.name) && key.get(station).toString().length> 50) {
+                valid = false
+                break
+            }
+        }
+        return valid
     }
 
     // TODO: Tests
