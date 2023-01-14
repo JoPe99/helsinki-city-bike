@@ -23,9 +23,9 @@ import {
 
 let singleStation: SingleStationType;
 
-// Populate database before doing tests
+// Populate database before tests
 before(async function () {
-  // Clean up database before doing tests
+  // Clean up database
   await destroyTables();
   await createTables();
 
