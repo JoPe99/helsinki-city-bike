@@ -1,0 +1,43 @@
+name: Automated tests
+
+on:
+  pull-request:
+    branches: [ main ]
+
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - uses: gradle/gradle-build-action@v2
+
+    - name: Run build with Gradle Wrapper
+      working-directory: ./backend
+      run: ./gradlew build
+     
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build the Docker image
+      working-directory: ./backend
+      run: docker build -t app.jar .
+
+    - name: Run docker compose  
+      working-directory: ./backend
+      run: docker compose up -d
+
+    - name: Install frontend dependencies
+      working-directory: ./frontend
+      run: npm ci
+    - name: Run frontend tests
+      working-directory: ./frontend
+      run: npm run test:unit
