@@ -13,3 +13,17 @@ export function destroyTables() {
 export function createTables() {
   return axios.post("http://localhost:8081/create");
 }
+
+export const topDeparturesForEnsimmainen = [
+  { name: "Ensimmäinen", count: 3 },
+  { name: "Toinen", count: 1 },
+  { name: "Kolmas", count: 1 },
+  { name: "Neljäs", count: 1 },
+];
+
+export const topReturnsForEnsimmainen = [
+  { name: "Ensimmäinen", count: 3 },
+  { name: "Toinen", count: 1 },
+  { name: "Kolmas", count: 1 },
+  { name: "Neljäs", count: 1 },
+];

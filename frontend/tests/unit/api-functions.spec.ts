@@ -1,6 +1,11 @@
-import { assert } from "chai";
+import { assert, expect } from "chai";
 import * as api from "@/helpers/api-functions";
-import { destroyTables, createTables } from "./test-helpers";
+import {
+  destroyTables,
+  createTables,
+  topDeparturesForEnsimmainen,
+  topReturnsForEnsimmainen,
+} from "./test-helpers";
 import {
   stations,
   journeys,
@@ -10,7 +15,13 @@ import {
   invalidDistanceJourney,
   invalidDurationJourney,
 } from "./test-data";
-import { JourneyAPIResult, JourneyType } from "@/helpers/backend-data-types";
+import {
+  JourneyAPIResult,
+  JourneyType,
+  SingleStationType,
+} from "@/helpers/backend-data-types";
+
+let singleStation: SingleStationType;
 
 // Populate database before doing tests
 before(async function () {
@@ -28,6 +39,11 @@ before(async function () {
   for (const journey of journeys) {
     response = await api.insertJourney(journey);
   }
+
+  // Using the station "Ensimmäinen" in these tests
+  singleStation = (
+    await api.getSingleStation(1, "2021-05-01T00:00:00", "2021-07-01T00:00:00")
+  ).data;
 });
 
 describe("Stations from API", function () {
@@ -38,7 +54,7 @@ describe("Stations from API", function () {
   });
 
   it("Station with property value length over 50 chars rejected with 400", async function () {
-    api.insertStation(stations[0]).then((response) => {
+    api.insertStation(tooLongValueStation).then((response) => {
       assert.equal(response.status, 400);
     });
   });
@@ -48,6 +64,48 @@ describe("Stations from API", function () {
       assert.equal(response.status, 200);
       assert.equal(response.data, stations);
     });
+  });
+});
+
+describe("Single station details", async function () {
+  it("Nonexisting station details query rejected with 400", async function () {
+    api
+      .getSingleStation(5, "2021-05-01T00:00:00", "2021-07-01T00:00:00")
+      .then((response) => {
+        assert.equal(response.status, 400);
+      });
+  });
+
+  it("Correct amount of departure journeys", function () {
+    assert.equal(singleStation.totalDepartJourneys, 6);
+  });
+
+  it("Correct amount of return journeys", function () {
+    assert.equal(singleStation.totalReturnJourneys, 6);
+  });
+
+  it("Correct departure distance", function () {
+    assert.equal(singleStation.averageDepartDistance, 25133.3);
+  });
+
+  it("Correct departure duration", function () {
+    assert.equal(singleStation.averageDepartDuration, 448602.5);
+  });
+
+  it("Correct return distance", function () {
+    assert.equal(singleStation.averageReturnDistance, 25083.3);
+  });
+
+  it("Correct return duration", function () {
+    assert.equal(singleStation.averageReturnDuration, 453800);
+  });
+
+  it("Correct top departure stations", function () {
+    expect(singleStation.topDepartStations).to.eql(topDeparturesForEnsimmainen);
+  });
+
+  it("Correct top return stations", function () {
+    expect(singleStation.topReturnStations).to.eql(topReturnsForEnsimmainen);
   });
 });
 

@@ -110,6 +110,7 @@ export const tooLongValueStation: StationType = {
 
 /**
  * Valid journeys to be inserted.
+ *
  * In total 9 journeys, with 6 of the journeys starting at "Ensimmäinen."
  * "Ensimmäinen" -> "Ensimmäinen": 3 journeys
  * "Ensimmäinen" -> "Toinen", "Kolmas", "Neljäs": 1 each
@@ -117,7 +118,22 @@ export const tooLongValueStation: StationType = {
  *
  * Longest journey by distance is 150000 metres long.
  * Longest journey by duration is 2678400 seconds long.
- * Earliest journey starts at
+ * Earliest journey starts at "2021-05-01T13:00:00" from "Ensimmäinen".
+ * Latest journey starts at "2021-06-01T12:00:00" from "Ensimmäinen".
+ *
+ * Average departure distance from "Ensimmäinen" is 25133.3
+ * Average return duration from "Ensimmäinen" is 448602.5
+ *
+ * Average return distance from "Ensimmäinen" is 25083.3
+ * Average return duration from "Ensimmäinen" is 453800
+ *
+ * Top departure destinations from "Ensimmäinen":
+ * "Ensimmäinen": 3
+ * "Toinen", "Kolmas", "Neljäs": 1 each
+ *
+ * Top return destinations from "Ensimmäinen":
+ * "Ensimmäinen": 3
+ * "Toinen", "Kolmas", "Neljäs": 1 each
  */
 export const journeys: InsertJourneyType[] = [
   // Journeys departing from "Ensimmäinen"
@@ -131,7 +147,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Toinen",
     returnStationId: 2,
 
-    distanceCovered: 400,
+    distanceCovered: 200,
     durationSeconds: 15,
   },
 
@@ -145,7 +161,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Kolmas",
     returnStationId: 3,
 
-    distanceCovered: 400,
+    distanceCovered: 200,
     durationSeconds: 600,
   },
 
@@ -157,9 +173,9 @@ export const journeys: InsertJourneyType[] = [
     departureStationId: 1,
 
     returnStationName: "Neljäs",
-    returnStationId: 3,
+    returnStationId: 4,
 
-    distanceCovered: 1500,
+    distanceCovered: 200,
     durationSeconds: 600,
   },
 
@@ -175,7 +191,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Ensimmäinen",
     returnStationId: 1,
 
-    distanceCovered: 15,
+    distanceCovered: 100,
     durationSeconds: 10800,
   },
 
@@ -189,7 +205,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Ensimmäinen",
     returnStationId: 1,
 
-    distanceCovered: 15,
+    distanceCovered: 100,
     durationSeconds: 10800,
   },
 
@@ -203,7 +219,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Ensimmäinen",
     returnStationId: 1,
 
-    distanceCovered: 15,
+    distanceCovered: 100,
     durationSeconds: 10800,
   },
 
@@ -217,7 +233,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Ensimmäinen",
     returnStationId: 1,
 
-    distanceCovered: 15,
+    distanceCovered: 100,
     durationSeconds: 10800,
   },
 
@@ -232,7 +248,7 @@ export const journeys: InsertJourneyType[] = [
     returnStationName: "Ensimmäinen",
     returnStationId: 1,
 
-    distanceCovered: 15,
+    distanceCovered: 100,
     durationSeconds: 2678400,
   },
 
@@ -245,7 +261,7 @@ export const journeys: InsertJourneyType[] = [
     departureStationId: 1,
 
     returnStationName: "Ensimmäinen",
-    returnStationId: 4,
+    returnStationId: 1,
 
     distanceCovered: 150000,
     durationSeconds: 1200,
