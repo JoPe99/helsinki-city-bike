@@ -123,7 +123,7 @@ object ValidationHelpers {
             // Reject if departure or return station id is not in the allowed list of station ids.
             if (key == "Departure station id" || key == "Return station id") {
                 var id = row.getValue(key).toInt()
-                //if (!CSVParser.allowedStationIDs.contains(id)) {return false}
+                if (!usedStationIDs.contains(id)) {return false}
             }
         }
 

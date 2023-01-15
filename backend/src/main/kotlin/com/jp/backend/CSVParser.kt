@@ -13,15 +13,24 @@ import com.jp.backend.ValidationHelpers.validateJourneyCSVRow
 object CSVParser {
 
     fun parseStationData() {
-        var stationArray: ArrayList<StationModel> = arrayListOf()
-        csvReader().open("src/main/resources/data/stations.csv") {
-            readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
-                 stationArray.add(stationRowToModel(row))
-            }
-        }
+        val pathToStationCSV = "src/main/resources/data/stations.csv"
+
+        var stationArray = parseStationCSV(pathToStationCSV)
 
         insertIntoStations(stationArray)
         println("Stations parsed into database")
+    }
+
+    fun parseStationCSV(filepath: String): ArrayList<StationModel> {
+        val stationArray: ArrayList<StationModel> = arrayListOf()
+
+        csvReader().open(filepath) {
+            readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->
+                stationArray.add(stationRowToModel(row))
+            }
+        }
+
+        return stationArray
     }
 
     // TODO: Parse journey files concurrently
@@ -33,11 +42,11 @@ object CSVParser {
             "src/main/resources/data/06_2021.csv",
             "src/main/resources/data/07_2021.csv")
 
-        for (filename in filenames) { parseCSV(filename) }
+        for (filename in filenames) { insertIntoJourneys(parseJourneyCSV(filename)) }
 
     }
 
-    private fun parseCSV(pathToFile: String) {
+    fun parseJourneyCSV(pathToFile: String): ArrayList<JourneyModel> {
         println("Starting parsing from $pathToFile")
         var journeyArray: ArrayList<JourneyModel> = arrayListOf()
         var firstRow: Map<String, String> = mapOf()
@@ -66,8 +75,7 @@ object CSVParser {
                 }
             }
         }
-        insertIntoJourneys(journeyArray)
-        println("CSV from $pathToFile parsed into database")
+        return journeyArray
     }
 
 
