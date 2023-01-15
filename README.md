@@ -4,7 +4,7 @@
 
 The purpose of this app is to showcase data from Helsinki city bikes from the year 2021. 
 
-This repository contains a Kotlin/Spring/PostGreSQL backend which can be run in a Docker container or by itself, and a Vue/Typescript/Electron frontend application.
+This repository contains a Kotlin/Spring/PostgreSQL backend which can be run in a Docker container or by itself, and a Vue/Typescript/Electron frontend application.
 
 #### Data used in the project
 
@@ -38,11 +38,13 @@ Do you have to configure for example database connections locally? Provide clear
 
 <span style="color:red">Tests clear the backend database when run!</span>
 
+Tests are run in a Github Actions pipeline on every push to the main branch.
+
 ##### Frontend
 
 Frontend tests include some very simple tests of data formatting functions, and an integration test with the backend API. The tests require that the backend is running. 
 
-To run the frontend tests, open command line in the frontend directory and run:
+To run the frontend tests locally, open command line in the frontend directory and run:
 
 Unit tests:
 ```
@@ -56,9 +58,9 @@ npm run test:e2e
 
 ##### Backend
 
-Backend tests are _very_ limited and only test parsing and validation of journeys/stations from CSV files. 
+Backend tests are _very_ limited and only test parsing and validation of journeys/stations from the CSV files. 
 
-To run the backend tests, open terminal in the backend directory and run:
+To run the backend tests locally, open terminal in the backend directory and run:
 ```
 ./gradlew test
 ```
@@ -68,7 +70,7 @@ To run the backend tests, open terminal in the backend directory and run:
 #### Data import
 
 - Script to download the CSV files
-- Importing data from CSV files to PostGreSQL DB
+- Importing data from CSV files to PostgreSQL DB
 - Data validation
 
 #### Journey list view
@@ -108,28 +110,28 @@ To run the backend tests, open terminal in the backend directory and run:
 
 #### Frontend
 
-Frontend is created with Typescript/VueJS accompanied by Vuetify component library. 
+Frontend is created with Typescript/[Vue](https://vuejs.org/) accompanied by [Vuetify](https://vuetifyjs.com/en/) component library. 
 
 I chose Vue as I have prior experience with it, and it has been very enjoyable and flexible. 
 
-Electron is used for packaging the app, making it possible to distribute the frontend app as a single executable/installer.
+[Electron]() is used for packaging the app, making it possible to distribute the frontend app as a single executable/installer.
 
-Pinia was chosen as a state management for the frontend, and Vue Router for routing.
-For linting I used ESLint/Prettier.
+[Pinia](https://pinia.vuejs.org/) was chosen as a state management for the frontend, and [Vue Router](https://router.vuejs.org/) for routing.
+For linting I used [ESLint](https://eslint.org/)/[Prettier](https://prettier.io/).
 
 #### Backend
 
-Backend is Kotlin with Spring and PostGreSQL as database. 
+Backend is written in Kotlin with [Spring](https://spring.io/) and [PostgreSQL](https://www.postgresql.org/) as database. 
 
-I chose Kotlin as I had some experience with Android Development with it before, and wanted to get backend experience with it. 
+I chose Kotlin as I had some experience in Android development with it before, and wanted to get backend experience with Kotlin.
 
-PostGreSQL is something I have used before and felt it would work fine here too.
+PostgreSQL is something I have used before and felt it would work fine here too.
 
-Project includes instructions for running the backend in Docker.
+Project includes instructions for running the backend in [Docker](https://www.docker.com/).
 
 
 #### Testing
-Frontend unit testing is done with Mocha/Chai, E2E-testing with Cypress, and frontend code coverage is provided by Coveralls. 
+Frontend unit testing is done with [Mocha](https://mochajs.org/)/[Chai](https://www.chaijs.com/), E2E-testing with [Cypress](https://www.cypress.io/), and frontend code coverage is provided by [Coveralls](https://coveralls.io/). All the tests are run in a Github Actions pipeline on every push to the main branch.
 
 # Lessons learned
 
@@ -158,7 +160,7 @@ The Github Actions pipeline takes a long time to execute the tests, and I'm sure
 
 #### TL;DR
 
-Very rewarding project to have do, and I feel like I learned a lot during it. Lots of things to improve upon, but still fairly happy with the end result, taking into account that it was basically created in under a month on my free time.
+Very rewarding project to have done, and I feel like I learned a lot during it. Lots of things to improve upon, but still fairly happy with the end result, considering that it was basically created in under a month on my free time.
 
 
 
