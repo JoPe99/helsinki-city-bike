@@ -3,6 +3,7 @@ package com.jp.backend
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -36,6 +37,7 @@ class ParsingTests {
      * of 5 valid journeys.
      */
     @Test
+    @DisplayName("Parses valid journeys correctly")
     fun parseAndValidateJourneys() {
         val pathToJourneyTestCSV = "src/test/kotlin/resources/valid_journeys.tcsv"
         val journeyArray = CSVParser.parseJourneyCSV(pathToJourneyTestCSV)
@@ -57,6 +59,7 @@ class ParsingTests {
      * Return station ID not in valid stations
      */
     @Test
+    @DisplayName("Rejects invalid parsed journeys")
     fun parseAndValidateInvalidJourneys() {
         val pathToJourneyTestCSV = "src/test/kotlin/resources/invalid_journeys.tcsv"
         val journeyArray = CSVParser.parseJourneyCSV(pathToJourneyTestCSV)

@@ -22,7 +22,7 @@ jobs:
 
     - name: Run build with Gradle Wrapper
       working-directory: ./backend
-      run: ./gradlew build
+      run: ./gradlew build -x test
      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -38,6 +38,11 @@ jobs:
     - name: Install frontend dependencies
       working-directory: ./frontend
       run: npm ci
+
     - name: Run frontend tests
       working-directory: ./frontend
       run: npm run test:unit
+
+    - name: Run backend tests 
+      working-directory: ./backend
+      run: ./gradlew test
