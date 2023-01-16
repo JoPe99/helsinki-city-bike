@@ -15,14 +15,21 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 1920,
     height: 1080,
-    icon: "./assets/logo.png",
+    title: "Helsinki City Bikes",
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env
         .ELECTRON_NODE_INTEGRATION as unknown as boolean,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      devTools: false,
     },
+  });
+
+  win.removeMenu();
+
+  win.on('page-title-updated', function(e) {
+    e.preventDefault()
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
