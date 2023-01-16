@@ -42,6 +42,7 @@ object CSVParser {
 
         for (filename in filenames) { insertIntoJourneys(parseJourneyCSV(filename)) }
 
+        println("Journeys parsed into database")
     }
 
     fun parseJourneyCSV(pathToFile: String): ArrayList<JourneyModel> {
