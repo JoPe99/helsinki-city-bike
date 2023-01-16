@@ -8,11 +8,14 @@ services:
       - type: bind
         source: ./src/main/resources/
         target: /src/main/resources/
+      - type: bind
+        source: ./src/main/resources/data/
+        target: /src/main/resources/data/
     depends_on:
       PostgreSQL:
         condition: service_healthy
     environment:
-      - DB_URL=jdbc:postgresql://PostgreSQL:5432/postgres?reWriteBatchedInserts=true
+      - DB_URL=postgresql://PostgreSQL:5432/postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
 

@@ -15,23 +15,18 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 
 object DatabaseConn {
-	// Initialize database connection.
+    private val dbUrl: String = System.getenv("DB_URL") ?: "postgresql://localhost:5432/postgres"
+    private val dbUsername: String = System.getenv("DB_USERNAME") ?: "postgres"
+    private val dbPassword: String = System.getenv("DB_PASSWORD") ?: "password"
+
+
+    // Initialize database connection.
 	private val db: Database =
-		// If Docker
-		// TODO: Clean up this
-		if (System.getenv("DB_URL") != null) {
 			Database.connect(
-				System.getenv("DB_URL"),
+                url = "jdbc:$dbUrl?reWriteBatchedInserts=true",
 				driver = "org.postgresql.Driver",
-				user = System.getenv("DB_USERNAME"),
-				password = System.getenv("DB_PASSWORD"))
-		} else { // If no system environment vars, for example running without docker
-			Database.connect(
-				"jdbc:postgresql://localhost:5432/postgres?reWriteBatchedInserts=true",
-				driver = "org.postgresql.Driver",
-				user = "postgres",
-				password = "password")
-		}
+				user = dbUsername,
+				password = dbPassword)
 
 	init {
         if (!tablesExist()) {
@@ -41,6 +36,8 @@ object DatabaseConn {
                 SchemaUtils.create(Stations)
             }
             // Send command to parse the CSV files and populate database
+            CSVParser.parseStationData()
+            CSVParser.parseJourneyData()
         }
 	}
 

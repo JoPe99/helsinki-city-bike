@@ -1,5 +1,6 @@
 package com.jp.backend
 
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -29,6 +30,11 @@ class ParsingTests {
         } else {
             assertTrue(false)
         }
+    }
+
+    @AfterAll
+    fun clean() {
+        DatabaseConn.deleteTables()
     }
 
 
