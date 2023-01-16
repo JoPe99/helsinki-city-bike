@@ -16,6 +16,7 @@ module.exports = (on, config) => {
   // }))
 
   return Object.assign({}, config, {
+    projectId: "e323dg",
     fixturesFolder: "tests/e2e/fixtures",
     screenshotsFolder: "tests/e2e/screenshots",
     videosFolder: "tests/e2e/videos",
