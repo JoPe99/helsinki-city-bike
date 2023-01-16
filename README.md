@@ -2,7 +2,7 @@
 
 # Description of the project: 
 
-The purpose of this app is to showcase data from Helsinki city bikes from the year 2021. 
+The purpose of this app is to showcase data from Helsinki city bikes from the summer of 2021. 
 
 This repository contains a Kotlin/Spring/PostgreSQL backend which can be run in a Docker container or by itself, and a Vue/Typescript/Electron frontend application.
 
@@ -21,18 +21,9 @@ Station data is from this file:
 License and information can be found [here](https://www.avoindata.fi/data/en/dataset/hsl-n-kaupunkipyoraasemat/resource/a23eef3a-cc40-4608-8aa2-c730d17e8902).
 
 
-# Prerequisites: 
-
-Should the reviewer install something on their computer before they can compile and run the project? Does the project only work on Windows or Linux? List all steps that need to be done before trying to run the project. If versions are important, remember to mention those as well.
-
 # Configurations: 
 
-Do you have to configure for example database connections locally? Provide clear instructions on what needs to be changed and where. In case you have an .env file which you, of course, should not add to GitHub, you can send that file to the reviewers by other means. How to run the project? Do you have to install some packages or compile the code? If you have separate services for example for backend and frontend, remember to write instructions for all needed services.
-
-#### Frontend
-
-#### Backend
-
+Configuration instructions and requirements for both frontend and backend can be found from their respective directories.
 
 # Tests 
 
