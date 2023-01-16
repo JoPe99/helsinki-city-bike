@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { getSingleStation } from "@/helpers/api-functions";
-import { SingleStationType, StationType } from "@/helpers/backend-data-types";
+import { SingleStationType, StationType } from "@/types/backend-data-types";
 import { useStore } from "@/store";
 import { defineComponent } from "vue";
 

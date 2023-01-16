@@ -1,5 +1,5 @@
 import "datejs";
-import { FormattedJourneyType, JourneyType } from "./backend-data-types";
+import { FormattedJourneyType, JourneyType } from "../types/backend-data-types";
 
 /**
  * Returns an offset for working with database. Vuetify table uses

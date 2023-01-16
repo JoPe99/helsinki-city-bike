@@ -27,7 +27,7 @@
 import Vue from "vue";
 import MapComponent from "@/components/MapComponent.vue";
 import JourneyDataTable from "@/components/journey/JourneyDataTable.vue";
-import { FormattedJourneyType } from "@/helpers/backend-data-types";
+import { FormattedJourneyType } from "@/types/backend-data-types";
 import { StationLocation } from "@/helpers/format-helpers";
 
 export default Vue.extend({

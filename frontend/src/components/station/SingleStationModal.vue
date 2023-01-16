@@ -116,7 +116,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { formatDistance, formatSeconds } from "@/helpers/format-helpers";
-import { SingleStationType } from "@/helpers/backend-data-types";
+import { SingleStationType } from "@/types/backend-data-types";
 import { getSingleStation } from "@/helpers/api-functions";
 import TopStationsTable from "./TopStationsTable.vue";
 import DatePicker from "../DatePicker.vue";

@@ -19,7 +19,7 @@ import {
   JourneyAPIResult,
   JourneyType,
   SingleStationType,
-} from "@/helpers/backend-data-types";
+} from "@/types/backend-data-types";
 
 let singleStation: SingleStationType;
 

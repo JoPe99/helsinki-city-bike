@@ -2,7 +2,7 @@
  *  This module includes the data types coming from the server.
  */
 
-import { FormattedDateTime } from "./format-helpers";
+import { FormattedDateTime } from "../helpers/format-helpers";
 
 /**
  * Journeys come in this format from the server.
