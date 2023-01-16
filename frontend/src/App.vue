@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar class="elevation-8" style="z-index: 1" app color="primary">
-      <v-toolbar-title class="mr-5">Helsinki City Bike</v-toolbar-title>
+      <v-toolbar-title class="mr-5">Helsinki City Bikes</v-toolbar-title>
       <v-btn
         color="secondary"
         class="mx-3"

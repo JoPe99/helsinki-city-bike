@@ -18,7 +18,7 @@ import "./commands";
 
 // Leaflet throws an error on new map for some reason,
 // don't fail E2E test on that
-Cypress.on("uncaught:exception", (err, runnable) => {
+Cypress.on("uncaught:exception", () => {
   // returning false here prevents Cypress from
   // failing the test
   return false;
