@@ -17,8 +17,8 @@ import {
 let SERVER_IP: string;
 
 // If SERVER_IP defined in env variables, use it. Else default to localhost:8081.
-if (env.SERVER_IP != null) {
-  SERVER_IP = `http://${env.SERVER_IP}:8081`;
+if (process.env.SERVER_IP != null) {
+  SERVER_IP = `http://${process.env.SERVER_IP}:8081`;
 } else {
   SERVER_IP = "http://localhost:8081";
 }
