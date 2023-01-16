@@ -5,6 +5,8 @@
 // Axios used for API interactions
 import axios from "axios";
 
+import { env } from "process";
+
 import {
   StationType,
   SingleStationType,
@@ -12,8 +14,14 @@ import {
   InsertJourneyType,
 } from "../types/backend-data-types";
 
-// Backend address, change if needed
-const SERVER_IP = "http://localhost:8081";
+let SERVER_IP: string;
+
+// If SERVER_IP defined in env variables, use it. Else default to localhost:8081.
+if (env.SERVER_IP != null) {
+  SERVER_IP = `http://${env.SERVER_IP}:8081`;
+} else {
+  SERVER_IP = "http://localhost:8081";
+}
 
 /**
  * Get journeys from the backend. Takes page size, current offset,
