@@ -1,6 +1,8 @@
 
-describe("Journeys are visible", () => {
-  it("Visits the app root url", () => {
+describe("Visits all pages", () => {
+  it("Visits the pages", () => {
+
+
     cy.viewport(1920, 1080);
     cy.visit("http://localhost:8080/");
 
@@ -39,7 +41,6 @@ describe("Journeys are visible", () => {
     cy.contains("Insert journey");
 
     cy.contains("Insert station");
-
   });
 });
 

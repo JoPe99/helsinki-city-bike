@@ -45,7 +45,7 @@ jobs:
 
     - name: Run frontend E2E tests
       working-directory: ./frontend
-      run: npm run test:e2e
+      run: npx cypress run
 
     - name: Run backend tests 
       working-directory: ./backend

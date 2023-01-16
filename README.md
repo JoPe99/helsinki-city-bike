@@ -36,13 +36,13 @@ Do you have to configure for example database connections locally? Provide clear
 
 # Tests 
 
-<span style="color:red">Tests clear the backend database when run!</span>
+Frontend/Backend unit tests clear the backend database when run. E2E tests are built on top of the data inserted in frontend tests, so first run frontend unit tests and then the E2E-tests.
 
 Tests are run in a Github Actions pipeline on every push to the main branch.
 
 ##### Frontend
 
-Frontend tests include some very simple tests of data formatting functions, and an integration test with the backend API. The tests require that the backend is running. 
+Frontend tests include some very simple tests of data formatting functions, and an integration test with the backend API. The tests require that the backend is running. The E2E tests are very superficial, their purpose is to only showcase that I know the very basics of Cypress. 
 
 To run the frontend tests locally, open command line in the frontend directory and run:
 
@@ -131,7 +131,7 @@ Project also includes instructions for running the backend in [Docker](https://w
 
 
 #### Testing
-Frontend unit testing is done with [Mocha](https://mochajs.org/)/[Chai](https://www.chaijs.com/), E2E-testing with [Cypress](https://www.cypress.io/), and frontend code coverage is provided by [Coveralls](https://coveralls.io/). All the tests are run in a Github Actions pipeline on every push to the main branch.
+Frontend unit testing is done with [Mocha](https://mochajs.org/)/[Chai](https://www.chaijs.com/), E2E-testing with [Cypress](https://www.cypress.io/). All the tests are run in a Github Actions pipeline on every push to the main branch.
 
 # Lessons learned
 
