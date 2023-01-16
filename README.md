@@ -110,7 +110,7 @@ To run the backend tests locally, open terminal in the backend directory and run
 
 #### Frontend
 
-Frontend is created with Typescript/[Vue](https://vuejs.org/) accompanied by [Vuetify](https://vuetifyjs.com/en/) component library. 
+Frontend is created with [Typescript](https://www.typescriptlang.org/)/[Vue](https://vuejs.org/) accompanied by [Vuetify](https://vuetifyjs.com/en/) component library. 
 
 I chose Vue as I have prior experience with it, and it has been very enjoyable and flexible. 
 
@@ -121,13 +121,13 @@ For linting I used [ESLint](https://eslint.org/)/[Prettier](https://prettier.io/
 
 #### Backend
 
-Backend is written in Kotlin with [Spring](https://spring.io/) and [PostgreSQL](https://www.postgresql.org/) as database. 
+Backend is written in [Kotlin](https://kotlinlang.org/) with [Spring](https://spring.io/) and [PostgreSQL](https://www.postgresql.org/) as database. 
 
 I chose Kotlin as I had some experience in Android development with it before, and wanted to get backend experience with Kotlin.
 
-PostgreSQL is something I have used before and felt it would work fine here too.
+PostgreSQL was chosen as I had former experience with it.
 
-Project includes instructions for running the backend in [Docker](https://www.docker.com/).
+Project also includes instructions for running the backend in [Docker](https://www.docker.com/).
 
 
 #### Testing
