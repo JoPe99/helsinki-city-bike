@@ -38,10 +38,6 @@ jobs:
     - name: Install frontend dependencies
       working-directory: ./frontend
       run: npm ci
-    
-    - name: Serve frontend on port 8080
-      working-directory: ./frontend
-      run: npm run serve
 
     - name: Run frontend unit tests
       working-directory: ./frontend
