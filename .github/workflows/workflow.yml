@@ -44,7 +44,8 @@ jobs:
       run: npm run test:unit
     
     - uses: cypress-io/github-action@v5
-      working-directory: ./frontend
+        with:
+          working-directory: ./frontend
 
     - name: Run backend tests 
       working-directory: ./backend
