@@ -35,9 +35,6 @@ object DatabaseConn {
                 SchemaUtils.create(Journeys)
                 SchemaUtils.create(Stations)
             }
-            // Send command to parse the CSV files and populate database
-            CSVParser.parseStationData()
-            CSVParser.parseJourneyData()
         }
 	}
 

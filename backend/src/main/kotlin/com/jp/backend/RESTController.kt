@@ -95,16 +95,11 @@ class RESTController() {
         return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
     }
 
-    @PostMapping("/parse/stations")
-    fun parseStations(): ResponseEntity<String> {
+    @GetMapping("/parse")
+    fun parse(): ResponseEntity<String> {
         CSVParser.parseStationData()
-        return ResponseEntity("Stations parsed", HttpStatus.OK)
-    }
-
-    @PostMapping("/parse/journeys")
-    fun parseJourneys(): ResponseEntity<String> {
         CSVParser.parseJourneyData()
-        return ResponseEntity("Journeys parsed", HttpStatus.OK)
+        return ResponseEntity("Data parsed", HttpStatus.OK)
     }
 
     @PostMapping("/insert/journey")

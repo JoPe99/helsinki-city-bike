@@ -8,9 +8,6 @@ services:
       - type: bind
         source: ./src/main/resources/
         target: /src/main/resources/
-      - type: bind
-        source: ./src/main/resources/data/
-        target: /src/main/resources/data/
     depends_on:
       PostgreSQL:
         condition: service_healthy
