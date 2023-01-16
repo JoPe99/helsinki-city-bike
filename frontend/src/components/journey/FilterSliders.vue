@@ -87,6 +87,7 @@ export default defineComponent({
 
   computed: {
     getLongestJourneyDistance(): number {
+      console.log(this.store.longestJourneyByDistance.distanceCovered);
       return this.store.longestJourneyByDistance.distanceCovered;
     },
     getLongestJourneyDuration(): number {
@@ -109,6 +110,10 @@ export default defineComponent({
         {
           value: 3600,
           step: 60,
+        },
+        {
+          value: 43200,
+          step: 200,
         },
         {
           value: 86400,
@@ -139,16 +144,12 @@ export default defineComponent({
           step: 100,
         },
         {
-          value: 100000,
+          value: 50000,
           step: 1000,
         },
         {
-          value: 500000,
-          step: 100000,
-        },
-        {
           value: Number(this.getLongestJourneyDistance),
-          step: 100000,
+          step: 50000,
         },
       ];
     },
@@ -168,10 +169,10 @@ export default defineComponent({
     createIntervals(data: { value: number; step: number }[], maxValue: number) {
       let result = [] as number[];
 
-      data.forEach((point, idx) => {
-        const lastPointValue = data[data.length - 1].value;
+      const lastPointValue = data[data.length - 1].value;
 
-        if (point.value === lastPointValue) {
+      data.forEach((point, idx) => {
+        if (point.value === lastPointValue || maxValue < point.value) {
           // Last point is equal to max value in database
           result.push(maxValue);
           return;

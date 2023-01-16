@@ -1,10 +1,5 @@
 import { assert } from "chai";
-import {
-  formatDistance,
-  formatSeconds,
-  pageToOffset,
-  timestampToDate,
-} from "@/helpers/format-helpers";
+import { formatDistance, formatSeconds } from "@/helpers/format-helpers";
 
 describe("Distance & duration data formatting", function () {
   describe("formatDistance", function () {

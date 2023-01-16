@@ -10,7 +10,6 @@ import com.jp.backend.ValidationHelpers.updateStationIDs
 import com.jp.backend.ValidationHelpers.validateJourneyInsertFromApp
 import com.jp.backend.ValidationHelpers.validateStationInsertFromApp
 
-// TODO: Add correct responses to queries, errors etc
 @CrossOrigin(maxAge = 3600)
 @RestController
 class RESTController() {

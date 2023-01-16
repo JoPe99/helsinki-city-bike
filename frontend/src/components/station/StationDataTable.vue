@@ -91,7 +91,7 @@ export default defineComponent({
     ],
     options: {
       itemsPerPage: 25,
-      sortBy: ["nameFi"],
+      sortBy: ["id"],
       sortDesc: [false],
     },
     footerProps: {

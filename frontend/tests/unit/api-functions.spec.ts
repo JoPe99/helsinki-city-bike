@@ -30,14 +30,12 @@ before(async function () {
   await createTables();
 
   // Insert stations stations and journeys before tests
-  let response;
-
   for (const station of stations) {
-    response = await api.insertStation(station);
+    await api.insertStation(station);
   }
 
   for (const journey of journeys) {
-    response = await api.insertJourney(journey);
+    await api.insertJourney(journey);
   }
 
   // Using the station "Ensimmäinen" in these tests

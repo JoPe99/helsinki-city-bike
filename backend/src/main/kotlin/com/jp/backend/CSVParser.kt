@@ -33,10 +33,8 @@ object CSVParser {
         return stationArray
     }
 
-    // TODO: Parse journey files concurrently
     fun parseJourneyData() {
 
-        // TODO: Get file location from params
         var filenames = arrayListOf(
             "src/main/resources/data/05_2021.csv",
             "src/main/resources/data/06_2021.csv",
@@ -79,7 +77,6 @@ object CSVParser {
     }
 
 
-    // TODO: Tests
     private fun stationRowToModel(row: Map<String, String>): StationModel {
         return StationModel(
             row.getValue("ID").toInt(),
@@ -97,7 +94,6 @@ object CSVParser {
         )
     }
 
-    // TODO: Tests & cleanup
     private fun journeyRowToModel(row: Map<String, String>): JourneyModel {
         return JourneyModel(
             row.getValue("Departure"),

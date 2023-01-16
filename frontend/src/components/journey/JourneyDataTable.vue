@@ -64,7 +64,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import { getJourneysCount, getJourneys } from "../../helpers/api-functions";
+import { getJourneysCount, getJourneys } from "@/helpers/api-functions";
 
 import {
   formatJourneyTypeArray,
@@ -163,7 +163,7 @@ export default defineComponent({
     },
   },
 
-  mounted() {
+  created() {
     this.tableLoading = true;
     getJourneysCount().then((response) => {
       this.totalJourneys = response.data;

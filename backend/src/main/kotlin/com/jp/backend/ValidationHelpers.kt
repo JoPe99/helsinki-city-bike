@@ -37,7 +37,7 @@ object ValidationHelpers {
 
         // Timestamp should be "YYYY-MM-DD'T'HH:MM:SS" e.g. "2021-05-31T23:50:19"
         for (dateTime in arrayListOf(journey.departureTime, journey.returnTime)) {
-            // Use RegExp to check for correct format // TODO: Make better?
+            // Use RegExp to check for correct format
             val regex = Regex(pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?")
             if (!regex.matches(dateTime)) {
                 return false
@@ -83,7 +83,6 @@ object ValidationHelpers {
         return valid
     }
 
-    // TODO: Tests
     fun validateJourneyCSVRow(row: Map<String, String>): Boolean {
         // Simplify testing by grouping values by test types
         val timestampTests: Array<String> = arrayOf("Departure", "Return")
@@ -92,7 +91,7 @@ object ValidationHelpers {
         // Timestamp should be "YYYY-MM-DD'T'HH:MM:SS" e.g. "2021-05-31T23:50:19"
         for (key in timestampTests) {
             var timestamp = row.getValue(key)
-            // Use RegExp to check for correct format // TODO: Make better?
+            // Use RegExp to check for correct format
             val regex = Regex(pattern = "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,3})?")
             if (!regex.matches(timestamp)) {
                 return false

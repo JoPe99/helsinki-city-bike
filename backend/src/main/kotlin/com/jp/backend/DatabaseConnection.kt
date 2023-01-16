@@ -1,6 +1,6 @@
 /**
  * This file includes a database connection Singleton,
- * and functions for interacting with the database. TODO: Better documentation
+ * and functions for interacting with the database.
  */
 
 package com.jp.backend
@@ -537,7 +537,6 @@ private fun getAverageReturnDurationForStation(id: Int, startDate: LocalDateTime
 
 }
 
-// TODO: Refactor "station_id" to "id"
 object Stations: Table() {
     val station_id: Column<Int> = integer("station_id").index()
     val name_fi: Column<String> = varchar("name_fi", 50).index()
