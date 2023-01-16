@@ -46,6 +46,9 @@ jobs:
     - uses: cypress-io/github-action@v5
       with:
         working-directory: ./frontend
+        build: npm run build
+        start: npm start
+        wait-on: "http://localhost:8080"
 
     - name: Run backend tests 
       working-directory: ./backend
