@@ -28,8 +28,8 @@ async function createWindow() {
 
   win.removeMenu();
 
-  win.on('page-title-updated', function(e) {
-    e.preventDefault()
+  win.on("page-title-updated", function (e) {
+    e.preventDefault();
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
