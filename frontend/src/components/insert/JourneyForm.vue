@@ -246,7 +246,6 @@ export default defineComponent({
     submitJourney() {
       this.submitDisabled = true;
       if (this.formJourney()) {
-        console.log("Submitting", this.currentJourney);
         this.postJourneyToAPI(this.currentJourney);
       } else {
         this.submitDisabled = false;
@@ -271,8 +270,6 @@ export default defineComponent({
       // Check dates to be correct
       let departTime = this.formDateTimeFromString(journey.departureTime);
       let returnTime = this.formDateTimeFromString(journey.returnTime);
-
-      console.log(journey);
 
       if (returnTime < departTime) {
         this.showStatusMessage(
@@ -437,7 +434,6 @@ export default defineComponent({
 
     // Update datetimes after date/time pickers update
     updateDateTimes() {
-      console.log("updating");
       let departureDateTime = this.formDateTimeFromString(
         this.formDateTimeString("departure")
       );

@@ -103,7 +103,6 @@ export default defineComponent({
   watch: {
     markers: {
       handler(newVal: StationLocation[]) {
-        console.log(newVal);
         if (newVal.length == 0) {
           this.resetMap();
         } else {
@@ -146,7 +145,6 @@ export default defineComponent({
       // return stations are same, only push one marker on the map.
       // If not two same stations, push all markers to the map.
       if (newMarkers.length == 2 && newMarkers[0].id == newMarkers[1].id) {
-        console.log("Duplicate keys");
         this.currentMarkers = [newMarkers[0]] as StationLocation[];
       } else {
         this.currentMarkers = newMarkers;
@@ -174,7 +172,6 @@ export default defineComponent({
 
     handleMarkerClick(id: number, name: string) {
       let clickedMarker = { id: id, name: name };
-      console.log(clickedMarker);
       this.$emit("markerClicked", clickedMarker);
     },
   },

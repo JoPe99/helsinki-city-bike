@@ -164,7 +164,6 @@ export default defineComponent({
 
   methods: {
     handleNewDate(id: "start" | "end", date: string) {
-      console.log("New date");
       if (id == "start") {
         this.startDate = date;
       } else {
@@ -180,7 +179,6 @@ export default defineComponent({
       // Call API for new data
       getSingleStation(this.station.id, this.startDate, this.endDate).then(
         (response) => {
-          console.log(response);
           this.station = response.data;
         }
       );

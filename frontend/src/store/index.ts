@@ -34,7 +34,6 @@ export const useStore = defineStore("store", {
 
       Promise.all([journeyPromise, stationPromise]).then(() => {
         this.storeReady = true;
-        console.log("Store ready");
       });
     },
 
@@ -54,7 +53,6 @@ export const useStore = defineStore("store", {
       for (const station of stations) {
         this.stationIDs.push(station.id);
       }
-      console.log(this.stationIDs);
     },
 
     // Called after inserting new station
