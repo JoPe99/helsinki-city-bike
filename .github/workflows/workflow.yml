@@ -47,14 +47,19 @@ jobs:
       working-directory: ./frontend
       run: npm run test:unit
     
-    - uses: cypress-io/github-action@v5
+    - name: Run E2E tests
+      uses: cypress-io/github-action@v5
       with:
         working-directory: ./frontend
+        build: npm run build
+        start: npm run serve
+        wait-on: "http://localhost:8080"
         record: true
       env:
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        # pass the Cypress Cloud record key as an environment variable
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_KEY }}
+        # pass GitHub token to allow accurately detecting a build vs a re-run build
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
     - name: Run backend tests 
       working-directory: ./backend
