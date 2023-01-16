@@ -59,7 +59,7 @@ export default defineComponent({
   }),
 
   created() {
-    this.interval = setInterval(this.setupData, 50) as unknown as number;
+    this.interval = setInterval(this.setupData, 500) as unknown as number;
   },
 
   computed: {
@@ -71,7 +71,6 @@ export default defineComponent({
   methods: {
     setupData() {
       if (this.storeReady) {
-        console.log("Setting up card");
         this.earliestJourneyDate = this.getEarliestJourneyDate();
         this.latestJourneyDate = this.getLatestJourneyDate();
         this.longestJourneyByDistance = this.getLongestJourneyByDistance();
@@ -81,8 +80,6 @@ export default defineComponent({
 
         clearInterval(this.interval as number);
         this.cardReady = true;
-      } else {
-        console.log("Store not ready");
       }
     },
     getTotalJourneys() {

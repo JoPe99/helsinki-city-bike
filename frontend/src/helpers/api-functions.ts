@@ -12,9 +12,7 @@ import {
   InsertJourneyType,
 } from "./backend-data-types";
 
-// If you want to use a self-hosted backend for testing,
-// you can change this to "localhost:8081"
-// TODO: Move to root dir?
+// Backend address, change if needed
 const SERVER_IP = "http://localhost:8081";
 
 /**

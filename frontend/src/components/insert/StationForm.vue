@@ -217,15 +217,12 @@ export default defineComponent({
   methods: {
     submitStation() {
       this.disableSubmit = true;
-      console.log("Submitting station");
       let validationResult = this.validateStation();
 
       // If frontend validation successful, post station to API.
       if (validationResult.success) {
-        console.log("Validation successful");
         this.postStationToAPI(this.currentStation);
       } else {
-        console.log("Validation failed");
         this.showResultBar(false, validationResult.invalidKeys);
         this.disableSubmit = false;
       }
@@ -233,10 +230,8 @@ export default defineComponent({
 
     // Post station to API and update store if successful
     postStationToAPI(station: StationType) {
-      console.log("Posting station", station);
-      insertStation(station).then((response) => {
+      insertStation(station).then(() => {
         // Handle response here too.
-        console.log(response);
         this.updateStoreData();
       });
     },
