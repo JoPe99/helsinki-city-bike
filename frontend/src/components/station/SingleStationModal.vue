@@ -6,7 +6,7 @@
     max-height="800px"
     max-width="800px"
   >
-    <v-card class="ma-0 pa-0" :loading="loading">
+    <v-card class="ma-0 pa-0" :loading="loading" v-if="dialog">
       <template slot="progress">
         <v-progress-linear color="blue" indeterminate></v-progress-linear>
       </template>
