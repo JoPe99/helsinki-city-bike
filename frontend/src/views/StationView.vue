@@ -55,7 +55,7 @@ import StationDataTable from "@/components/station/StationDataTable.vue";
 import SingleStationModal from "@/components/station/SingleStationModal.vue";
 
 import { StationLocation } from "@/helpers/format-helpers";
-import { SingleStationType } from "@/helpers/backend-data-types";
+import { SingleStationType } from "@/types/backend-data-types";
 import { useStore } from "@/store";
 
 export default defineComponent({

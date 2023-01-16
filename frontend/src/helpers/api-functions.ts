@@ -10,7 +10,7 @@ import {
   SingleStationType,
   JourneyAPIResult,
   InsertJourneyType,
-} from "./backend-data-types";
+} from "../types/backend-data-types";
 
 // Backend address, change if needed
 const SERVER_IP = "http://localhost:8081";

@@ -166,7 +166,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useStore } from "@/store";
-import { InsertJourneyType, StationType } from "@/helpers/backend-data-types";
+import { InsertJourneyType, StationType } from "@/types/backend-data-types";
 import TimePicker from "./TimePicker.vue";
 import DatePicker from "@/components/DatePicker.vue";
 import { formatSeconds } from "@/helpers/format-helpers";

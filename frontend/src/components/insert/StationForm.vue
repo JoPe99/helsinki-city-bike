@@ -169,7 +169,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useStore } from "@/store";
-import { StationType } from "@/helpers/backend-data-types";
+import { StationType } from "@/types/backend-data-types";
 import { insertStation } from "@/helpers/api-functions";
 import LocationPicker from "./LocationPicker.vue";
 

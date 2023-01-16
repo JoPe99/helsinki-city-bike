@@ -71,12 +71,9 @@ import {
   pageToOffset,
   sortByArrayToString,
   sortDescArrayToString,
-} from "../../helpers/format-helpers";
+} from "@/helpers/format-helpers";
 
-import {
-  FormattedJourneyType,
-  JourneyType,
-} from "../../helpers/backend-data-types";
+import { FormattedJourneyType, JourneyType } from "@/types/backend-data-types";
 
 import JourneyFilters from "./JourneyFilters.vue";
 

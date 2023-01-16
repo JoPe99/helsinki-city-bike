@@ -2,7 +2,7 @@
  * This file includes test data for the tests
  */
 
-import { StationType, InsertJourneyType } from "@/helpers/backend-data-types";
+import { StationType, InsertJourneyType } from "@/types/backend-data-types";
 
 /**
  * Valid stations to be inserted. In total 4 stations.

@@ -6,7 +6,7 @@ import {
   getLongestDistance,
   getLongestDuration,
 } from "@/helpers/api-functions";
-import { JourneyType, StationType } from "@/helpers/backend-data-types";
+import { JourneyType, StationType } from "@/types/backend-data-types";
 import { StationLocation } from "@/helpers/format-helpers";
 import { defineStore } from "pinia";
 

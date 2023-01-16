@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { JourneyType } from "@/helpers/backend-data-types";
+import { JourneyType } from "@/types/backend-data-types";
 import { formatDistance, formatSeconds } from "@/helpers/format-helpers";
 import { useStore } from "../../store/index";
 
