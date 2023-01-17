@@ -23,8 +23,7 @@ Explained:
 2. Builds app
 3. Creates docker image from app
 4. Starts PostgreSQL and backend containers
-5. Tells the server to start parsing CSV files. This should take around 5 minutes with journeys from May, June & July.
-
+5. Tells the server to start parsing CSV files. This should take around 5 minutes.
 
 ## Without Docker
 
@@ -54,7 +53,7 @@ curl http://localhost:8081/parse
 Explained:
 1. Creates resources/data folder, and downloads files there
 2. Builds app
-5. Tells the server to start parsing CSV files. This should take around 5 minutes with journeys from May, June & July.
+5. Tells the server to start parsing CSV files. This should take around 5 minutes.
 
 
 # Database layout

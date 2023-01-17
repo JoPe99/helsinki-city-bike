@@ -60,6 +60,11 @@ To run the backend tests locally, open terminal in the backend directory and run
 ./gradlew test
 ```
 
+
+# API documentation
+
+API documentation can be found [here](https://joonapeni.stoplight.io/docs/hcb/branches/main/w0qkgzd21uyc8-hcb).
+
 # Features
 
 #### Data import
@@ -159,7 +164,7 @@ The Github Actions pipeline takes a long time to execute the tests, and I'm sure
 
 #### TL;DR
 
-Very rewarding project to have done, and I feel like I learned a lot during it. Lots of things to improve upon, but still fairly happy with the end result, considering that it was basically created in under a month on my free time.
+Very rewarding project to have done, and I feel like I learned a lot during it. Lots of things to improve upon, but still fairly content with the end result, considering that it was basically created in a month on my free time.
 
 
 
