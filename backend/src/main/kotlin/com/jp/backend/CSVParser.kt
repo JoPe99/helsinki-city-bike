@@ -5,8 +5,8 @@
 package com.jp.backend
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.DatabaseConn.insertIntoJourneys
+import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.ValidationHelpers.validateJourneyCSVRow
 
 
@@ -38,9 +38,12 @@ object CSVParser {
         var filenames = arrayListOf(
             "src/main/resources/data/05_2021.csv",
             "src/main/resources/data/06_2021.csv",
-            "src/main/resources/data/07_2021.csv")
+            "src/main/resources/data/07_2021.csv"
+        )
 
-        for (filename in filenames) { insertIntoJourneys(parseJourneyCSV(filename)) }
+        for (filename in filenames) {
+            insertIntoJourneys(parseJourneyCSV(filename))
+        }
 
         println("Journeys parsed into database")
     }
@@ -51,13 +54,13 @@ object CSVParser {
         var firstRow: Map<String, String> = mapOf()
         var rowCounter: Long = 0
 
-       /* Seems like the files from May, June & July have duplicate data.
-        * The data begins repeating from start halfway of the file.
-        * To not parse the duplicates, we stop the parsing when the loop
-        * hits the first duplicate row. To make sure we don't stop parsing
-        * in the extremely unlikely event that the first rows happen to be
-        * exactly the same, checks are started doing after 5 rows.
-        */
+        /* Seems like the files from May, June & July have duplicate data.
+         * The data begins repeating from start halfway of the file.
+         * To not parse the duplicates, we stop the parsing when the loop
+         * hits the first duplicate row. To make sure we don't stop parsing
+         * in the extremely unlikely event that the first rows happen to be
+         * exactly the same, checks are started doing after 5 rows.
+         */
         csvReader().open(pathToFile) {
             run parsing@{
                 readAllWithHeaderAsSequence().forEach { row: Map<String, String> ->

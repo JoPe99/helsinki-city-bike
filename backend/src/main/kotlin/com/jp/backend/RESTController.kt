@@ -1,18 +1,18 @@
 package com.jp.backend
 
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
 import com.jp.backend.*
 import com.jp.backend.DatabaseConn.insertIntoJourneys
 import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.ValidationHelpers.updateStationIDs
 import com.jp.backend.ValidationHelpers.validateJourneyInsertFromApp
 import com.jp.backend.ValidationHelpers.validateStationInsertFromApp
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
 @CrossOrigin(maxAge = 3600)
 @RestController
-class RESTController() {
+class RESTController {
 
     @GetMapping("/stations/all")
     @ResponseBody
@@ -22,21 +22,21 @@ class RESTController() {
 
     @GetMapping("/stations")
     @ResponseBody
-    fun getPaginatedStations(@RequestParam pageSize: Int,
-                             @RequestParam offset: Long,
-                             @RequestParam sortBy: String?,
-                             @RequestParam sortDesc: Boolean?,
-                             @RequestParam search: String?): ResponseEntity<Any?> {
-        val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset, sortBy, sortDesc, search)
+    fun getPaginatedStations(@RequestParam pageSize: Int, @RequestParam offset: Long): ResponseEntity<Any?> {
+        val stationData = DatabaseConn.getPaginationStationsData(pageSize, offset)
         return ResponseEntity(JsonCreator.stationsToJSON(stationData), HttpStatus.OK)
     }
 
     @GetMapping("/stations/{id}")
     @ResponseBody
-    fun getSingleStationDetailed(@PathVariable id: Int, @RequestParam startDate: String?, @RequestParam endDate: String?): ResponseEntity<Any?> {
+    fun getSingleStationDetailed(
+        @PathVariable id: Int,
+        @RequestParam startDate: String?,
+        @RequestParam endDate: String?
+    ): ResponseEntity<Any?> {
         val stationData = DatabaseConn.getSingleStationData(id, startDate, endDate)
         return if (stationData == null) {
-            ResponseEntity(HttpStatus.NOT_FOUND)
+            ResponseEntity("No station found with ID $id", HttpStatus.NOT_FOUND)
         } else {
             ResponseEntity(JsonCreator.stationDetailsToJSON(stationData), HttpStatus.OK)
         }
@@ -45,18 +45,32 @@ class RESTController() {
 
     @GetMapping("/journeys")
     @ResponseBody
-    fun getPaginatedJourneys(@RequestParam pageSize: Int,
-                             @RequestParam offset: Long,
-                             @RequestParam sortBy: String?,
-                             @RequestParam sortDesc: Boolean?,
-                             @RequestParam search: String?,
-                             @RequestParam startDate: String?,
-                             @RequestParam endDate: String?,
-                             @RequestParam minDistance: Int?,
-                             @RequestParam maxDistance: Int?,
-                             @RequestParam minDuration: Int?,
-                             @RequestParam maxDuration: Int?): ResponseEntity<Any?> {
-        val journeyData = DatabaseConn.getPaginationJourneysData(pageSize, offset, sortBy, sortDesc, search, startDate, endDate, minDistance, maxDistance, minDuration, maxDuration)
+    fun getPaginatedJourneys(
+        @RequestParam pageSize: Int,
+        @RequestParam offset: Long,
+        @RequestParam sortBy: String?,
+        @RequestParam sortDesc: Boolean?,
+        @RequestParam search: String?,
+        @RequestParam startDate: String?,
+        @RequestParam endDate: String?,
+        @RequestParam minDistance: Int?,
+        @RequestParam maxDistance: Int?,
+        @RequestParam minDuration: Int?,
+        @RequestParam maxDuration: Int?
+    ): ResponseEntity<Any?> {
+        val journeyData = DatabaseConn.getPaginationJourneysData(
+            pageSize,
+            offset,
+            sortBy,
+            sortDesc,
+            search,
+            startDate,
+            endDate,
+            minDistance,
+            maxDistance,
+            minDuration,
+            maxDuration
+        )
         return ResponseEntity(JsonCreator.journeysToJSON(journeyData), HttpStatus.OK)
     }
 

@@ -56,7 +56,8 @@ object ValidationHelpers {
 
         // Reject if departure or return station id is not in the allowed list of station ids.
         if (!usedStationIDs.contains(journey.departureStationId) ||
-            !usedStationIDs.contains(journey.returnStationId)) {
+            !usedStationIDs.contains(journey.returnStationId)
+        ) {
             return false
         }
 
@@ -69,13 +70,16 @@ object ValidationHelpers {
         val stringKeysToCheck = arrayListOf(
             "nameFi", "nameSe", "nameEn", "addressFi",
             "addressSe", "cityFi", "citySe",
-            "operator", "longitude", "latitude")
+            "operator", "longitude", "latitude"
+        )
 
-        if (usedStationIDs.contains(station.id)) { return false }
+        if (usedStationIDs.contains(station.id)) {
+            return false
+        }
 
         // Check station string properties to be under 50 chars
         for (key in StationModel::class.memberProperties) {
-            if (stringKeysToCheck.contains(key.name) && key.get(station).toString().length> 50) {
+            if (stringKeysToCheck.contains(key.name) && key.get(station).toString().length > 50) {
                 valid = false
                 break
             }
@@ -122,7 +126,9 @@ object ValidationHelpers {
             // Reject if departure or return station id is not in the allowed list of station ids.
             if (key == "Departure station id" || key == "Return station id") {
                 var id = row.getValue(key).toInt()
-                if (!usedStationIDs.contains(id)) {return false}
+                if (!usedStationIDs.contains(id)) {
+                    return false
+                }
             }
         }
 
