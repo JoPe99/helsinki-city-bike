@@ -3,14 +3,14 @@
 ## Docker
 
 #### Requirements
-- JRE 17
+- JDK 17
 - Docker
 - Docker compose
 
-To deploy the backend in Docker, in backend directory run:
+To run the backend in Docker, in backend directory run:
 ```
 ./getCSVfiles.sh
-./gradlew build
+./gradlew build -x test
 docker build -t app.jar .
 docker-compose up -d
 curl http://localhost:8081/parse
@@ -30,17 +30,21 @@ Explained:
 
 #### Requirements
 - PostgreSQL 15
-- JRE 17
+- JDK 17
 
 PostgreSQL needs to be up before running the backend.
 
 Database connection defaults to following:
-DB_URL = "postgresql://localhost:5432/postgres"
-DB_USERNAME = "postgres"
-DB_PASSWORD = "password"
+
+```
+DB_URL=postgresql://localhost:5432/postgres
+DB_USERNAME=postgres
+DB_PASSWORD=password
+```
 
 If you want to set your own env variables, feel free to do so!
 
+Commands to run the server:
 ```
 ./getCSVfiles.sh
 ./gradlew bootRun
@@ -51,3 +55,7 @@ Explained:
 1. Creates resources/data folder, and downloads files there
 2. Builds app
 5. Tells the server to start parsing CSV files. This should take around 5 minutes with journeys from May, June & July.
+
+
+# Database layout
+![dbLayout](../documentation/DatabaseLayout.png)

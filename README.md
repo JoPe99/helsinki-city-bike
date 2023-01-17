@@ -1,10 +1,14 @@
 # Helsinki City Bike App
 
+To try the app, you can either get the Electron-packaged .exe from releases on the sidebar, try it [here](http://jp-hcb-app.s3-website.eu-north-1.amazonaws.com/#/) or host it on your local computer.
+
 # Description of the project: 
 
 The purpose of this app is to showcase data from Helsinki city bikes from the summer of 2021. 
 
 This repository contains a Kotlin/Spring/PostgreSQL backend which can be run in a Docker container or by itself, and a Vue/Typescript/Electron frontend application.
+
+The backend server is hosted on a VM in Google Cloud, and the browser app is hosted as a static website in an S3-bucket on AWS.
 
 #### Data used in the project
 
@@ -33,7 +37,7 @@ Tests are run in a Github Actions pipeline on every push to the main branch.
 
 ##### Frontend
 
-Frontend tests include some very simple tests of data formatting functions, and an integration test with the backend API. The tests require that the backend is running. The E2E tests are very superficial, their purpose is to only showcase that I know the very basics of Cypress. 
+Frontend tests include some very simple tests of data formatting functions, and an integration test with the backend API. The tests require that the backend is running. The E2E tests are superficial, their purpose is to only showcase that I know the very basics of Cypress. 
 
 To run the frontend tests locally, open command line in the frontend directory and run:
 
@@ -123,6 +127,10 @@ Project also includes instructions for running the backend in [Docker](https://w
 
 #### Testing
 Frontend unit testing is done with [Mocha](https://mochajs.org/)/[Chai](https://www.chaijs.com/), E2E-testing with [Cypress](https://www.cypress.io/). All the tests are run in a Github Actions pipeline on every push to the main branch.
+
+# Default structure when deployed
+
+![structure](./documentation/SimplifiedArchitechture.png)
 
 # Lessons learned
 
