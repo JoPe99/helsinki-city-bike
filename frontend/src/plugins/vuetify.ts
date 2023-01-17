@@ -9,19 +9,14 @@ export default new Vuetify({
     dark: true,
     themes: {
       light: {
-        primary: colors.green.lighten3,
-        secondary: colors.green.darken1,
-        accent: colors.pink.darken1,
-        error: colors.red.accent3,
-        background: colors.indigo.lighten5,
-        info: colors.teal.darken1,
+        primary: colors.purple.lighten3,
+        secondary: colors.purple.lighten2,
         submit: colors.green.accent1,
         highlight: colors.shades.black,
       },
       dark: {
         primary: colors.blue.darken4,
         secondary: colors.blue.darken3,
-        background: colors.indigo.base,
         submit: colors.teal.lighten1,
         highlight: colors.shades.white,
       },

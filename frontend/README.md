@@ -21,6 +21,7 @@ To run the frontend app, in frontend directory run:
 
 ```
 npm install
+npm run lint
 npm run serve
 ```
 
@@ -28,5 +29,6 @@ npm run serve
 
 ```
 npm install
+npm run lint
 npm run electron:serve
 ```
