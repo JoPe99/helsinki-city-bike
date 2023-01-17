@@ -32,7 +32,8 @@
       </v-card-text>
       <v-card-text v-else>
         Setting up the information, just a moment! If this doesn't stop loading
-        in couple of seconds, make sure the server is up and running.
+        in couple of seconds, make sure the server is up and running, and has
+        finished parsing the CSV files.
       </v-card-text>
     </v-card>
   </v-container>

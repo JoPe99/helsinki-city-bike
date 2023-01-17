@@ -1,7 +1,19 @@
 # Instructions
 
 #### Requirements
-- Node (Version 14 or later required)
+- NodeJS (Version 14 or later required)
+
+#### Configuration
+
+To configure server IP, adding an .env-file to the root containing:
+
+```
+VUE_APP_SERVER_IP=server IP here
+```
+
+If not configured, defaults to "localhost:8081".
+
+
 
 #### Run in browser
 
@@ -13,6 +25,7 @@ npm run serve
 ```
 
 #### Run with Electron
+
 ```
 npm install
 npm run electron:serve
