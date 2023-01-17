@@ -7,7 +7,9 @@ import org.springframework.boot.runApplication
 class BackendApplication
 
 fun main(args: Array<String>) {
-	DatabaseConn
-	ValidationHelpers
-	runApplication<BackendApplication>(*args)
+    // Init DB and validation helpers
+    DatabaseConn
+    ValidationHelpers
+    
+    runApplication<BackendApplication>(*args)
 }

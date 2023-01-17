@@ -4,18 +4,18 @@ package com.jp.backend
  *   StationModel is used when parsing from the CSV files and inserting to the database.
  */
 data class StationModel(
-        val id: Int,
-        val nameFi: String,
-        val nameSe: String,
-        val nameEn: String,
-        val addressFi: String,
-        val addressSe: String,
-        val cityFi: String,
-        val citySe: String,
-        val operator: String,
-        val capacity: Int,
-        val longitude: String,
-        val latitude: String
+    val id: Int,
+    val nameFi: String,
+    val nameSe: String,
+    val nameEn: String,
+    val addressFi: String,
+    val addressSe: String,
+    val cityFi: String,
+    val citySe: String,
+    val operator: String,
+    val capacity: Int,
+    val longitude: String,
+    val latitude: String
 )
 
 /**
@@ -26,35 +26,35 @@ data class StationModel(
  * and most popular stations to go to/come from.
  */
 data class StationModelWithDetails(
-        val id: Int,
+    val id: Int,
 
-        val nameFi: String,
-        val nameSe: String,
-        val nameEn: String,
+    val nameFi: String,
+    val nameSe: String,
+    val nameEn: String,
 
-        val addressFi: String,
-        val addressSe: String,
+    val addressFi: String,
+    val addressSe: String,
 
-        val cityFi: String,
-        val citySe: String,
+    val cityFi: String,
+    val citySe: String,
 
-        val operator: String,
-        val capacity: Int,
+    val operator: String,
+    val capacity: Int,
 
-        val longitude: String,
-        val latitude: String,
+    val longitude: String,
+    val latitude: String,
 
-        val totalDepartJourneys: Int,
-        val totalReturnJourneys: Int,
+    val totalDepartJourneys: Int,
+    val totalReturnJourneys: Int,
 
-        val averageDepartDistance: Float,
-        val averageReturnDistance: Float,
+    val averageDepartDistance: Float,
+    val averageReturnDistance: Float,
 
-        val averageDepartDuration: Float,
-        val averageReturnDuration: Float,
+    val averageDepartDuration: Float,
+    val averageReturnDuration: Float,
 
-        val topDepartStations: ArrayList<TopStationModel>,
-        val topReturnStations: ArrayList<TopStationModel>
+    val topDepartStations: ArrayList<TopStationModel>,
+    val topReturnStations: ArrayList<TopStationModel>
 )
 
 /**
@@ -62,13 +62,13 @@ data class StationModelWithDetails(
  * StationModelWithDetails.
  */
 data class TopStationModel(
-        val name: String,
-        val count: Int
+    val name: String,
+    val count: Int
 )
 
 data class JourneyAPIResult(
-        var length: Int,
-        val journeys: ArrayList<JourneyModelWithStationData>
+    var length: Int,
+    val journeys: ArrayList<JourneyModelWithStationData>
 )
 
 /**
@@ -79,14 +79,14 @@ data class JourneyAPIResult(
  *   to parse LocalDateTimes in this format led into this workaround.
  */
 data class JourneyModel(
-        val departureTime: String,
-        val returnTime: String,
-        val departureStationId: Int,
-        val departureStationName: String,
-        val returnStationId: Int,
-        val returnStationName: String,
-        val distanceCovered: Int,
-        val durationSeconds: Int
+    val departureTime: String,
+    val returnTime: String,
+    val departureStationId: Int,
+    val departureStationName: String,
+    val returnStationId: Int,
+    val returnStationName: String,
+    val distanceCovered: Int,
+    val durationSeconds: Int
 )
 
 /**
@@ -96,21 +96,21 @@ data class JourneyModel(
  * This model is used when returning data from database to the frontend.
  */
 data class JourneyModelWithStationData(
-        val id: Int,
+    val id: Int,
 
-        val departureTime: String,
-        val returnTime: String,
+    val departureTime: String,
+    val returnTime: String,
 
-        val departureStationId: Int,
-        val departureStationName: String,
-        val departureStationX: String,
-        val departureStationY: String,
+    val departureStationId: Int,
+    val departureStationName: String,
+    val departureStationX: String,
+    val departureStationY: String,
 
-        val returnStationId: Int,
-        val returnStationName: String,
-        val returnStationX: String,
-        val returnStationY: String,
+    val returnStationId: Int,
+    val returnStationName: String,
+    val returnStationX: String,
+    val returnStationY: String,
 
-        val distanceCovered: Int,
-        val durationSeconds: Int
+    val distanceCovered: Int,
+    val durationSeconds: Int
 )
