@@ -80,7 +80,7 @@
               <v-row>
                 <v-col class="px-8">
                   <v-card-title class="pa-0 pb-3"
-                    >Top departure stations</v-card-title
+                    >Top stations to go to</v-card-title
                   >
                   <top-stations-table
                     class="elevation-4"
@@ -90,7 +90,7 @@
                 </v-col>
                 <v-col class="px-8">
                   <v-card-title class="pa-0 pb-3"
-                    >Top return stations</v-card-title
+                    >Top stations to come from</v-card-title
                   >
                   <top-stations-table
                     class="elevation-4"
