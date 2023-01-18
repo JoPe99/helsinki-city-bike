@@ -1,5 +1,9 @@
 package com.jp.backend
 
+import com.jp.backend.databaseConn.DatabaseConn
+import com.jp.backend.databaseConn.DatabaseConn.createTables
+import com.jp.backend.databaseConn.DatabaseConn.deleteTables
+import com.jp.backend.databaseConn.QueryHelpers.tablesExist
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertTrue
 
@@ -11,11 +15,11 @@ class ParsingTests {
      */
     @BeforeAll
     fun init() {
-        if (DatabaseConn.tablesExist()) {
-            DatabaseConn.deleteTables()
+        if (tablesExist()) {
+            deleteTables()
         }
 
-        DatabaseConn.createTables()
+        createTables()
 
         val pathToStationTestCSV = "src/test/kotlin/resources/valid_stations.tcsv"
         val stationArray = CSVParser.parseStationCSV(pathToStationTestCSV)
@@ -30,7 +34,7 @@ class ParsingTests {
 
     @AfterAll
     fun clean() {
-        DatabaseConn.deleteTables()
+        deleteTables()
     }
 
 

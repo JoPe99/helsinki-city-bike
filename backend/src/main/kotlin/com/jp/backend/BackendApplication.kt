@@ -1,5 +1,6 @@
 package com.jp.backend
 
+import com.jp.backend.databaseConn.DatabaseConn
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -10,6 +11,6 @@ fun main(args: Array<String>) {
     // Init DB and validation helpers
     DatabaseConn
     ValidationHelpers
-    
+
     runApplication<BackendApplication>(*args)
 }

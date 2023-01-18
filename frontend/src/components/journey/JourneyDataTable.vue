@@ -154,6 +154,7 @@ export default defineComponent({
       handler() {
         // Drop selected journey, get new journeys when table filters are changed
         this.selectedJourney = 0;
+        this.options.page = 1;
         this.getJourneysFromAPI();
       },
       deep: true,

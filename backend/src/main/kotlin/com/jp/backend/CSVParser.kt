@@ -5,9 +5,9 @@
 package com.jp.backend
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import com.jp.backend.DatabaseConn.insertIntoJourneys
-import com.jp.backend.DatabaseConn.insertIntoStations
 import com.jp.backend.ValidationHelpers.validateJourneyCSVRow
+import com.jp.backend.databaseConn.DatabaseConn.insertIntoJourneys
+import com.jp.backend.databaseConn.DatabaseConn.insertIntoStations
 
 
 object CSVParser {

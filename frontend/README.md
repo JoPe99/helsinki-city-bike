@@ -32,3 +32,15 @@ npm install
 npm run lint
 npm run electron:serve
 ```
+
+# Bugs
+
+- Refreshing the page breaks the application due to the store not being ready on it.
+    - Could be fixed by for example showing a loading screen on refresh
+
+# Improvements to make
+
+- Standardize insert error messages
+- Add a server status icon to the app bar
+- Add scrolling and mobile support
+- Design is pretty bad, lots of empty space when window is larger

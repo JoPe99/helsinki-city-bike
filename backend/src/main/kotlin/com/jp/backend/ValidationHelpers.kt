@@ -5,8 +5,8 @@
 
 package com.jp.backend
 
-import com.jp.backend.DatabaseConn.getAllStationIDs
-import com.jp.backend.DatabaseConn.tablesExist
+import com.jp.backend.databaseConn.QueryHelpers.tablesExist
+import com.jp.backend.databaseConn.StationsQueries.getAllStationIDs
 import kotlin.reflect.full.memberProperties
 
 object ValidationHelpers {
