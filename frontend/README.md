@@ -36,11 +36,14 @@ npm run electron:serve
 # Bugs
 
 - Refreshing the page breaks the application due to the store not being ready on it.
-    - Could be fixed by for example showing a loading screen on refresh
+    - Could be fixed by for example showing a loading screen during the loading
+- Throws a type error on the home page when refreshing, problem with store loading.
+    - Doesn't affect anything though
 
 # Improvements to make
 
 - Standardize insert error messages
 - Add a server status icon to the app bar
-- Add scrolling and mobile support
+- Add scrolling and better support for different window sizes
 - Design is pretty bad, lots of empty space when window is larger
+- Light mode design is awful as well

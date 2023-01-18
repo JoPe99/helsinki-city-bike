@@ -3,9 +3,9 @@
 ## Docker
 
 #### Requirements
-- JDK 17
-- Docker
-- Docker compose
+- [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- [Docker](https://www.docker.com/)
+- [Docker compose](https://docs.docker.com/compose/)
 
 To run the backend in Docker, in backend directory run:
 ```
@@ -28,8 +28,8 @@ Explained:
 ## Without Docker
 
 #### Requirements
-- PostgreSQL 15
-- JDK 17
+- [PostgreSQL 15](https://www.postgresql.org/download/)
+- [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
 PostgreSQL needs to be up before running the backend.
 
@@ -58,3 +58,11 @@ Explained:
 
 # Database layout
 ![dbLayout](../documentation/DatabaseLayout.png)
+
+# Bugs
+- None encountered, must have some bugs though
+
+# Improvements to make
+- Parsing should be done by some other way than a API call
+- Parsing status to visible
+- The REST controller could be split into multiple files

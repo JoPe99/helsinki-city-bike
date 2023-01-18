@@ -141,7 +141,7 @@ Frontend unit testing is done with [Mocha](https://mochajs.org/)/[Chai](https://
 
 #### Overall
 
-Overall the project was a great way to learn about Typescript, Kotlin, Spring, Docker and REST APIs in general. This was the first project of this size which I did from the start to finish by myself. Most important lesson from perspective of design would be that I should have planned the architechture more beforehand, and not just jumped into it. 
+Overall the project was a great way to learn about Typescript, Kotlin, Spring, Docker and REST APIs in general. Most important lesson from perspective of design would be that I should have planned the architechture more beforehand, and not just jumped into it. Especially the frontend design and structure leaves a lot to be desired.
 
 
 #### Frontend
@@ -158,7 +158,7 @@ This was my first time working with Docker, and I was impressed at how simple it
 
 #### Testing
 
-I had very limited experience with testing before the project, only one project where I used Mocha/Chai. For those reasons Mocha/Chai were used in this project too. For the very small amount of backend tests created, JUnit 5 was used. Testing obviously is extremely important in software development, and I am very happy to learn more as time goes on.
+I had very limited experience with testing before the project, only one project where I had used Mocha/Chai. For those reasons Mocha/Chai were used in this project too. For the very small amount of backend tests created, JUnit 5 was used. Cypress was very easy to use and create tests with, much to learn about Cypress and effiecient E2E testing too. Testing obviously is extremely important in software development, and I am very happy to learn more about software testing in future projects.
 
 The Github Actions pipeline takes a long time to execute the tests, and I'm sure it could be optimized some way. I had used Github Actions once before.
 
