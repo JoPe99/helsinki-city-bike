@@ -8,7 +8,7 @@
     "test:unit": "./node_modules/.bin/vue-cli-service test:unit",
     "test:e2e": "./node_modules/.bin/vue-cli-service test:e2e",
     "lint": "./node_modules/.bin/vue-cli-service lint",
-    "electron:build": "./node_modules/.bin/vue-cli-service electron:build",
+    "electron:build": "./node_modules/.bin/vue-cli-service electron:build --win=portable",
     "electron:serve": "./node_modules/.bin/vue-cli-service electron:serve",
     "postinstall": "./node_modules/.bin/electron-builder install-app-deps",
     "postuninstall": "./node_modules/.bin/electron-builder install-app-deps"
