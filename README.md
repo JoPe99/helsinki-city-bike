@@ -1,14 +1,10 @@
 # Helsinki City Bike App
 
-To try the app, you can either get the Electron-packaged .exe from releases on the sidebar, try it [here](http://jp-hcb-app.s3-website.eu-north-1.amazonaws.com/#/) or host it on your local computer.
-
 # Description of the project: 
 
 The purpose of this app is to showcase data from Helsinki city bikes from the summer of 2021. 
 
 This repository contains a Kotlin/Spring/PostgreSQL backend which can be run in a Docker container or by itself, and a Vue/Typescript/Electron frontend application.
-
-The backend server is hosted on a VM in Google Cloud, and the browser app is hosted as a static website in an S3-bucket on AWS.
 
 #### Data used in the project
 
